@@ -40,7 +40,8 @@ class DemoScene extends Phaser.Scene
 
         this.player1Controls = this.input.keyboard.addKeys('W,A,D');
         this.player2Controls = this.input.keyboard.addKeys('UP,LEFT,RIGHT');
-
+        
+        //this.camera = this.cameras.main;
     }
 
     update()
@@ -104,6 +105,7 @@ class DemoScene extends Phaser.Scene
         {
             this.colP2Plat.active = false;            
         }
+        //this.camera.scrollY-=1;    
     }
 
     createAnimations()
