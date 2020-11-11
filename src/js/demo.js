@@ -24,7 +24,8 @@ class DemoScene extends Phaser.Scene
         this.platforms.create(400,568,'platform').setScale(2).refreshBody();
         this.platforms.create(300,450,'platform');
         this.platforms.create(450,350,'platform');
-
+        this.platforms.create(300,-100,'platform');
+        
         this.player1 = this.physics.add.sprite(100,450,'dude');
         this.player1.setBounce(0);
         this.player1.setCollideWorldBounds(true);
@@ -35,13 +36,15 @@ class DemoScene extends Phaser.Scene
 
         this.createAnimations();
 
-        this.colP1Plat = this.physics.add.collider(this.player1, this.platforms);
-        this.colP2Plat = this.physics.add.collider(this.player2, this.platforms);
+        this.colP1Plat = this.physics.add.collider(this.player1, this.platforms, this.allowJump1,null,this);
+        this.colP2Plat = this.physics.add.collider(this.player2, this.platforms, this.allowJump2,null,this);
 
         this.player1Controls = this.input.keyboard.addKeys('W,A,D');
         this.player2Controls = this.input.keyboard.addKeys('UP,LEFT,RIGHT');
         
         //this.camera = this.cameras.main;
+        this.canJump1 = true;
+        this.canJump2 = true;
     }
 
     update()
@@ -63,9 +66,10 @@ class DemoScene extends Phaser.Scene
             this.player1.anims.play('iddle');
         }
 
-        if(this.player1Controls.W.isDown && this.player1.body.touching.down)
+        if(this.player1Controls.W.isDown && /*this.player1.body.touching.down*/this.canJump1)
         {
             this.player1.setVelocityY(-400);
+            this.canJump1 = false;
         }
 
         if(this.player1.body.velocity.y > 1)//cayendo
@@ -93,9 +97,10 @@ class DemoScene extends Phaser.Scene
             this.player2.anims.play('iddle2');
         }
 
-        if(this.player2Controls.UP.isDown && this.player2.body.touching.down)
+        if(this.player2Controls.UP.isDown && /*this.player2.body.touching.down*/this.canJump2)
         {
             this.player2.setVelocityY(-400);
+            this.canJump2 = false;
         }
 
         if(this.player2.body.velocity.y > 1)//cayendo
@@ -104,8 +109,9 @@ class DemoScene extends Phaser.Scene
         }else//saltando
         {
             this.colP2Plat.active = false;            
-        }
-        //this.camera.scrollY-=1;    
+        }        
+        //this.camera.scrollY-=1;
+
     }
 
     createAnimations()
@@ -148,5 +154,14 @@ class DemoScene extends Phaser.Scene
             frameRate: 10,
             repeat: -1
             });
+    }
+
+    allowJump1()
+    {
+        this.canJump1 = true;
+    }
+    allowJump2()
+    {
+        this.canJump2 = true;
     }
 }
