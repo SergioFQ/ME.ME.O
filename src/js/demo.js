@@ -9,6 +9,7 @@ class DemoScene extends Phaser.Scene
     {
         this.load.image('sky','../resources/img/sky.png');
         this.load.image('platform','../resources/img/platform.png');
+        this.load.image('platformCaida','../resources/img/platformCaida.png');
 
         this.load.spritesheet('dude','../resources/img/dude.png',
         { frameWidth:32, frameHeight: 48});
@@ -41,14 +42,19 @@ class DemoScene extends Phaser.Scene
 
         this.player1Controls = this.input.keyboard.addKeys('W,A,D');
         this.player2Controls = this.input.keyboard.addKeys('UP,LEFT,RIGHT');
-        
-        //this.camera = this.cameras.main;
         this.canJump1 = true;
         this.canJump2 = true;
+        this.camera = this.cameras.main;//camara de la escena
+        this.platformCaida = this.physics.add.sprite(400,650,'platformCaida').setScale(2).refreshBody();//plataforma que irá debajo de la camara y matara a los jugadores
+        this.platformCaida.body.setAllowGravity(false);//quitamos la gravedad de la plataforma de caida
+        this.overlapP1Caida = this.physics.add.overlap(this.player1, this.platformCaida, this.muerteCaida1, null, this);//la muerte por caida
+        this.overlapP2Caida = this.physics.add.overlap(this.player2, this.platformCaida, this.muerteCaida2, null, this);//la muerte por caida
+        this.alreadyDead = false;//si hay algún muerto ya
     }
 
     update()
     {
+        this.platformCaida.setVelocity(0,-60);
         //Player1 control
         if(this.player1Controls.A.isDown)
         {
@@ -109,9 +115,12 @@ class DemoScene extends Phaser.Scene
         }else//saltando
         {
             this.colP2Plat.active = false;            
-        }        
-        //this.camera.scrollY-=1;
-
+        }
+        if(this.camera.scrollY>-1000)//ponemos un tope cualquiera al scroll de la camara
+        {
+            this.camera.scrollY-=1;
+        }
+        //console.log(this.camera.scrollY);//debug para scroll camara
     }
 
     createAnimations()
@@ -156,6 +165,26 @@ class DemoScene extends Phaser.Scene
             });
     }
 
+    muerteCaida1() 
+    {
+        if(!this.alreadyDead)
+        {
+            console.log('p1 muerto');
+            this.player1.body.moves = false;
+            this.player1Controls.active = false;
+            this.alreadyDead = true;
+        }
+    }
+    muerteCaida2() 
+    {
+        if(!this.alreadyDead)
+        {
+            console.log('p2 muerto');
+            this.player2.body.moves = false;            
+            this.player2Controls.active = false;
+            this.alreadyDead = true;
+        }
+    }
     allowJump1()
     {
         this.canJump1 = true;
