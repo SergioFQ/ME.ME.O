@@ -20,21 +20,24 @@ class DemoScene extends Phaser.Scene
 
     create()
     {
-        this.add.image(400,300,'sky');
+        this.add.image(400,2700,'sky');
         this.platforms = this.physics.add.staticGroup();
-        this.platforms.create(400,568,'platform').setScale(2).refreshBody();
-        this.platforms.create(300,450,'platform');
-        this.platforms.create(450,350,'platform');
-        this.platforms.create(300,-100,'platform');
         
-        this.player1 = this.physics.add.sprite(100,450,'dude');
+        this.platforms.create(400,2968,'platform').setScale(2).refreshBody();
+        this.platforms.create(300,2850,'platform');
+        this.platforms.create(450,2750,'platform');
+        this.platforms.create(500,2650,'platform');
+        this.platforms.create(420,2550,'platform');        
+        this.platforms.create(420,2450,'platform');        
+        this.platforms.create(300,2350,'platform');
+        this.player1 = this.physics.add.sprite(100,2600,'dude');
         this.player1.setBounce(0);
         this.player1.setCollideWorldBounds(true);
-
-        this.player2 = this.physics.add.sprite(150,450,'dude2');
+        this.player1.depth=10;//profundidad para aparecer siempre por delante de todo
+        this.player2 = this.physics.add.sprite(150,2600,'dude2');
         this.player2.setBounce(0);
         this.player2.setCollideWorldBounds(true);
-
+        this.player2.depth=10;//profundidad para aparecer siempre por delante de todo
         this.createAnimations();
 
         this.colP1Plat = this.physics.add.collider(this.player1, this.platforms, this.allowJump1,null,this);
@@ -45,9 +48,10 @@ class DemoScene extends Phaser.Scene
         this.canJump1 = true;
         this.canJump2 = true;
         this.camera = this.cameras.main;//camara de la escena
-        this.platformCaida = this.physics.add.sprite(400,650,'platformCaida').setScale(2).refreshBody();//plataforma que irá debajo de la camara y matara a los jugadores        
+        this.camera.setScroll(0,2400);//posición inicial de la cámara (podría cambiar)
+        this.platformCaida = this.physics.add.sprite(400,3050,'platformCaida').setScale(2).refreshBody();//plataforma que irá debajo de la camara y matara a los jugadores        
         this.platformCaida.body.setAllowGravity(false);//quitamos la gravedad de la plataforma de caida
-        this.platformGeneradora = this.physics.add.sprite(400,-50,'platformCaida').setScale(2).refreshBody();//plataforma que irá encima de la camara para ir realizando 
+        this.platformGeneradora = this.physics.add.sprite(400,2350,'platformCaida').setScale(2).refreshBody();//plataforma que irá encima de la camara para ir realizando 
                                                                                                              //calculos de como generar el resto de plataformas.
         this.platformGeneradora.body.setAllowGravity(false);
         this.overlapP1Caida = this.physics.add.overlap(this.player1, this.platformCaida, this.muerteCaida1, null, this);//la muerte por caida
@@ -213,7 +217,7 @@ class DemoScene extends Phaser.Scene
            if( elem.y > this.platformCaida.y && (elem!=this.player1 && elem!=this.player2)) {
             if(this.platformGeneradora.body.y>-6000)
             {
-              this.platforms.create(Phaser.Math.Between(100,400),elem.body.y-700,'platform').scaleX = 0.5;
+              this.platforms.create(Phaser.Math.Between(225,600),elem.body.y-700,'platform');
             }  
              elem.destroy();
            }
