@@ -120,6 +120,9 @@ class DemoScene extends Phaser.Scene
         {
             this.camera.scrollY-=1;
         }
+       // console.log(this.platformCaida.y);
+       this.managePlatforms();
+       
         //console.log(this.camera.scrollY);//debug para scroll camara
     }
 
@@ -192,5 +195,16 @@ class DemoScene extends Phaser.Scene
     allowJump2()
     {
         this.canJump2 = true;
+    }    
+    
+    managePlatforms()
+    {
+       this.platforms.children.each(function(elem ) {
+           this.platformYMin = Math.min( this.platformYMin, elem.y );
+           if( elem.y > this.platformCaida.y && (elem!=this.player1 && elem!=this.player2)) {
+                         
+             elem.destroy();
+           }
+        }, this );
     }
 }
