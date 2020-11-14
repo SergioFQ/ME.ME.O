@@ -202,7 +202,10 @@ class DemoScene extends Phaser.Scene
        this.platforms.children.each(function(elem ) {
            this.platformYMin = Math.min( this.platformYMin, elem.y );
            if( elem.y > this.platformCaida.y && (elem!=this.player1 && elem!=this.player2)) {
-                         
+            if((this.player1.body.x>-400)||(this.player2.body.x>-400))
+            {
+              this.platforms.create(300,elem.body.y-700,'platform');
+            }  
              elem.destroy();
            }
         }, this );
