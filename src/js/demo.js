@@ -45,8 +45,11 @@ class DemoScene extends Phaser.Scene
         this.canJump1 = true;
         this.canJump2 = true;
         this.camera = this.cameras.main;//camara de la escena
-        this.platformCaida = this.physics.add.sprite(400,650,'platformCaida').setScale(2).refreshBody();//plataforma que irá debajo de la camara y matara a los jugadores
+        this.platformCaida = this.physics.add.sprite(400,650,'platformCaida').setScale(2).refreshBody();//plataforma que irá debajo de la camara y matara a los jugadores        
         this.platformCaida.body.setAllowGravity(false);//quitamos la gravedad de la plataforma de caida
+        this.platformGeneradora = this.physics.add.sprite(400,-50,'platformCaida').setScale(2).refreshBody();//plataforma que irá encima de la camara para ir realizando 
+                                                                                                             //calculos de como generar el resto de plataformas.
+        this.platformGeneradora.body.setAllowGravity(false);
         this.overlapP1Caida = this.physics.add.overlap(this.player1, this.platformCaida, this.muerteCaida1, null, this);//la muerte por caida
         this.overlapP2Caida = this.physics.add.overlap(this.player2, this.platformCaida, this.muerteCaida2, null, this);//la muerte por caida
         this.alreadyDead = false;//si hay algún muerto ya
@@ -54,7 +57,6 @@ class DemoScene extends Phaser.Scene
 
     update()
     {
-        this.platformCaida.setVelocity(0,-60);
         //Player1 control
         if(this.player1Controls.A.isDown)
         {
@@ -118,7 +120,14 @@ class DemoScene extends Phaser.Scene
         }
         if(this.camera.scrollY>-1000)//ponemos un tope cualquiera al scroll de la camara
         {
+            
+            this.platformCaida.setVelocity(0,-60);
+            this.platformGeneradora.setVelocity(0,-60);
             this.camera.scrollY-=1;
+        }else
+        {
+            this.platformCaida.setVelocity(0,0);
+            this.platformGeneradora.setVelocity(0,0);
         }
        // console.log(this.platformCaida.y);
        this.managePlatforms();
@@ -202,9 +211,9 @@ class DemoScene extends Phaser.Scene
        this.platforms.children.each(function(elem ) {
            this.platformYMin = Math.min( this.platformYMin, elem.y );
            if( elem.y > this.platformCaida.y && (elem!=this.player1 && elem!=this.player2)) {
-            if((this.player1.body.x>-400)||(this.player2.body.x>-400))
+            if(this.platformGeneradora.body.y>-6000)
             {
-              this.platforms.create(300,elem.body.y-700,'platform');
+              this.platforms.create(Phaser.Math.Between(100,400),elem.body.y-700,'platform').scaleX = 0.5;
             }  
              elem.destroy();
            }
