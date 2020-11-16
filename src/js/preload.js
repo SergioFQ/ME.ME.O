@@ -20,7 +20,7 @@ class Preload extends Phaser.Scene
     create()
     {
         this.time.addEvent({
-            delay: 2000,
+            delay: 4000,
             callback: () => { this.scene.start('Menu') ;},
             callbackScope: this
         });
@@ -42,39 +42,58 @@ class Preload extends Phaser.Scene
         this.txt_progress = new Text(
             this,
             400,
-            350,
+            325,
             'Loading ...',
             'preload',
             { x: 0.5, y: 1}
         );
 
-        // Progress bar
         let x = 10;
         let y = 300;
-        let w = 800 - 2 * x;
-        let h = 18;
 
+        // Progress bar
         this.progress = this.add.graphics({x: x, y: y});
         this.border = this.add.graphics({x: x, y: y});
 
         //Progress callback
-        this.load.on('progress', this.onProgress, this);
+        //this.load.on('progress', this.onProgress, this);
+        this.time.addEvent({
+            delay: 1000,
+            callback: () => { this.onProgress(Phaser.Math.Between(20, 45)) ;},
+            callbackScope: this
+        });
+
+        this.time.addEvent({
+            delay: 2000,
+            callback: () => { this.onProgress(Phaser.Math.Between(55, 80));},
+            callbackScope: this
+        });
+
+        this.time.addEvent({
+            delay: 3000,
+            callback: () => { this.onProgress(100) ;},
+            callbackScope: this
+        });
     }
 
     onProgress(val)
     {
+        console.log('this.txt_progress.text');
+        let w = 600 - 2 * this.progress.x;
+        let h = 18;
+
         //Width of progress bar
         this.progress.clear();
-        this.progress.fillStyle('0xFFFFFF', 1);
-        this.progress.fillRect(0, 0, witdh * val, height);
+        this.progress.fillStyle('0x7FDD02', 1);
+        this.progress.fillRect(100, 40, w * val/100, h);
 
         this.border.clear();
         this.border.lineStyle(2, '0x4D6592', 1);
-        this.border.strokeRect(0, 0, w * val, h);
+        this.border.strokeRect(100, 40, w * val/100, h);
 
 
         //Percentage in progress text
-        let perc = Math.round(val * 100) + '%';
+        let perc = val + '%';
         this.txt_progress.setText(perc);
 
         console.log(this.txt_progress.text);

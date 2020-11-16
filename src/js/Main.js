@@ -9,7 +9,7 @@ var config = {
             debug: false
         }
     },
-    backgroundColor: 0xB37878,
+    backgroundColor: 0xC26ACA,
     scene: [Boot, Preload, Menu, DemoScene]
 };
 //En scene ir añadiendo las diferentes escenas que se necesitarán

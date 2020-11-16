@@ -19,7 +19,7 @@ class Text
     {
         let style   = {
             fontFamily  : 'ClickPixel',
-            fontSize    : 16,
+            fontSize    : 32,
             color       : '0xFFFFFF',
             align       : 'center'
         };
@@ -27,10 +27,10 @@ class Text
         switch (key.toLowerCase())
         {
             case 'title':
-                style.fontSize  = 32;
+                style.fontSize  = 48;
                 break;
             case 'preload':
-                style.fontSize  = 24;
+                style.fontSize  = 32;
                 break;
         }
 
