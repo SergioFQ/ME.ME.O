@@ -20,7 +20,7 @@ class Preload extends Phaser.Scene
     create()
     {
         this.time.addEvent({
-            delay: 4000,
+            delay: 2000,
             callback: () => { this.scene.start('Menu') ;},
             callbackScope: this
         });
@@ -58,19 +58,19 @@ class Preload extends Phaser.Scene
         //Progress callback
         //this.load.on('progress', this.onProgress, this);
         this.time.addEvent({
-            delay: 1000,
+            delay: 500,
             callback: () => { this.onProgress(Phaser.Math.Between(20, 45)) ;},
             callbackScope: this
         });
 
         this.time.addEvent({
-            delay: 2000,
+            delay: 1000,
             callback: () => { this.onProgress(Phaser.Math.Between(55, 80));},
             callbackScope: this
         });
 
         this.time.addEvent({
-            delay: 3000,
+            delay: 1500,
             callback: () => { this.onProgress(100) ;},
             callbackScope: this
         });
@@ -78,7 +78,6 @@ class Preload extends Phaser.Scene
 
     onProgress(val)
     {
-        console.log('this.txt_progress.text');
         let w = 600 - 2 * this.progress.x;
         let h = 18;
 

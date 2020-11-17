@@ -20,7 +20,7 @@ class Text
         let style   = {
             fontFamily  : 'ClickPixel',
             fontSize    : 32,
-            color       : '0xFFFFFF',
+            color       : '0xFFFFFFF',
             align       : 'center'
         };
 
