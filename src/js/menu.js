@@ -17,7 +17,7 @@ class Menu extends Phaser.Scene
 
     goPlay ()
     {
-        this.scene.start('DemoScene');
+        this.scene.start('Select');
     }
 
     create()
