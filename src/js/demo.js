@@ -49,9 +49,9 @@ class DemoScene extends Phaser.Scene
         this.canJump2 = true;
         this.camera = this.cameras.main;//camara de la escena
         this.camera.setScroll(0,2400);//posición inicial de la cámara (podría cambiar)
-        this.platformCaida = this.physics.add.sprite(400,3050,'platformCaida').setScale(2).refreshBody();//plataforma que irá debajo de la camara y matara a los jugadores        
+        this.platformCaida = this.physics.add.sprite(400,3050,'platformCaida').setScale(2).refreshBody().setVisible(false);//plataforma que irá debajo de la camara y matara a los jugadores        
         this.platformCaida.body.setAllowGravity(false);//quitamos la gravedad de la plataforma de caida
-        this.platformGeneradora = this.physics.add.sprite(400,2350,'platformCaida').setScale(2).refreshBody();//plataforma que irá encima de la camara para ir realizando 
+        this.platformGeneradora = this.physics.add.sprite(400,2350,'platformCaida').setScale(2).refreshBody().setVisible(false);//plataforma que irá encima de la camara para ir realizando 
                                                                                                              //calculos de como generar el resto de plataformas.
         this.platformGeneradora.body.setAllowGravity(false);
         this.overlapP1Caida = this.physics.add.overlap(this.player1, this.platformCaida, this.muerteCaida1, null, this);//la muerte por caida
@@ -59,7 +59,7 @@ class DemoScene extends Phaser.Scene
         this.alreadyDead = false;//si hay algún muerto ya
     }
 
-    update()
+    update(time,delta)
     {
         //Player1 control
         if(this.player1Controls.A.isDown)
@@ -125,9 +125,9 @@ class DemoScene extends Phaser.Scene
         if(this.camera.scrollY>-1000)//ponemos un tope cualquiera al scroll de la camara
         {
             
-            this.platformCaida.setVelocity(0,-60);
-            this.platformGeneradora.setVelocity(0,-60);
-            this.camera.scrollY-=1;
+            this.platformCaida.setVelocity(0,-60*(delta/15));
+            this.platformGeneradora.setVelocity(0,-60*(delta/15));
+            this.camera.scrollY-=1*(delta/15);
         }else
         {
             this.platformCaida.setVelocity(0,0);
