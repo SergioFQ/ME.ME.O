@@ -7,7 +7,7 @@ class Select extends Phaser.Scene
 
     init()
     {
-
+        
     }
 
     preload()
@@ -34,51 +34,45 @@ class Select extends Phaser.Scene
         this.text.setOrigin(0.5);
         this.text.setColor('#FFFFFF');
 
-        var p1 = this.add.image(200, 300, 'pepe').setInteractive()
-        .on('pointerover', () => p1.setScale( 1.2 ))
-        .on('pointerout', () => p1.setScale( 1 ));
+        this.p1 = this.add.image(200, 300, 'pepe').setInteractive()
+        .on('pointerover', () => this.p1.setScale( 1.2 ))
+        .on('pointerout', () => this.p1.setScale( 1 ));
 
-        var p2 = this.add.image(400, 300, 'trollface').setInteractive()
-        .on('pointerover', () => p2.setScale( 1.2 ))
-        .on('pointerout', () => p2.setScale( 1 ));
+        this.p2 = this.add.image(400, 300, 'trollface').setInteractive()
+        .on('pointerover', () => this.p2.setScale( 1.2 ))
+        .on('pointerout', () => this.p2.setScale( 1 ));
 
-        var p3 = this.add.image(600, 300, 'coffindancer').setInteractive()
-        .on('pointerover', () => p3.setScale( 1.2 ))
-        .on('pointerout', () => p3.setScale( 1 ));
+        this.p3 = this.add.image(600, 300, 'coffindancer').setInteractive()
+        .on('pointerover', () => this.p3.setScale( 1.2 ))
+        .on('pointerout', () => this.p3.setScale( 1 ));
 
-        var p4 = this.add.image(200, 450, 'pepe').setInteractive()
-        .on('pointerover', () => p4.setScale( 1.2 ))
-        .on('pointerout', () => p4.setScale( 1 ));
+        this.p4 = this.add.image(200, 450, 'pepe').setInteractive()
+        .on('pointerover', () => this.p4.setScale( 1.2 ))
+        .on('pointerout', () => this.p4.setScale( 1 ));
 
-        var p5 = this.add.image(400, 450, 'trollface').setInteractive()
-        .on('pointerover', () => p5.setScale( 1.2 ))
-        .on('pointerout', () => p5.setScale( 1 ));
+        this.p5 = this.add.image(400, 450, 'trollface').setInteractive()
+        .on('pointerover', () => this.p5.setScale( 1.2 ))
+        .on('pointerout', () => this.p5.setScale( 1 ));
 
-        var p6 = this.add.image(600, 450, 'coffindancer').setInteractive()
-        .on('pointerover', () => p6.setScale( 1.2 ))
-        .on('pointerout', () => p6.setScale( 1 ));
+        this.p6 = this.add.image(600, 450, 'coffindancer').setInteractive()
+        .on('pointerover', () => this.p6.setScale( 1.2 ))
+        .on('pointerout', () => this.p6.setScale( 1 ));
 
-        var elegidoP1 = false;
-        var elegidoP2 = false;
+        this.next = 0;
+
+        this.eleccion1;
+        this.eleccion2;
+
+        this.p1.on('pointerdown', () => this.cambio(this.p1, this.p2, this.p3, 1));
+        this.p2.on('pointerdown', () => this.cambio(this.p2, this.p1, this.p3, 2));
+        this.p3.on('pointerdown', () => this.cambio(this.p3, this.p1, this.p2, 3));
+
+        this.p4.on('pointerdown', () => this.cambio(this.p4, this.p5, this.p6, 4));
+        this.p5.on('pointerdown', () => this.cambio(this.p5, this.p4, this.p6, 5));
+        this.p6.on('pointerdown', () => this.cambio(this.p6, this.p4, this.p5, 6));
         
-        if(elegidoP1 == false)
-        {
-            p1.on('pointerdown', () => p1.alpha = 0.5, this.elegidoP1 = true);
-            p2.on('pointerdown', () => p2.alpha = 0.5, this.elegidoP1 = true);
-            p3.on('pointerdown', () => p3.alpha = 0.5, this.elegidoP1 = true);
-            
-        }
-
-        if(elegidoP2 == false)
-        {
-            p4.on('pointerdown', () => p4.alpha = 0.5, elegidoP2 = true);
-            p5.on('pointerdown', () => p5.alpha = 0.5, elegidoP2 = true);
-            p6.on('pointerdown', () => p6.alpha = 0.5, elegidoP2 = true);
-            
-        }
-
         /*this.time.addEvent({
-            delay: 2000,
+            delay: 3000,
             callback: () => { this.scene.start('DemoScene') ;},
             callbackScope: this
         });*/
@@ -86,7 +80,30 @@ class Select extends Phaser.Scene
 
     update()
     {
-        
+        if (this.next ==2)
+        {
+            this.scene.restart('DemoScene');
+            this.scene.start('DemoScene', {eleccion1: this.eleccion1, eleccion2: this.eleccion2});
+
+        }
+    }
+
+    cambio (p1, p2, p3, num)
+    {
+
+        p1.alpha = 0.5;
+        p1.removeInteractive();
+        p2.removeInteractive();
+        p3.removeInteractive();
+        if (num > 3)
+        {
+            this.eleccion2 = num - 3
+        }
+        else
+        {
+            this.eleccion1 = num;
+        }
+        this.next++;
     }
 
     

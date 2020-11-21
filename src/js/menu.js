@@ -20,6 +20,11 @@ class Menu extends Phaser.Scene
         this.scene.start('Select');
     }
 
+    goCredits()
+    {
+        this.scene.start('Credits');
+    }
+
     create()
     {
         this.createBackground();
@@ -51,10 +56,20 @@ class Menu extends Phaser.Scene
             'standard',
         );*/
 
-        var button = this.add.bitmapText(370, 300, 'ClickPixel', 'PLAY', 32, 'center')
+        var local = this.add.bitmapText(250, 300, 'ClickPixel', 'LOCAL', 32, 'center')
         .setInteractive()
-        .on('pointerdown', () => button.setScale( 1.2 ))
-        .on('pointerup', () => button.setScale( 1 ) && this.goPlay());
+        .on('pointerdown', () => local.setScale( 1.2 ))
+        .on('pointerup', () => local.setScale( 1 ) && this.goPlay());
+
+        var online = this.add.bitmapText(475, 300, 'ClickPixel', 'ONLINE', 32, 'center')
+        .setInteractive()
+        .on('pointerdown', () => online.setScale( 1.2 ))
+        .on('pointerup', () => online.setScale( 1 ) && this.goPlay());
+
+        var credits = this.add.bitmapText(475, 300, 'ClickPixel', 'ONLINE', 32, 'center')
+        .setInteractive()
+        .on('pointerdown', () => credits.setScale( 1.2 ))
+        .on('pointerup', () => credits.setScale( 1 ) && this.goCredits());
 
         // Create mouse input
         /*this.input.on('pointerdown', function (pointer) {
