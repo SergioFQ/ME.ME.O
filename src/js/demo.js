@@ -280,8 +280,8 @@ class DemoScene extends Phaser.Scene
         this.jugador1_a_emoteado=this.jugador1_a_emoteado+1;
         this.emote_jug1.x=this.player1.x;
         this.emote_jug1.y=this.player1.y-20;
-        console.log(this.jugador1_a_emoteado);
-        console.log(this.jugador1_quitar_emote);
+      //  console.log(this.jugador1_a_emoteado);
+      //  console.log(this.jugador1_quitar_emote);
         if(  this.jugador1_a_emoteado==this.jugador1_quitar_emote){
         this.emote_jug1.destroy();
         this.i=0;
@@ -307,8 +307,8 @@ class DemoScene extends Phaser.Scene
         this.jugador2_a_emoteado=this.jugador2_a_emoteado+1;
         this.emote_jug2.x=this.player2.x;
         this.emote_jug2.y=this.player2.y-20;
-        console.log(this.jugador2_a_emoteado);
-        console.log(this.jugador2_quitar_emote);
+        //console.log(this.jugador2_a_emoteado);
+        //console.log(this.jugador2_quitar_emote);
         if(  this.jugador2_a_emoteado==this.jugador2_quitar_emote){
         this.emote_jug2.destroy();
         this.i2=0;
