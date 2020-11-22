@@ -12,7 +12,8 @@ class DemoScene extends Phaser.Scene
         this.load.image('platformCaida','../resources/img/platformCaida.png');
 
         this.load.image('bomb','../resources/img/bomb.png');// ESTE ASSET SERA CAMBIADO POR UNA BALA AHORA SE USA DE TESTEO
-
+        this.load.image('mamado','../resources/img/ez.PNG');
+        this.load.image('pepesad','../resources/img/PEPESAD.PNG');
         this.load.spritesheet('dude','../resources/img/dude.png',
         { frameWidth:32, frameHeight: 48});
 
@@ -96,6 +97,18 @@ class DemoScene extends Phaser.Scene
         });
 
         this.generarPlataformasQueRebotan(450,350,100);
+        //Emoticonos
+        this.jugador1_a_emoteado=0;
+        this.jugador1_quitar_emote=0;
+        this.player1_emotes = this.input.keyboard.addKeys('T,U');
+        this.emote_jug1;
+        this.i=0;
+
+        this.jugador2_a_emoteado=0;
+        this.jugador2_quitar_emote=0;
+        this.player2_emotes = this.input.keyboard.addKeys('B,M');
+        this.emote_jug2;
+        this.i2=0;
     }  
         //  this.camera = this.cameras.main;
     generarBalasEnUnSitio(possX,possY,sentidoYvelocidad){
@@ -248,6 +261,60 @@ class DemoScene extends Phaser.Scene
         this.MedirCuandoHacerBala2=time+1200;
        }
        this.destruirBalasFueraDelMapa(this.grupo_balas);
+       if(this.player1_emotes.T.isUp==false&&this.i==0){
+        this.jugador1_a_emoteado=time;
+        this.jugador1_quitar_emote=time+200;
+        this.emote_jug1=this.add.sprite(this.player1.x,this.player1.y+20,'mamado');
+        this.emote_jug1.depth=10;
+        this.i=1;
+       }
+       else if(this.player1_emotes.U.isUp==false&&this.i==0){
+        this.jugador1_a_emoteado=time;
+        this.jugador1_quitar_emote=time+200;
+        this.emote_jug1=this.add.sprite(this.player1.x,this.player1.y+20,'pepesad');
+        this.emote_jug1.depth=10;
+        this.i=1;
+       }
+
+       if(this.jugador1_a_emoteado != this.jugador1_quitar_emote){
+        this.jugador1_a_emoteado=this.jugador1_a_emoteado+1;
+        this.emote_jug1.x=this.player1.x;
+        this.emote_jug1.y=this.player1.y-20;
+        console.log(this.jugador1_a_emoteado);
+        console.log(this.jugador1_quitar_emote);
+        if(  this.jugador1_a_emoteado==this.jugador1_quitar_emote){
+        this.emote_jug1.destroy();
+        this.i=0;
+        }
+       }
+
+       if(this.player2_emotes.B.isUp==false&&this.i2==0){
+        this.jugador2_a_emoteado=time;
+        this.jugador2_quitar_emote=time+200;
+        this.emote_jug2=this.add.sprite(this.player1.x,this.player1.y+20,'mamado');
+        this.emote_jug2.depth=10;
+        this.i2=1;
+       }
+       else if(this.player2_emotes.M.isUp==false&&this.i2==0){
+        this.jugador2_a_emoteado=time;
+        this.jugador2_quitar_emote=time+200;
+        this.emote_jug2=this.add.sprite(this.player1.x,this.player1.y+20,'pepesad');
+        this.emote_jug2.depth=10;
+        this.i2=1;
+       }
+
+       if(this.jugador2_a_emoteado != this.jugador2_quitar_emote){
+        this.jugador2_a_emoteado=this.jugador2_a_emoteado+1;
+        this.emote_jug2.x=this.player2.x;
+        this.emote_jug2.y=this.player2.y-20;
+        console.log(this.jugador2_a_emoteado);
+        console.log(this.jugador2_quitar_emote);
+        if(  this.jugador2_a_emoteado==this.jugador2_quitar_emote){
+        this.emote_jug2.destroy();
+        this.i2=0;
+        }
+       }
+
     }
 
     chocarTrue(gpp,jug){
