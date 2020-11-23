@@ -60,7 +60,6 @@ class DemoScene extends Phaser.Scene
         this.platformGeneradora.body.setAllowGravity(false);
         this.overlapP1Caida = this.physics.add.overlap(this.player1, this.platformCaida, this.muerteCaida1, null, this);//la muerte por caida
         this.overlapP2Caida = this.physics.add.overlap(this.player2, this.platformCaida, this.muerteCaida2, null, this);//la muerte por caida
-        this.alreadyDead = false;//si hay algún muerto ya
 
 
         this.grupo_balas= this.add.group();// Este grupo lo usare para recorrer todas mis balas de la escena, IMPORTANTE NO LE PONGO FÍSICAS AL GRUPO
@@ -109,8 +108,12 @@ class DemoScene extends Phaser.Scene
         this.player2_emotes = this.input.keyboard.addKeys('B,M');
         this.emote_jug2;
         this.i2=0;
+
+        this.p1Lives = this.p2Lives = 3;
+        this.p1Death = this.p2Death = false;
+        this.p1Scroll = this.p2Scroll = false; 
     }  
-        //  this.camera = this.cameras.main;
+
     generarBalasEnUnSitio(possX,possY,sentidoYvelocidad){
             this.bal=this.physics.add.sprite(possX,possY,"bomb");
             this.bal.body.setAllowGravity(false);
@@ -285,7 +288,8 @@ class DemoScene extends Phaser.Scene
         if(  this.jugador1_a_emoteado==this.jugador1_quitar_emote){
         this.emote_jug1.destroy();
         this.i=0;
-        }
+        }       
+        
        }
 
        if(this.player2_emotes.B.isUp==false&&this.i2==0){
@@ -314,7 +318,33 @@ class DemoScene extends Phaser.Scene
         this.i2=0;
         }
        }
+       //Reapariciones Player1
+       if(this.p1Death)
+       {  
+        this.p1Death = false;
+        this.cameraScroll1 = this.camera.scrollY;
+        this.p1Scroll = true;      
+       }
 
+       if((this.p1Scroll) && (this.camera.scrollY<=(this.cameraScroll1-250)))
+       {
+        this.reaparicion(this.player1);
+        this.p1Scroll = false;
+       }
+
+       //Reapariciones Player2
+       if(this.p2Death)
+       {  
+        this.p2Death = false;
+        this.cameraScroll2 = this.camera.scrollY;
+        this.p2Scroll = true;      
+       }
+
+       if((this.p2Scroll) && (this.camera.scrollY<=(this.cameraScroll2-250)))
+       {
+        this.reaparicion(this.player2);
+        this.p2Scroll = false;
+       }
     }
 
     chocarTrue(gpp,jug){
@@ -385,23 +415,39 @@ class DemoScene extends Phaser.Scene
 
     muerteCaida1() 
     {
-        if(!this.alreadyDead)
+        this.p1Lives--;
+        if(this.p1Lives>0)
         {
-            console.log('p1 muerto');
-            this.player1.body.moves = false;
-            this.player1Controls.active = false;
-            this.alreadyDead = true;
+            this.player1.alpha = 0.5;
+            this.player1.body.setAllowGravity(false);
+            this.player1.body.setVelocityY(0);
+            this.player1.body.position.y = this.platformGeneradora.body.position.y-64;
+            this.p1Death = true;
+            //this.player1Controls.active = false;
+        }
+        else
+        {
+            //cambiar de escena 
         }
     }
     muerteCaida2() 
     {
-        if(!this.alreadyDead)
+        this.p2Lives--;
+        if(this.p2Lives>0)
         {
-            console.log('p2 muerto');
-            this.player2.body.moves = false;            
-            this.player2Controls.active = false;
-            this.alreadyDead = true;
+            this.player2.alpha = 0.5;
+            this.player2.body.setAllowGravity(false);            
+            this.player2.body.setVelocityY(0);
+            this.player2.body.position.y = this.platformGeneradora.body.position.y-64;
+            this.p2Death = true;            
+            //this.player1Controls.active = false;
+           
         }
+        else
+        {
+            //cambiar de escena 
+        }
+
     }
     allowJump1()
     {
@@ -424,6 +470,13 @@ class DemoScene extends Phaser.Scene
              elem.destroy();
            }
         }, this );
+    }
+
+    reaparicion(player)
+    {
+        player.alpha = 1;
+        player.setImmovable(false);
+        player.body.setAllowGravity(true);
     }
 
 }
