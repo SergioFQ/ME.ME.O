@@ -66,7 +66,7 @@ class Menu extends Phaser.Scene
         .on('pointerdown', () => online.setScale( 1.2 ))
         .on('pointerup', () => online.setScale( 1 ) && this.goPlay());
 
-        var credits = this.add.bitmapText(475, 300, 'ClickPixel', 'ONLINE', 32, 'center')
+        var credits = this.add.bitmapText(475, 375, 'ClickPixel', 'CREDITS', 32, 'center')
         .setInteractive()
         .on('pointerdown', () => credits.setScale( 1.2 ))
         .on('pointerup', () => credits.setScale( 1 ) && this.goCredits());
