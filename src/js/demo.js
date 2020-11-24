@@ -17,13 +17,15 @@ class DemoScene extends Phaser.Scene
         { frameWidth:32, frameHeight: 48});
 
         this.load.spritesheet('pepeS','../resources/img/SpriteSheets/Pepe the Frog SpriteSheet.png',
-        { frameWidth:61, frameHeight: 96});
+        { frameWidth:65, frameHeight: 96});
 
         this.load.spritesheet('trollfaceS','../resources/img/SpriteSheets/Trollface SpriteSheet.png',
-        { frameWidth:61, frameHeight: 96});
+        { frameWidth:65, frameHeight: 96});
 
         this.load.spritesheet('coffindancerS','../resources/img/SpriteSheets/Coffin Dancer SpriteSheet.png',
-        { frameWidth:61, frameHeight: 96});
+        { frameWidth:65, frameHeight: 96});
+
+        this.load.audio('trololo', '../resources/audio/trololo.mp3');
     }
 
     init (data)
@@ -74,7 +76,6 @@ class DemoScene extends Phaser.Scene
 
     create()
     {
-
         this.add.image(400,300,'sky');
         this.platforms = this.physics.add.staticGroup();
         this.platforms.create(400,568,'platform').setScale(2).refreshBody();
@@ -102,6 +103,10 @@ class DemoScene extends Phaser.Scene
         this.player2Controls = this.input.keyboard.addKeys('UP,LEFT,RIGHT');
 
         this.winOrDeath = this.input.keyboard.addKeys('K, L');
+
+        this.trololoAudio = this.sound.add('trololo', { loop: true });
+        this.trololoAudio.setVolume(0.02);
+        this.trololoAudio.play();
         
         //this.camera = this.cameras.main;
 
@@ -172,11 +177,13 @@ class DemoScene extends Phaser.Scene
         
         if(this.winOrDeath.K.isDown)
         {
+            this.trololoAudio.stop();
             this.scene.start('Gameover');
         }
 
         if(this.winOrDeath.L.isDown)
         {
+            this.trololoAudio.stop();
             this.scene.start('Win');
         }
     }

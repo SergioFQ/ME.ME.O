@@ -12,7 +12,7 @@ class Gameover extends Phaser.Scene
 
     preload()
     {
-        
+        this.load.audio('lose', '../resources/audio/lose.mp3');
     }
 
     create()
@@ -31,6 +31,10 @@ class Gameover extends Phaser.Scene
         .setInteractive()
         .on('pointerdown', () => button.setScale( 1.2 ))
         .on('pointerup', () => button.setScale( 1 ) && this.goMenu());
+
+        this.loseAudio = this.sound.add('lose', { loop: false });
+        this.loseAudio.setVolume(0.07);
+        this.loseAudio.play();
         
         
     }
@@ -42,6 +46,7 @@ class Gameover extends Phaser.Scene
 
     goMenu ()
     {
+        this.loseAudio.stop();
         this.scene.start('Menu');
     }
 }

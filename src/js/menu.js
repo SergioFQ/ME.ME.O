@@ -5,14 +5,14 @@ class Menu extends Phaser.Scene
         super({ key: 'Menu', active: false});
     }
 
-    init()
-    {
-
-    }
-
     preload()
     {
-        //this.load.bitmapFont('ClickPixel', '../resources/fonts/click-pixel.png', '../resources/fonts/click-pixel.xml');
+        this.load.audio('lala', '../resources/audio/lala.mp3');
+    }
+
+    init()
+    {
+        
     }
 
     goPlay ()
@@ -25,8 +25,17 @@ class Menu extends Phaser.Scene
         this.scene.start('Credits');
     }
 
+    goOptions ()
+    {
+        this.scene.start('Options');
+    }
+
     create()
     {
+        this.lalaAudio = this.sound.add('lala', { loop: true });
+        this.lalaAudio.setVolume(0.02);
+        this.lalaAudio.play();
+
         this.createBackground();
 
         //Game title
@@ -56,20 +65,29 @@ class Menu extends Phaser.Scene
             'standard',
         );*/
 
-        var local = this.add.bitmapText(250, 300, 'ClickPixel', 'LOCAL', 32, 'center')
+        this.local = this.add.bitmapText(250, 300, 'ClickPixel', 'LOCAL', 32, 'center')
         .setInteractive()
-        .on('pointerdown', () => local.setScale( 1.2 ))
-        .on('pointerup', () => local.setScale( 1 ) && this.goPlay());
+        .on('pointerdown', () => this.local.setScale( 1.2 ))
+        .on('pointerup', () => this.lalaAudio.stop())
+        .on('pointerup', () => this.local.setScale( 1 ) && this.goPlay());
 
-        var online = this.add.bitmapText(475, 300, 'ClickPixel', 'ONLINE', 32, 'center')
+        this.online = this.add.bitmapText(475, 300, 'ClickPixel', 'ONLINE', 32, 'center')
         .setInteractive()
-        .on('pointerdown', () => online.setScale( 1.2 ))
-        .on('pointerup', () => online.setScale( 1 ) && this.goPlay());
+        .on('pointerdown', () => this.online.setScale( 1.2 ))
+        .on('pointerup', () => this.lalaAudio.stop())
+        .on('pointerup', () => this.online.setScale( 1 ) && this.goPlay());
 
-        var credits = this.add.bitmapText(475, 375, 'ClickPixel', 'CREDITS', 32, 'center')
+        this.credits = this.add.bitmapText(475, 375, 'ClickPixel', 'CREDITS', 32, 'center')
         .setInteractive()
-        .on('pointerdown', () => credits.setScale( 1.2 ))
-        .on('pointerup', () => credits.setScale( 1 ) && this.goCredits());
+        .on('pointerdown', () => this.credits.setScale( 1.2 ))
+        .on('pointerup', () => this.lalaAudio.stop())
+        .on('pointerup', () => this.credits.setScale( 1 ) && this.goCredits());
+
+        this.options = this.add.bitmapText(250, 375, 'ClickPixel', 'OPTIONS', 32, 'center')
+        .setInteractive()
+        .on('pointerdown', () => this.options.setScale( 1.2 ))
+        .on('pointerup', () => this.lalaAudio.stop())
+        .on('pointerup', () => this.options.setScale( 1 ) && this.goOptions());
 
         // Create mouse input
         /*this.input.on('pointerdown', function (pointer) {

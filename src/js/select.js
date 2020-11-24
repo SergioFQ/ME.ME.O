@@ -12,15 +12,20 @@ class Select extends Phaser.Scene
 
     preload()
     {
+        //this.load.audio('select', '../resources/audio/select.mp3');
+        
         this.load.image('pepe','../resources/img/Personajes/Pepe the Frog.png');
         this.load.image('trollface','../resources/img/Personajes/Troll Face.png');
         this.load.image('coffindancer','../resources/img/Personajes/Coffin Dancer.png');
-        this.load.image('transp','../resources/img/Personajes/Transparente.png');
     }
 
     create()
     {
-
+        this.next = 0;
+        
+        /*this.selectAudio = this.sound.add('select', { loop: true });
+        this.selectAudio.setVolume(0.05);
+        this.selectAudio.play();*/
         
         this.text = this.add.text(400, 150, 'Press to select character');
         this.text.setOrigin(0.5);
@@ -58,8 +63,6 @@ class Select extends Phaser.Scene
         .on('pointerover', () => this.p6.setScale( 1.2 ))
         .on('pointerout', () => this.p6.setScale( 1 ));
 
-        this.next = 0;
-
         this.eleccion1;
         this.eleccion2;
 
@@ -80,12 +83,14 @@ class Select extends Phaser.Scene
 
     update()
     {
-        if (this.next ==2)
+        if (this.next == 2)
         {
+            //this.selectAudio.stop();
             this.scene.restart('DemoScene');
             this.scene.start('DemoScene', {eleccion1: this.eleccion1, eleccion2: this.eleccion2});
 
         }
+
     }
 
     cambio (p1, p2, p3, num)

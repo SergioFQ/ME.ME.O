@@ -12,6 +12,7 @@ class Credits extends Phaser.Scene
 
     preload()
     {
+        this.load.audio('creditsA', '../resources/audio/credits.mp3');
         this.load.image('credits','../resources/img/Creditos.png');
     }
 
@@ -20,6 +21,10 @@ class Credits extends Phaser.Scene
         this.createBackground();
         
         this.creditsImg = this.add.image(0, 200, 'credits').setOrigin(0, 0);
+
+        this.creditsAudio = this.sound.add('creditsA', { loop: true });
+        this.creditsAudio.setVolume(0.07);
+        this.creditsAudio.play();
     }
 
     update ()
@@ -27,6 +32,7 @@ class Credits extends Phaser.Scene
         this.creditsImg.y--;
         if (this.creditsImg.y < -600)
         {
+            this.creditsAudio.stop();
             this.scene.start('Menu');
         }
     }
