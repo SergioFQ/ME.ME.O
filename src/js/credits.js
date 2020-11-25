@@ -14,6 +14,8 @@ class Credits extends Phaser.Scene
     {
         this.load.audio('creditsA', '../resources/audio/credits.mp3');
         this.load.image('credits','../resources/img/Creditos.png');
+        this.load.image('smallButton01','../resources/UIpack/PNG/red_button08.png');
+        this.load.image('smallButton02','../resources/UIpack/PNG/red_button09.png');
     }
 
     create()
@@ -25,6 +27,20 @@ class Credits extends Phaser.Scene
         this.creditsAudio = this.sound.add('creditsA', { loop: true });
         this.creditsAudio.setVolume(0.07);
         this.creditsAudio.play();
+
+        this.skipButton = this.add.sprite(750, 50, 'smallButton01').setInteractive();
+ 
+        this.backText = this.add.text(0, 0, 'X', { fontSize: '32px', fill: '#fff' });
+        this.centerButtonText(this.backText, this.skipButton);
+ 
+        this.skipButton.on('pointerdown', function (pointer) {
+            this.creditsAudio.stop();
+            this.scene.start('Menu');
+        }.bind(this));
+ 
+        this.input.on('pointerover', () => this.skipButton.setTexture('smallButton02'));
+ 
+        this.input.on('pointerout', () => this.skipButton.setTexture('smallButton01'));
     }
 
     update ()
@@ -35,6 +51,14 @@ class Credits extends Phaser.Scene
             this.creditsAudio.stop();
             this.scene.start('Menu');
         }
+    }
+
+
+    centerButtonText (gameText, gameButton) {
+        Phaser.Display.Align.In.Center(
+            gameText,
+            gameButton
+        );
     }
 
     createBackground ()

@@ -58,11 +58,26 @@ class Options extends Phaser.Scene
            
         this.updateAudio();
 
-        this.back = this.add.bitmapText(400, 400, 'ClickPixel', 'MENU', 32, 'center')
+        this.backButton = this.add.sprite(400, 300, 'redButton01').setInteractive();
+        this.centerButton(this.backButton, -1);
+ 
+        this.backText = this.add.text(0, 0, 'Menu', { fontSize: '32px', fill: '#fff' });
+        this.centerButtonText(this.backText, this.backButton);
+ 
+        this.backButton.on('pointerdown', function (pointer) {
+            this.optionsAudio.stop();
+            this.scene.start('Menu');
+        }.bind(this));
+ 
+        this.input.on('pointerover', () => this.backButton.setTexture('redButton02'));
+ 
+        this.input.on('pointerout', () => this.backButton.setTexture('redButton01'));
+
+        /*this.back = this.add.bitmapText(400, 400, 'ClickPixel', 'MENU', 32, 'center')
         .setInteractive()
         .on('pointerdown', () => this.back.setScale( 1.2 ))
         .on('pointerup', () => this.optionsAudio.stop())
-        .on('pointerup', () => this.back.setScale( 1 ) && this.goMenu());
+        .on('pointerup', () => this.back.setScale( 1 ) && this.goMenu());*/
     }
 
     updateAudio() {
@@ -78,6 +93,20 @@ class Options extends Phaser.Scene
             this.optionsAudio.play();
             this.musicButton.setTexture('checkedBox');
         }
+    }
+
+    centerButtonText (gameText, gameButton) {
+        Phaser.Display.Align.In.Center(
+            gameText,
+            gameButton
+        );
+    }
+
+    centerButton (gameObject, offset = 0) {
+        Phaser.Display.Align.In.Center(
+        gameObject,
+        this.add.zone(800/2, 600/2 - offset * 100, 800, 600)
+        );
     }
 
     goMenu ()
