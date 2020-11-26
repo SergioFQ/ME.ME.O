@@ -19,6 +19,7 @@ class DemoScene extends Phaser.Scene
 
         this.load.spritesheet('dude2','../resources/img/dude2.png',
         { frameWidth:32, frameHeight: 48});
+        
     }
 
     create()
@@ -27,18 +28,18 @@ class DemoScene extends Phaser.Scene
         this.platforms = this.physics.add.staticGroup();
         
         this.platforms.create(400,2968,'platform').setScale(2).refreshBody();
-        this.platforms.create(300,2850,'platform');
+   /*     this.platforms.create(300,2850,'platform');
         this.platforms.create(450,2750,'platform');
         this.platforms.create(500,2650,'platform');
         this.platforms.create(420,2550,'platform');        
         this.platforms.create(420,2450,'platform');        
-        this.platforms.create(300,2350,'platform');
-        this.player1 = this.physics.add.sprite(100,2600,'dude');
+        this.platforms.create(300,2350,'platform');*/
+        this.player1 = this.physics.add.sprite(100,2900,'dude');
 
         this.player1.setBounce(0);
         this.player1.setCollideWorldBounds(true);
         this.player1.depth=10;//profundidad para aparecer siempre por delante de todo
-        this.player2 = this.physics.add.sprite(150,2600,'dude2');
+        this.player2 = this.physics.add.sprite(150,2900,'dude2');
         this.player2.setBounce(0);
         this.player2.setCollideWorldBounds(true);
         this.player2.depth=10;//profundidad para aparecer siempre por delante de todo
@@ -96,7 +97,7 @@ class DemoScene extends Phaser.Scene
         grupo.body.setFrictionX(2);
         });
 
-        this.generarPlataformasQueRebotan(450,350,100);
+      //  this.generarPlataformasQueRebotan(450,350,100);
         //Emoticonos
         this.jugador1_a_emoteado=0;
         this.jugador1_quitar_emote=0;
@@ -109,13 +110,94 @@ class DemoScene extends Phaser.Scene
         this.player2_emotes = this.input.keyboard.addKeys('B,M');
         this.emote_jug2;
         this.i2=0;
-    }  
-        //  this.camera = this.cameras.main;
+
+
+
+        //console.log(game.config.with);
+        console.log(config.scene[0]);
+       // this.aaaaa=game.time.delayedCall(5000,this.tirarPlat,[],this);
+       //this.aaaa=this.time.delayedCall(3000,this.tirarPlat,[],this); 
+       //this.aaaaa=this.add.group.add( 5000, this.tirarPlat, this);
+     //  var timer = config.scene[0].time.delayedCall(5000,this.tirarPlat ,[],this); 
+    //this.aaaaaaa= game.time.events.repeat(5000, 10, this.tirarPlat, this);
+ // this.timedEvent = this.time.delayedCall(3000, this.tirarPlat, [], this); //EL BUENO
+    //this.time.delayedCall(3000, onEvent, [], this);
+    // this.that=this.time;
+     this.grupoplataformaCae=this.add.group();
+    //    this.generarPlataformasQueRebotanYcaen(450,2600,100);
+        /*this.col_jug_platCae=  this.physics.add.collider(this.grupoplataformaCae,this.player1,this.time,function(grupo,player,tiempo){// Variable donde guardo las colisiones de las plataformas
+            // que rebotan con el jugador1
+           
+         tiempo.delayedCall(3000, this.tirarPlat, [grupo], this); 
+            
+            grupo.setVelocity(0,0);
+            
+           
+          // time.delayedCall(5000, this.tirarPlat,[grupo], this);
+           
+            });*/
+          this.colP1PlatqueSeMueve= this.physics.add.collider(this.grupoplataformaCae,this.player1, this.tirarPlat,null,this);
+          this.colP2PlatqueSeMueve=   this.physics.add.collider(this.grupoplataformaCae,this.player2, this.tirarPlat,null,this);
+         
+       
+          this.plataFormasEnPantalla=this.add.group();
+          this.yUltimaCreada=2950;
+          
+          for(var iii=0;iii<10;iii++){
+            this.plat_A_Generar=  Phaser.Math.Between(0, 1);
+            if(this.plat_A_Generar==0){
+                this.generarPlataformasQueRebotanYcaen(Phaser.Math.Between(0,800),this.yUltimaCreada-100,100);
+            }
+            else{
+                this.generarPlataformasQueRebotan(Phaser.Math.Between(0,800),this.yUltimaCreada-100,100);
+            }
+            //this.plataFormasEnPantalla.add(this.Gen);
+            this.yUltimaCreada=this.yUltimaCreada-100;
+          }
+        
+
+    } 
+    generarPlatEstatica(posX,posY){
+        this.Platt=this.add.sprite(posX,posY,"platform");
+
+    }
+        
+
+      tirarPlat(plat,jug){
+        
+          if(plat.body.velocity.x!=0){// SIGNIFICA QUE SOLO ENTRO EN CASO DE QUE SEA LA PRIMERA VEZ QUE SE PISA
+        plat.setVelocity(0,0);
+        this.time.delayedCall(2000, this.prueba,[plat], this); 
+          }
+        }
+        prueba(pla){
+            console.log('HOLA');
+            pla.setVelocity(0,300);
+            pla.body.setImmovable(false);
+             this.grupoplataformaCae.remove(pla);
+            
+        }
+        /*tirarPlat(){
+            console.log("TIMER");
+          //  plat.body.setImmovable(false);
+           
+            }*/
+        
     generarBalasEnUnSitio(possX,possY,sentidoYvelocidad){
             this.bal=this.physics.add.sprite(possX,possY,"bomb");
             this.bal.body.setAllowGravity(false);
             this.bal.setVelocity(sentidoYvelocidad,0);
             this.grupo_balas.add(this.bal);
+    }
+    generarPlataformasQueRebotanYcaen(possX,possY,velocidad){
+        this.plataforma11=this.physics.add.sprite(possX,possY,'platform');
+        this.plataforma11.body.setAllowGravity(false);
+        this.plataforma11.setVelocity(velocidad,0);
+        this.plataforma11.setCollideWorldBounds(10,true,false);
+        this.plataforma11.setBounce(1);
+        this.grupoplataformaCae.add(this.plataforma11);
+        this.plataforma11.body.setImmovable(true);
+      
     }
 
     generarPlataformasQueRebotan(possX,possY,velocidad){
@@ -127,6 +209,7 @@ class DemoScene extends Phaser.Scene
         this.plataforma1.setBounce(1);
         this.grupoPlataformasQueRebotan.add(this.plataforma1);
     }
+    
   
     destruirBalasFueraDelMapa(gb){// FUNCION QUE DESTRUYE LAS BALAS QUE SE SALEN DEL MAPA PARA NO SOBRECARGAR EL JUEGO
         for(var j=0;j<gb.getChildren().length;j++){
@@ -179,11 +262,14 @@ class DemoScene extends Phaser.Scene
         {
             this.colP1Plat.active = true;
             this.colll.active=true;
+            this.colP1PlatqueSeMueve.active=true;
 
         }else//saltando
         {
             this.colP1Plat.active = false;            
             this.colll.active=false;
+            this.colP1PlatqueSeMueve.active=false;
+
         }
 
         //Player2 control
@@ -228,12 +314,16 @@ class DemoScene extends Phaser.Scene
         {
             this.colP2Plat.active = true;
             this.coll.active=true;
+            this.colP2PlatqueSeMueve.active=true;
+
         }else//saltando
         {
             this.colP2Plat.active = false; 
             this.coll.active=false;
+            this.colP2PlatqueSeMueve.active=false;
+
         }
-        if(this.camera.scrollY>-1000)//ponemos un tope cualquiera al scroll de la camara
+      /*if(this.camera.scrollY>-1000)//ponemos un tope cualquiera al scroll de la camara // CON ESTO SE MUEVO
         {
             
             this.platformCaida.setVelocity(0,-60*(delta/15));
@@ -241,9 +331,10 @@ class DemoScene extends Phaser.Scene
             this.camera.scrollY-=1*(delta/15);
         }else
         {
-            this.platformCaida.setVelocity(0,0);
+            this.platformCaida.setVelocity(0,0);// PLATAFORMA QUE MATA
             this.platformGeneradora.setVelocity(0,0);
-        }
+        *///}
+
        // console.log(this.platformCaida.y);
        this.managePlatforms();
        
@@ -424,6 +515,8 @@ class DemoScene extends Phaser.Scene
              elem.destroy();
            }
         }, this );
+        
+        
     }
 
 }
