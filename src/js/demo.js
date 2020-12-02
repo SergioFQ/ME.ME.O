@@ -2,7 +2,7 @@ class DemoScene extends Phaser.Scene
 {
     constructor()//para poder llamar a la escena desde otras escenas
     {
-        super('DemoScene');
+        super({ key: 'DemoScene', active: false});
     }
 
     preload()

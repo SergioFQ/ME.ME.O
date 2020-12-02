@@ -21,7 +21,7 @@ class Preload extends Phaser.Scene
     {
         this.time.addEvent({
             delay: 2000,
-            callback: () => { this.scene.start('Menu') ;},
+            callback: () => { this.createButton() ;},
             callbackScope: this
         });
     }
@@ -96,5 +96,36 @@ class Preload extends Phaser.Scene
         this.txt_progress.setText(perc);
 
         console.log(this.txt_progress.text);
+    }
+
+    createButton ()
+    {
+        this.nextButton = this.add.sprite(400, 300, 'redButton01').setInteractive();
+        this.centerButton(this.nextButton, -1.5);
+ 
+        this.backText = this.add.text(0, 0, 'Menu', { fontSize: '32px', fill: '#fff' });
+        this.centerButtonText(this.backText, this.nextButton);
+ 
+        this.nextButton.on('pointerdown', function (pointer) {
+            this.scene.start('Menu');
+        }.bind(this));
+ 
+        this.input.on('pointerover', () => this.nextButton.setTexture('redButton02'));
+ 
+        this.input.on('pointerout', () => this.nextButton.setTexture('redButton01'));
+    }
+
+    centerButtonText (gameText, gameButton) {
+        Phaser.Display.Align.In.Center(
+            gameText,
+            gameButton
+        );
+    }
+
+    centerButton (gameObject, offset = 0) {
+        Phaser.Display.Align.In.Center(
+        gameObject,
+        this.add.zone(800/2, 600/2 - offset * 100, 800, 600)
+        );
     }
 }

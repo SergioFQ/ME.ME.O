@@ -13,6 +13,8 @@ class Boot extends Phaser.Scene
     preload()
     {
         this.load.bitmapFont('ClickPixel', '../resources/fonts/click-pixel.png', '../resources/fonts/click-pixel.xml');
+        this.load.image('redButton01','../resources/UIpack/PNG/red_button01.png');
+        this.load.image('redButton02','../resources/UIpack/PNG/red_button02.png');
     }
 
     create()
