@@ -31,7 +31,7 @@ class Credits extends Phaser.Scene
 
         this.skipButton = this.add.sprite(750, 50, 'smallButton01').setInteractive();
  
-        this.backText = this.add.text(0, 0, 'X', { fontSize: '32px', fill: '#fff' });
+        this.backText = this.add.text(0, 0, 'X', { fontFamily: 'Berlin Sans FB, "Goudy Bookletter 1911", Times, serif', fontSize: '32px', fill: '#fff' });
         this.centerButtonText(this.backText, this.skipButton);
  
         this.skipButton.on('pointerdown', function (pointer) {

@@ -24,6 +24,8 @@ class Preload extends Phaser.Scene
             callback: () => { this.createButton() ;},
             callbackScope: this
         });
+
+        this.logo = this.add.image(400, 150, 'logo').setScale(0.3);
     }
 
     createLoadingBar()
@@ -32,7 +34,7 @@ class Preload extends Phaser.Scene
         this.title = new Text(
             this,
             400,
-            250,
+            300,
             'Loading Game',
             'preload',
             0.5
@@ -42,7 +44,7 @@ class Preload extends Phaser.Scene
         this.txt_progress = new Text(
             this,
             400,
-            325,
+            410,
             'Loading ...',
             'preload',
             { x: 0.5, y: 1}
@@ -103,7 +105,7 @@ class Preload extends Phaser.Scene
         this.nextButton = this.add.sprite(400, 300, 'redButton01').setInteractive();
         this.centerButton(this.nextButton, -1.5);
  
-        this.backText = this.add.text(0, 0, 'Menu', { fontSize: '32px', fill: '#fff' });
+        this.backText = this.add.text(0, 0, 'MENU', { fontFamily: 'Berlin Sans FB, "Goudy Bookletter 1911", Times, serif', fontSize: '32px', fill: '#fff' });
         this.centerButtonText(this.backText, this.nextButton);
  
         this.nextButton.on('pointerdown', function (pointer) {

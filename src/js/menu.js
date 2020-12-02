@@ -32,7 +32,7 @@ class Menu extends Phaser.Scene
         this.gameButton = this.add.sprite(400, 300, 'redButton01').setInteractive();
         this.centerButton(this.gameButton, 0.5);
  
-        this.gameText = this.add.text(0, 0, 'Play', { fontSize: '32px', fill: '#fff' });
+        this.gameText = this.add.text(0, 0, 'PLAY', { fontFamily: 'Berlin Sans FB, "Goudy Bookletter 1911", Times, serif', fontSize: '32px', fill: '#fff' });
         this.centerButtonText(this.gameText, this.gameButton);
  
         this.gameButton.on('pointerdown', function (pointer) {
@@ -53,7 +53,7 @@ class Menu extends Phaser.Scene
         this.optionsButton = this.add.sprite(300, 200, 'redButton01').setInteractive();
         this.centerButton(this.optionsButton, -0.5);
  
-        this.optionsText = this.add.text(0, 0, 'Options', { fontSize: '32px', fill: '#fff' });
+        this.optionsText = this.add.text(0, 0, 'OPTIONS', { fontFamily: 'Berlin Sans FB, "Goudy Bookletter 1911", Times, serif', fontSize: '32px', fill: '#fff' });
         this.centerButtonText(this.optionsText, this.optionsButton);
  
         this.optionsButton.on('pointerdown', function (pointer) {
@@ -65,7 +65,7 @@ class Menu extends Phaser.Scene
         this.creditsButton = this.add.sprite(300, 200, 'redButton01').setInteractive();
         this.centerButton(this.creditsButton, -1.5);
  
-        this.creditsText = this.add.text(0, 0, 'Credits', { fontSize: '32px', fill: '#fff' });
+        this.creditsText = this.add.text(0, 0, 'CREDITS', { fontFamily: 'Berlin Sans FB, "Goudy Bookletter 1911", Times, serif', fontSize: '32px', fill: '#fff' });
         this.centerButtonText(this.creditsText, this.creditsButton);
  
         this.creditsButton.on('pointerdown', function (pointer) {

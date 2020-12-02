@@ -39,7 +39,7 @@ class Gameover extends Phaser.Scene
         this.backButton = this.add.sprite(400, 300, 'redButton01').setInteractive();
         this.centerButton(this.backButton, -0.5);
  
-        this.backText = this.add.text(0, 0, 'Menu', { fontSize: '32px', fill: '#fff' });
+        this.backText = this.add.text(0, 0, 'MENU', { fontFamily: 'Berlin Sans FB, "Goudy Bookletter 1911", Times, serif', fontSize: '32px', fill: '#fff' });
         this.centerButtonText(this.backText, this.backButton);
  
         this.backButton.on('pointerdown', function (pointer) {

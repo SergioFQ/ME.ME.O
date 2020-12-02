@@ -12,7 +12,7 @@ class Select extends Phaser.Scene
 
     preload()
     {
-        this.load.audio('select', '../resources/audio/select.mp3');
+        //this.load.audio('select', '../resources/audio/select.mp3');
         
         this.load.image('pepe','../resources/img/Personajes/Pepe the Frog.png');
         this.load.image('trollface','../resources/img/Personajes/Troll Face.png');
@@ -23,19 +23,19 @@ class Select extends Phaser.Scene
     {
         this.next = 0;
         
-        this.selectAudio = this.sound.add('select', { loop: true });
+        /*this.selectAudio = this.sound.add('select', { loop: true });
         this.selectAudio.setVolume(0.05);
-        this.selectAudio.play();
+        this.selectAudio.play();*/
         
-        this.text = this.add.text(400, 150, 'Press to select character');
+        this.text = this.add.text(400, 150, 'Press to select character', { fontFamily: 'Berlin Sans FB, "Goudy Bookletter 1911", Times, serif', fontSize: '32px', fill: '#fff' });
         this.text.setOrigin(0.5);
         this.text.setColor('#FFFFFF');
 
-        this.text = this.add.text(400, 225, 'Player 1');
+        this.text = this.add.text(400, 225, 'Player 1', { fontFamily: 'Berlin Sans FB, "Goudy Bookletter 1911", Times, serif', fontSize: '32px', fill: '#fff' });
         this.text.setOrigin(0.5);
         this.text.setColor('#FFFFFF');
 
-        this.text = this.add.text(400, 375, 'Player 2');
+        this.text = this.add.text(400, 375, 'Player 2', { fontFamily: 'Berlin Sans FB, "Goudy Bookletter 1911", Times, serif', fontSize: '32px', fill: '#fff' });
         this.text.setOrigin(0.5);
         this.text.setColor('#FFFFFF');
 
@@ -85,7 +85,7 @@ class Select extends Phaser.Scene
     {
         if (this.next == 2)
         {
-            this.selectAudio.stop();
+            //this.selectAudio.stop();
             this.scene.restart('DemoScene');
             this.scene.start('DemoScene', {eleccion1: this.eleccion1, eleccion2: this.eleccion2});
 
