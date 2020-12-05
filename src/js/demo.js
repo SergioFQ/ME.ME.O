@@ -19,6 +19,10 @@ class DemoScene extends Phaser.Scene
 
         this.load.spritesheet('dude2','../resources/img/dude2.png',
         { frameWidth:32, frameHeight: 48});
+
+        this.load.image('fondoVida','../resources/img/fondo vidas.png');//fondo auxiliar hasta que se tenga un fondo mejor
+        this.load.image('vidasPrueba','../resources/img/vida.png');//imagen auxiliar de las vidas
+
     }
 
     create()
@@ -112,6 +116,27 @@ class DemoScene extends Phaser.Scene
         this.p1Lives = this.p2Lives = 3;
         this.p1Death = this.p2Death = false;
         this.p1Scroll = this.p2Scroll = false; 
+
+        this.fondoVidaP1 = this.add.image(100,50,'fondoVida').setScrollFactor(0,0);
+        this.fondoVidaP1.depth=7;
+        this.fondoVidaP2 = this.add.image((config.width)-100,50,'fondoVida').setScrollFactor(0,0);
+        this.fondoVidaP2.depth=7;
+
+        this.vidasP1 = new Array();
+        this.vidasP1[0] = this.add.image(this.fondoVidaP1.x-35,this.fondoVidaP1.y,'vidasPrueba').setScrollFactor(0,0);//cuando los menus esten, poner key dependiendo del personajes y que seea la cara la que aparezca, hasta entonces, cuadrado morados
+        this.vidasP1[0].depth = 9;
+        this.vidasP1[1] = this.add.image(this.fondoVidaP1.x,this.fondoVidaP1.y,'vidasPrueba').setScrollFactor(0,0);
+        this.vidasP1[1].depth = 9;
+        this.vidasP1[2] = this.add.image(this.fondoVidaP1.x+35,this.fondoVidaP1.y,'vidasPrueba').setScrollFactor(0,0);
+        this.vidasP1[2].depth = 9;
+
+        this.vidasP2 = new Array();
+        this.vidasP2[0] = this.add.image(this.fondoVidaP2.x-35,this.fondoVidaP2.y,'vidasPrueba').setScrollFactor(0,0);
+        this.vidasP2[0].depth = 9;
+        this.vidasP2[1] = this.add.image(this.fondoVidaP2.x,this.fondoVidaP2.y,'vidasPrueba').setScrollFactor(0,0);
+        this.vidasP2[1].depth = 9;
+        this.vidasP2[2] = this.add.image(this.fondoVidaP2.x+35,this.fondoVidaP2.y,'vidasPrueba').setScrollFactor(0,0);
+        this.vidasP2[2].depth = 9;
     }  
 
     generarBalasEnUnSitio(possX,possY,sentidoYvelocidad){
@@ -248,7 +273,7 @@ class DemoScene extends Phaser.Scene
             this.platformGeneradora.setVelocity(0,0);
         }
        // console.log(this.platformCaida.y);
-       this.managePlatforms();
+       this.managePlatforms_OLD();
        
         //console.log(this.camera.scrollY);//debug para scroll camara
         
@@ -418,6 +443,7 @@ class DemoScene extends Phaser.Scene
         this.p1Lives--;
         if(this.p1Lives>0)
         {
+            this.vidasP1[this.p1Lives].setVisible(false);
             this.player1.alpha = 0.5;
             this.player1.body.setAllowGravity(false);
             this.player1.body.setVelocityY(0);
@@ -427,6 +453,7 @@ class DemoScene extends Phaser.Scene
         }
         else
         {
+            this.vidasP1[0].setVisible(false);
             //cambiar de escena 
         }
     }
@@ -435,6 +462,7 @@ class DemoScene extends Phaser.Scene
         this.p2Lives--;
         if(this.p2Lives>0)
         {
+            this.vidasP2[this.p2Lives].setVisible(false);
             this.player2.alpha = 0.5;
             this.player2.body.setAllowGravity(false);            
             this.player2.body.setVelocityY(0);
@@ -445,6 +473,7 @@ class DemoScene extends Phaser.Scene
         }
         else
         {
+            this.vidasP2[0].setVisible(false);
             //cambiar de escena 
         }
 
@@ -458,11 +487,11 @@ class DemoScene extends Phaser.Scene
         this.canJump2 = true;
     }    
     
-    managePlatforms()
+    managePlatforms_OLD()
     {
        this.platforms.children.each(function(elem ) {
            this.platformYMin = Math.min( this.platformYMin, elem.y );
-           if( elem.y > this.platformCaida.y && (elem!=this.player1 && elem!=this.player2)) {
+           if( elem.y > this.platformCaida.y) {
             if(this.platformGeneradora.body.y>-6000)
             {
               this.platforms.create(Phaser.Math.Between(225,600),elem.body.y-700,'platform');
