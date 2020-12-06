@@ -139,7 +139,7 @@ class DemoScene extends Phaser.Scene
         this.vidasP2[1].depth = 9;
         this.vidasP2[2] = this.add.image(this.fondoVidaP2.x+35,this.fondoVidaP2.y,'vidasPrueba').setScrollFactor(0,0);
         this.vidasP2[2].depth = 9;
-    }  
+      
 
 
         this.grupoplataformaCae=this.add.group();
