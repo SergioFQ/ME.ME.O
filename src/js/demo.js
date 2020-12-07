@@ -25,6 +25,8 @@ class DemoScene extends Phaser.Scene
         this.load.image('fondoVida','../resources/img/fondo vidas.png');//fondo auxiliar hasta que se tenga un fondo mejor
         this.load.image('vidasPrueba','../resources/img/vida.png');//imagen auxiliar de las vidas
 
+        this.load.image('metaTest','../resources/img/metaProvisional.png');
+
 
     }
 
@@ -41,18 +43,20 @@ class DemoScene extends Phaser.Scene
         this.platforms.create(420,2450,'platform');        
         this.platforms.create(300,2350,'platform');
         this.player1 = this.physics.add.sprite(400,2900,'dude');
-
+        
         this.player1.setBounce(0);
         this.player1.setCollideWorldBounds(true);
         this.player1.depth=10;//profundidad para aparecer siempre por delante de todo
+        this.player1.id = 0;
         this.player2 = this.physics.add.sprite(400,2900,'dude2');
         this.player2.setBounce(0);
         this.player2.setCollideWorldBounds(true);
         this.player2.depth=10;//profundidad para aparecer siempre por delante de todo
+        this.player2.id = 1;
         this.createAnimations();
 
-        this.colP1Plat = this.physics.add.collider(this.player1, this.platforms);
-        this.colP2Plat = this.physics.add.collider(this.player2, this.platforms);
+        this.colP1Plat = this.physics.add.collider(this.player1, this.platforms, this.allowJump1, null, this);
+        this.colP2Plat = this.physics.add.collider(this.player2, this.platforms, this.allowJump2, null, this);
 
         this.player1Controls = this.input.keyboard.addKeys('W,A,D');
         this.player2Controls = this.input.keyboard.addKeys('UP,LEFT,RIGHT');
@@ -81,8 +85,8 @@ class DemoScene extends Phaser.Scene
         this.tiempo2=0;
         this.fin2=0;
        
-        this.physics.add.overlap(this.grupo_balas,this.player1, this.chocarTrue,null,this);
-        this.physics.add.overlap(this.grupo_balas,this.player2, this.chocarTrue2,null,this);
+        this.colBalaP1 = this.physics.add.overlap(this.grupo_balas,this.player1, this.chocarTrue,null,this);
+        this.colBalaP2 = this.physics.add.overlap(this.grupo_balas,this.player2, this.chocarTrue2,null,this);
     
         this.MedirCuandoHacerBala=1;
         this.MedirCuandoHacerBala2=1;  
@@ -90,16 +94,18 @@ class DemoScene extends Phaser.Scene
         this.grupoPlataformasQueRebotan=this.add.group();//Grupo donde meto todas las plataformas que rebotan
 
         this.colll=  this.physics.add.collider(this.grupoPlataformasQueRebotan,this.player1,function(grupo,player){// Variable donde guardo las colisiones de las plataformas
-        // que rebotan con el jugador1 
+        // que rebotan con el jugador1
+        this.allowJump1();
         player.body.velocity.x=0;
         grupo.body.setFrictionX(2);
-        });
+        },null,this);
  
         this.coll=  this.physics.add.collider(this.grupoPlataformasQueRebotan,this.player2,function(grupo,player){// Variable donde guardo las colisiones de las plataformas
-        // que rebotan con el jugador2    
+        // que rebotan con el jugador2 
+        this.allowJump2();
         player.body.velocity.x=0;
         grupo.body.setFrictionX(2);
-        });
+        },null,this);
 
         //Emoticonos
         this.jugador1_a_emoteado=0;
@@ -166,7 +172,7 @@ class DemoScene extends Phaser.Scene
 
 
         this.colP1PlatqueSeMueve= this.physics.add.collider(this.grupoplataformaCae,this.player1, this.tirarPlat,null,this);
-        this.colP2PlatqueSeMueve=   this.physics.add.collider(this.grupoplataformaCae,this.player2, this.tirarPlat,null,this);
+        this.colP2PlatqueSeMueve= this.physics.add.collider(this.grupoplataformaCae,this.player2, this.tirarPlat,null,this);
 
         this.contadorPlataformasQueCaen=0;//Se usa para saber cunatas plataformas hay que caen en el pool de plataformas y asi  evitar que haya demasiado de este tipo  
         this.alturaBala=Phaser.Math.Between(0,100);
@@ -186,20 +192,36 @@ class DemoScene extends Phaser.Scene
         else{
             this.alturaBala_Aux=1575;
         }
-        
+
         this.timedEvent = this.time.addEvent({ delay: 2000, callback: this.generarBalasEnUnSitio, args:[40,this.alturaBala_Aux,300],callbackScope: this, loop: true });
         this.timedEvent2 = this.time.addEvent({ delay: 2000, callback: this.generarBalasEnUnSitio, args:[760,this.alturaBala_Aux-500,-300],callbackScope: this, loop: true });
         this.timedEvent3 = this.time.addEvent({ delay: 2000, callback: this.generarBalasEnUnSitio, args:[40,this.alturaBala_Aux-1000,300],callbackScope: this, loop: true });
         this.timedEvent4 = this.time.addEvent({ delay: 2000, callback: this.generarBalasEnUnSitio, args:[40,this.alturaBala_Aux-1525,300],callbackScope: this, loop: true });
         this.timedEvent5 = this.time.addEvent({ delay: 2000, callback: this.generarBalasEnUnSitio, args:[40,this.alturaBala_Aux-2025,300],callbackScope: this, loop: true });
+        
+        this.meta = this.physics.add.staticGroup();
+        this.meta.create(400,-800,'metaTest').setScale(3).refreshBody();
+        this.overlapP1Win = this.physics.add.overlap(this.player1, this.meta, function(){
+            console.log("Gana el jugador 1");
+        });
+        this.overlapP2Win = this.physics.add.overlap(this.player2, this.meta, function() {
+            console.log("Gana el jugador 2");
+        });
 
+        this.canJump1 = true;
+        this.canJump2 = true;
     }
 
     generarPlatEstatica(posX,posY){
         this.platforms.create(posX,posY,'platform');
     }
 
-      tirarPlat(plat,jug){    
+      tirarPlat(plat,jug){  
+          if(jug.id==0){
+            this.allowJump1();
+          }else{
+              this.allowJump2();
+          }
           if(plat.body.velocity.x!=0){// SIGNIFICA QUE SOLO ENTRO EN CASO DE QUE SEA LA PRIMERA VEZ QUE SE PISA
         plat.setVelocity(0,0);
         plat.destruido1=true;
@@ -289,8 +311,9 @@ class DemoScene extends Phaser.Scene
             this.player1.anims.play('iddle');
         }
 
-        if(this.player1Controls.W.isDown && this.player1.body.touching.down)
+        if(this.player1Controls.W.isDown && this.canJump1)
         {
+            this.canJump1 = false;
             this.player1.setVelocityY(-400);
         }
 
@@ -341,8 +364,9 @@ class DemoScene extends Phaser.Scene
             this.player2.anims.play('iddle2');
         }
 
-        if(this.player2Controls.UP.isDown && this.player2.body.touching.down)
+        if(this.player2Controls.UP.isDown && this.canJump2)
         {
+            this.canJump2 = false;
             this.player2.setVelocityY(-400);
         }
 
@@ -431,7 +455,7 @@ class DemoScene extends Phaser.Scene
         this.p1Scroll = true;      
        }
 
-       if((this.p1Scroll) && (this.camera.scrollY<=(this.cameraScroll1-250)))
+       if((this.p1Scroll) && ((this.camera.scrollY<=(this.cameraScroll1-250)||this.camera.scrollY<=-1000)))
        {
         this.reaparicion(this.player1);
         this.p1Scroll = false;
@@ -445,7 +469,7 @@ class DemoScene extends Phaser.Scene
         this.p2Scroll = true;      
        }
 
-       if((this.p2Scroll) && (this.camera.scrollY<=(this.cameraScroll2-250)))
+       if((this.p2Scroll) && ((this.camera.scrollY<=(this.cameraScroll2-250)||this.camera.scrollY<=-1000)))
        {
         this.reaparicion(this.player2);
         this.p2Scroll = false;
@@ -521,6 +545,10 @@ class DemoScene extends Phaser.Scene
     muerteCaida1() 
     {
         this.p1Lives--;
+        this.colP1Plat.active = false;
+        this.colll.active = false;
+        this.colP1PlatqueSeMueve.active = false;
+        this.colBalaP1.active = false;
         if(this.p1Lives>0)
         {
             this.vidasP1[this.p1Lives].setVisible(false);
@@ -529,7 +557,6 @@ class DemoScene extends Phaser.Scene
             this.player1.body.setVelocityY(0);
             this.player1.body.position.y = this.platformGeneradora.body.position.y-64;
             this.p1Death = true;
-            //this.player1Controls.active = false;
         }
         else
         {
@@ -540,6 +567,11 @@ class DemoScene extends Phaser.Scene
     muerteCaida2() 
     {
         this.p2Lives--;
+        this.colP2Plat.active = false;
+        this.coll.active = false;
+        this.colP2PlatqueSeMueve.active = false;
+        this.colBalaP2.active = false;
+
         if(this.p2Lives>0)
         {
             this.vidasP2[this.p2Lives].setVisible(false);
@@ -547,8 +579,7 @@ class DemoScene extends Phaser.Scene
             this.player2.body.setAllowGravity(false);            
             this.player2.body.setVelocityY(0);
             this.player2.body.position.y = this.platformGeneradora.body.position.y-64;
-            this.p2Death = true;            
-            //this.player1Controls.active = false;
+            this.p2Death = true;
            
         }
         else
@@ -570,6 +601,17 @@ class DemoScene extends Phaser.Scene
     reaparicion(player)
     {
         player.alpha = 1;
+        if(player.id == 0){
+            this.colP1Plat.active = true;
+            this.colll.active = true;
+            this.colP1PlatqueSeMueve.active = true;
+            this.colBalaP1.active = true;
+        }else{
+            this.colP2Plat.active = true;
+            this.coll.active = true;
+            this.colP2PlatqueSeMueve.active = true;
+            this.colBalaP2.active = true;
+        }
         player.setImmovable(false);
         player.body.setAllowGravity(true);
     }
@@ -607,7 +649,7 @@ class DemoScene extends Phaser.Scene
             }
         },this);
 
-       if(this.destruido==true){
+       if(this.destruido==true && this.altura>=-700){
            this.platIzq=false;
            this.platDch=false;
            this.generarUnaPlataforma_O_Dos= Phaser.Math.Between(1, 2);
