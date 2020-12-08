@@ -9,6 +9,8 @@ class Menu extends Phaser.Scene
     {
         console.log("menu preload");
         this.load.audio('lala', '../resources/audio/lala.mp3');
+        this.load.image('titulo','../resources/img/titulo.png');
+        this.load.image('memes','../resources/img/memes.png');
     }
 
     init()
@@ -20,11 +22,13 @@ class Menu extends Phaser.Scene
     {
         
         this.createBackground();
+        this.add.image(400, 300, 'memes');
         
         this.lalaAudio = this.sound.add('lala', { loop: true });
         this.lalaAudio.setVolume(0.02);
-        this.lalaAudio.play();
-        this.lalaAudio.resume();
+        this.updateAudio();
+
+        this.add.image(400, 125, 'titulo');
 
 
         //Play
@@ -80,26 +84,17 @@ class Menu extends Phaser.Scene
         this.input.on('pointerout', function (event, gameObjects) {
         gameObjects[0].setTexture('redButton01');
         });
-
-        //Game title
-        this.title = new Text(
-            this,
-            400,
-            125,
-            'ME.ME.O',
-            'title',
-        );
-
-        this.aux = 0;
     }
 
-    update ()
-    {
-        if (this.aux == 0)
+    updateAudio() {
+        if (musicOn === false) {
+          
+            this.lalaAudio.stop();
+
+        } 
+        else 
         {
-            console.log('entra');
             this.lalaAudio.play();
-            this.aux = 1;
         }
     }
 

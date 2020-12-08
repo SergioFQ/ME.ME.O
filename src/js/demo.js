@@ -106,7 +106,7 @@ class DemoScene extends Phaser.Scene
 
         this.trololoAudio = this.sound.add('trololo', { loop: true });
         this.trololoAudio.setVolume(0.02);
-        this.trololoAudio.play();
+        this.updateAudio();
         
         //this.camera = this.cameras.main;
 
@@ -114,6 +114,8 @@ class DemoScene extends Phaser.Scene
 
     update()
     {
+        console.log(musicOn);
+        
         //Player1 control
         if(this.player1Controls.A.isDown)
         {
@@ -228,5 +230,18 @@ class DemoScene extends Phaser.Scene
             frameRate: 10,
             repeat: -1
             });
+    }
+
+    updateAudio() {
+        if (musicOn === false) {
+          
+            this.trololoAudio.stop();
+
+        } 
+        else 
+        {
+
+            this.trololoAudio.play();
+        }
     }
 }

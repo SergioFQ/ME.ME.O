@@ -19,17 +19,13 @@ class Gameover extends Phaser.Scene
     {
         this.loseAudio = this.sound.add('lose', { loop: false });
         this.loseAudio.setVolume(0.07);
-        this.loseAudio.play();
+        this.updateAudio();
 
         this.createBackground();
         
-        this.gameover = new Text(
-            this,
-            400,
-            220,
-            'You lose ...',
-            'title',
-        );
+        this.text = this.add.text(400, 225, 'Player 2 wins', { fontFamily: 'Berlin Sans FB, "Goudy Bookletter 1911", Times, serif', fontSize: '48px', fill: '#fff' });
+        this.text.setOrigin(0.5);
+        this.text.setColor('#FFFFFF');
         
         /*var button = this.add.bitmapText(370, 300, 'ClickPixel', 'MENU', 32, 'center')
         .setInteractive()
@@ -54,9 +50,16 @@ class Gameover extends Phaser.Scene
         
     }
 
-    update()
-    {
+    updateAudio() {
+        if (musicOn === false) {
           
+            this.loseAudio.stop();
+
+        } 
+        else 
+        {
+            this.loseAudio.play();
+        }
     }
 
     centerButtonText (gameText, gameButton) {

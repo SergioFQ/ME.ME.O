@@ -27,7 +27,7 @@ class Credits extends Phaser.Scene
 
         this.creditsAudio = this.sound.add('creditsA', { loop: true });
         this.creditsAudio.setVolume(0.07);
-        this.creditsAudio.play();
+        this.updateAudio();
 
         this.skipButton = this.add.sprite(750, 50, 'smallButton01').setInteractive();
  
@@ -51,6 +51,19 @@ class Credits extends Phaser.Scene
         {
             this.creditsAudio.stop();
             this.scene.start('Menu');
+        }
+    }
+
+    updateAudio() {
+        if (musicOn === false) {
+          
+            this.creditsAudio.stop();
+
+        } 
+        else 
+        {
+
+            this.creditsAudio.play();
         }
     }
 

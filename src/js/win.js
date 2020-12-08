@@ -19,17 +19,13 @@ class Win extends Phaser.Scene
     {
         this.victoryAudio = this.sound.add('victory', { loop: false });
         this.victoryAudio.setVolume(0.05);
-        this.victoryAudio.play();
+        this.updateAudio();
 
         this.createBackground();
         
-        this.win = new Text(
-            this,
-            400,
-            220,
-            'You win !!',
-            'title',
-        );
+        this.text = this.add.text(400, 225, 'Player 1 wins', { fontFamily: 'Berlin Sans FB, "Goudy Bookletter 1911", Times, serif', fontSize: '48px', fill: '#fff' });
+        this.text.setOrigin(0.5);
+        this.text.setColor('#FFFFFF');
         
         /*var button = this.add.bitmapText(370, 300, 'ClickPixel', 'MENU', 32, 'center')
         .setInteractive()
@@ -56,6 +52,17 @@ class Win extends Phaser.Scene
     update()
     {
           
+    }
+
+    updateAudio() {
+        if (musicOn === false) {
+          
+            this.victoryAudio.stop();
+        } 
+        else 
+        {
+            this.victoryAudio.play();
+        }
     }
 
     centerButtonText (gameText, gameButton) {

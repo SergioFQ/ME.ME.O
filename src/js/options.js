@@ -19,44 +19,21 @@ class Options extends Phaser.Scene
 
     create()
     {
+        
         this.createBackground();
 
-        this.optionsAudio = this.sound.add('options', { loop: true });
-        this.optionsAudio.setVolume(0.05);
-        this.optionsAudio.play();
+        
 
-        this.musicOn = true;
-        this.soundOn = true;
-
-        this.text = this.add.text(335, 100, 'Options', { fontSize: 40 });
-        this.musicButton = this.add.image(300, 200, 'checkedBox');
-        this.musicText = this.add.text(350, 190, 'Music Enabled', { fontSize: 24 });
-
-        this.soundButton = this.add.image(300, 300, 'checkedBox');
-        this.soundText = this.add.text(350, 290, 'Sound Enabled', { fontSize: 24 });
+        this.text = this.add.text(335, 100, 'Options', { fontFamily: 'Berlin Sans FB, "Goudy Bookletter 1911", Times, serif', fontSize: '46px', fill: '#fff'  });
+        this.musicButton = this.add.image(300, 265, 'checkedBox');
+        this.musicText = this.add.text(350, 250, 'Music Enabled', { fontFamily: 'Berlin Sans FB, "Goudy Bookletter 1911", Times, serif', fontSize: '32px', fill: '#fff'  });
 
         this.musicButton.setInteractive();
-        this.soundButton.setInteractive();
 
         this.musicButton.on('pointerdown', function () {
-            this.musicOn = !this.musicOn;
+            musicOn = !musicOn;
             this.updateAudio();
           }.bind(this));
-           
-        this.soundButton.on('pointerdown', function () {
-            this.soundOn = !this.soundOn;
-            if (this.soundOn === false) 
-            {
-                this.soundButton.setTexture('box');
-            } 
-            else 
-            {
-                this.soundButton.setTexture('checkedBox');
-            }
-            //this.updateAudio();
-        }.bind(this));
-           
-        this.updateAudio();
 
         this.backButton = this.add.sprite(400, 300, 'redButton01').setInteractive();
         this.centerButton(this.backButton, -1);
@@ -73,15 +50,13 @@ class Options extends Phaser.Scene
  
         this.input.on('pointerout', () => this.backButton.setTexture('redButton01'));
 
-        /*this.back = this.add.bitmapText(400, 400, 'ClickPixel', 'MENU', 32, 'center')
-        .setInteractive()
-        .on('pointerdown', () => this.back.setScale( 1.2 ))
-        .on('pointerup', () => this.optionsAudio.stop())
-        .on('pointerup', () => this.back.setScale( 1 ) && this.goMenu());*/
+        this.optionsAudio = this.sound.add('options', { loop: true });
+        this.optionsAudio.setVolume(0.05);
+        this.updateAudio();
     }
 
     updateAudio() {
-        if (this.musicOn === false) {
+        if (musicOn === false) {
           
             this.optionsAudio.stop();
             this.musicButton.setTexture('box');

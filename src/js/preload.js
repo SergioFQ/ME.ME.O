@@ -18,7 +18,9 @@ class Preload extends Phaser.Scene
     }
 
     create()
-    {
+    {  
+        musicOn = true;
+        
         this.time.addEvent({
             delay: 2000,
             callback: () => { this.createButton() ;},
@@ -131,3 +133,5 @@ class Preload extends Phaser.Scene
         );
     }
 }
+
+var musicOn;
