@@ -7,7 +7,6 @@ class Menu extends Phaser.Scene
 
     preload()
     {
-        console.log("menu preload");
         this.load.audio('lala', '../resources/audio/lala.mp3');
         this.load.image('titulo','../resources/img/titulo.png');
         this.load.image('memes','../resources/img/memes.png');
@@ -24,19 +23,19 @@ class Menu extends Phaser.Scene
         this.createBackground();
         this.add.image(400, 300, 'memes');
 
-        this.add.graphics({x: 0,y: 0}).fillStyle('0x000000', 1).fillRect(250, 200, 300, 300);
+        this.add.graphics({x: 0,y: 0}).fillStyle('0x000000', 1).fillRect(250, 150, 300, 400);
         
         this.lalaAudio = this.sound.add('lala', { loop: true });
         this.lalaAudio.setVolume(0.02);
         this.updateAudio();
 
-        this.add.image(400, 125, 'titulo');
+        this.add.image(400, 80, 'titulo');
 
 
         //Play
 
         this.gameButton = this.add.sprite(400, 300, 'redButton01').setInteractive();
-        this.centerButton(this.gameButton, 0.5);
+        this.centerButton(this.gameButton, 1);
  
         this.gameText = this.add.text(0, 0, 'PLAY', { fontFamily: 'Berlin Sans FB, "Goudy Bookletter 1911", Times, serif', fontSize: '32px', fill: '#fff' });
         this.centerButtonText(this.gameText, this.gameButton);
@@ -57,7 +56,7 @@ class Menu extends Phaser.Scene
         //Options
 
         this.optionsButton = this.add.sprite(300, 200, 'redButton01').setInteractive();
-        this.centerButton(this.optionsButton, -0.5);
+        this.centerButton(this.optionsButton, 0);
  
         this.optionsText = this.add.text(0, 0, 'OPTIONS', { fontFamily: 'Berlin Sans FB, "Goudy Bookletter 1911", Times, serif', fontSize: '32px', fill: '#fff' });
         this.centerButtonText(this.optionsText, this.optionsButton);
@@ -66,10 +65,21 @@ class Menu extends Phaser.Scene
             this.lalaAudio.stop();
             this.scene.start('Options');
         }.bind(this));
+
+        this.controlsButton = this.add.sprite(300, 200, 'redButton01').setInteractive();
+        this.centerButton(this.controlsButton, -1);
+ 
+        this.optionsText = this.add.text(0, 0, 'CONTROLS', { fontFamily: 'Berlin Sans FB, "Goudy Bookletter 1911", Times, serif', fontSize: '32px', fill: '#fff' });
+        this.centerButtonText(this.optionsText, this.controlsButton);
+ 
+        this.controlsButton.on('pointerdown', function (pointer) {
+            this.lalaAudio.stop();
+            this.scene.start('Controls');
+        }.bind(this));
  
         // Credits
         this.creditsButton = this.add.sprite(300, 200, 'redButton01').setInteractive();
-        this.centerButton(this.creditsButton, -1.5);
+        this.centerButton(this.creditsButton, -2);
  
         this.creditsText = this.add.text(0, 0, 'CREDITS', { fontFamily: 'Berlin Sans FB, "Goudy Bookletter 1911", Times, serif', fontSize: '32px', fill: '#fff' });
         this.centerButtonText(this.creditsText, this.creditsButton);

@@ -10,11 +10,6 @@ class Options extends Phaser.Scene
         this.load.audio('options', '../resources/audio/options.mp3');
         this.load.image('box','../resources/UIpack/PNG/red_button03.png');
         this.load.image('checkedBox','../resources/UIpack/PNG/red_boxCheckmark.png');
-
-        this.load.image('wad','../resources/img/wasd.png');
-        this.load.image('flechas','../resources/img/flechas.png');
-        this.load.image('emotes1','../resources/img/emotes1.png');
-        this.load.image('emotes2','../resources/img/emotes2.png');
     }
 
     init()
@@ -27,19 +22,10 @@ class Options extends Phaser.Scene
         
         this.createBackground();
 
-        this.add.image(150, 200, 'wad').setScale(0.75);
-        this.add.image(650, 200, 'flechas').setScale(0.75);
-        this.add.image(325, 200, 'emotes1').setScale(0.75);
-        this.add.image(475, 200, 'emotes2').setScale(0.75);
-
-        this.controlsText = this.add.text(335, 50, 'Controls', { fontFamily: 'Berlin Sans FB, "Goudy Bookletter 1911", Times, serif', fontSize: '46px', fill: '#fff'  });
-        this.optionsText = this.add.text(335, 350, 'Options', { fontFamily: 'Berlin Sans FB, "Goudy Bookletter 1911", Times, serif', fontSize: '46px', fill: '#fff'  });
-        this.emotesp1Text = this.add.text(270, 260, 'Emotes P1', { fontFamily: 'Berlin Sans FB, "Goudy Bookletter 1911", Times, serif', fontSize: '28px', fill: '#fff'  });
-        this.emotesp2Text = this.add.text(415, 260, 'Emotes P2', { fontFamily: 'Berlin Sans FB, "Goudy Bookletter 1911", Times, serif', fontSize: '28px', fill: '#fff'  });
-        this.movementp1Text = this.add.text(65, 290, 'Movement P1', { fontFamily: 'Berlin Sans FB, "Goudy Bookletter 1911", Times, serif', fontSize: '28px', fill: '#fff'  });
-        this.movementp2Text = this.add.text(570, 290, 'Movement P2', { fontFamily: 'Berlin Sans FB, "Goudy Bookletter 1911", Times, serif', fontSize: '28px', fill: '#fff'  });
-        this.musicButton = this.add.image(295, 445, 'checkedBox');
-        this.musicText = this.add.text(345, 430, 'Music Enabled', { fontFamily: 'Berlin Sans FB, "Goudy Bookletter 1911", Times, serif', fontSize: '32px', fill: '#fff'  });
+        this.optionsText = this.add.text(335, 75, 'Options', { fontFamily: 'Berlin Sans FB, "Goudy Bookletter 1911", Times, serif', fontSize: '46px', fill: '#fff'  });
+        
+        this.musicButton = this.add.image(295, 215, 'checkedBox');
+        this.musicText = this.add.text(345, 200, 'Music Enabled', { fontFamily: 'Berlin Sans FB, "Goudy Bookletter 1911", Times, serif', fontSize: '32px', fill: '#fff'  });
 
         this.musicButton.setInteractive();
 
@@ -49,7 +35,7 @@ class Options extends Phaser.Scene
           }.bind(this));
 
         this.backButton = this.add.sprite(400, 300, 'redButton01').setInteractive();
-        this.centerButton(this.backButton, -2.25);
+        this.centerButton(this.backButton, -0.5);
  
         this.backText = this.add.text(0, 0, 'MENU', { fontFamily: 'Berlin Sans FB, "Goudy Bookletter 1911", Times, serif', fontSize: '32px', fill: '#fff' });
         this.centerButtonText(this.backText, this.backButton);
