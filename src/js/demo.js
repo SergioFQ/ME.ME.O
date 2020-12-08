@@ -2,7 +2,7 @@ class DemoScene extends Phaser.Scene
 {
     constructor()//para poder llamar a la escena desde otras escenas
     {
-        super('DemoScene');
+        super({ key: 'DemoScene', active: false});
     }
 
     preload()
@@ -22,11 +22,69 @@ class DemoScene extends Phaser.Scene
         { frameWidth:32, frameHeight: 48});
 
 
+        this.load.spritesheet('pepeS','../resources/img/SpriteSheets/Pepe the Frog SpriteSheet.png',
+        { frameWidth:65, frameHeight: 96});
+
+        this.load.spritesheet('trollfaceS','../resources/img/SpriteSheets/Trollface SpriteSheet.png',
+        { frameWidth:65, frameHeight: 96});
+
+        this.load.spritesheet('coffindancerS','../resources/img/SpriteSheets/Coffin Dancer SpriteSheet.png',
+        { frameWidth:65, frameHeight: 96});
+
+        this.load.audio('trololo', '../resources/audio/trololo.mp3');
+
+        this.load.audio('victory', '../resources/audio/victory.mp3');
+      
         this.load.image('fondoVida','../resources/img/fondo vidas.png');//fondo auxiliar hasta que se tenga un fondo mejor
         this.load.image('vidasPrueba','../resources/img/vida.png');//imagen auxiliar de las vidas
 
         this.load.image('metaTest','../resources/img/metaProvisional.png');
+    }
 
+    init (data)
+    {
+        this.eleccionJ1 = data.eleccion1;
+        console.log(this.eleccionJ1);
+
+        this.eleccionJ2 = data.eleccion2;
+        console.log(this.eleccionJ2);
+
+        this.spriteP1;
+        this.spriteP2;
+        this.keyP1;
+        this.keyP2;
+        
+        switch(this.eleccionJ1){
+            case 1:
+                this.spriteP1 = 'pepeS';
+                this.keyP1 = 'pepeSK';
+                break;
+            case 2:
+                this.spriteP1 = 'trollfaceS';
+                this.keyP1 = 'trollfaceSK';
+                break;
+            case 3:
+                this.spriteP1 = 'coffindancerS';
+                this.keyP1 = 'coffindancerSK';
+                break;
+            
+        }
+
+        switch(this.eleccionJ2){
+            case 1:
+                this.spriteP2 = 'pepeS';
+                this.keyP2 = 'pepeSK';
+                break;
+            case 2:
+                this.spriteP2 = 'trollfaceS';
+                this.keyP2 = 'trollfaceSK';
+                break;
+            case 3:
+                this.spriteP2 = 'coffindancerS';
+                this.keyP2 = 'coffindancerSK';
+                break;
+            
+        }
 
     }
 
@@ -53,13 +111,15 @@ class DemoScene extends Phaser.Scene
         this.player2.setCollideWorldBounds(true);
         this.player2.depth=10;//profundidad para aparecer siempre por delante de todo
         this.player2.id = 1;
-        this.createAnimations();
+        this.createAnimations(this.spriteP1, this.spriteP2, this.keyP1, this.keyP2);
+
 
         this.colP1Plat = this.physics.add.collider(this.player1, this.platforms, this.allowJump1, null, this);
         this.colP2Plat = this.physics.add.collider(this.player2, this.platforms, this.allowJump2, null, this);
 
         this.player1Controls = this.input.keyboard.addKeys('W,A,D');
         this.player2Controls = this.input.keyboard.addKeys('UP,LEFT,RIGHT');
+
         this.canJump1 = true;
         this.canJump2 = true;
         this.camera = this.cameras.main;//camara de la escena
@@ -210,6 +270,12 @@ class DemoScene extends Phaser.Scene
 
         this.canJump1 = true;
         this.canJump2 = true;
+      
+        this.winOrDeath = this.input.keyboard.addKeys('K, L');
+
+        this.trololoAudio = this.sound.add('trololo', { loop: true });
+        this.trololoAudio.setVolume(0.02);
+        this.updateAudio();
     }
 
     generarPlatEstatica(posX,posY){
@@ -279,6 +345,8 @@ class DemoScene extends Phaser.Scene
 
     update(time,delta)
     {
+        console.log(musicOn);
+        
         //Player1 control
     if(this.golpeado==true){
 
@@ -298,17 +366,17 @@ class DemoScene extends Phaser.Scene
          else if(this.player1Controls.A.isDown)
         {
             this.player1.setVelocityX(-160);
-            this.player1.anims.play('left',true);
+            this.player1.anims.play(this.keyP1 + 'left',true);
         }
         else if(this.player1Controls.D.isDown)
         {
             this.player1.setVelocityX(160);
-            this.player1.anims.play('right',true);
+            this.player1.anims.play(this.keyP1 + 'right',true);
         }
        else
         {
             this.player1.setVelocityX(0);
-            this.player1.anims.play('iddle');
+            this.player1.anims.play(this.keyP1 + 'iddle');
         }
 
         if(this.player1Controls.W.isDown && this.canJump1)
@@ -351,17 +419,17 @@ class DemoScene extends Phaser.Scene
         else if(this.player2Controls.LEFT.isDown)
         {
             this.player2.setVelocityX(-160);
-            this.player2.anims.play('left2',true);
+            this.player2.anims.play(this.keyP2 + 'left2',true);
         }
         else if(this.player2Controls.RIGHT.isDown)
         {
             this.player2.setVelocityX(160);
-            this.player2.anims.play('right2',true);
+            this.player2.anims.play(this.keyP2 + 'right2',true);
         }
         else
         {
             this.player2.setVelocityX(0);
-            this.player2.anims.play('iddle2');
+            this.player2.anims.play(this.keyP2 + 'iddle2');
         }
 
         if(this.player2Controls.UP.isDown && this.canJump2)
@@ -392,6 +460,19 @@ class DemoScene extends Phaser.Scene
             this.platformCaida.setVelocity(0,0);// PLATAFORMA QUE MATA
             this.platformGeneradora.setVelocity(0,0);
         }
+        
+        if(this.winOrDeath.K.isDown)
+        {
+            this.trololoAudio.stop();
+            this.scene.start('Gameover');
+        }
+
+        if(this.winOrDeath.L.isDown)
+        {
+            this.trololoAudio.stop();
+            this.scene.start('Win');
+        }
+    //}
 
        this.managePlatforms();
     
@@ -500,46 +581,59 @@ class DemoScene extends Phaser.Scene
        }
         gpp.destroy();
     }
-    createAnimations()
+    createAnimations(player1sprite, player2sprite, k1, k2)
     {
         //Animaciones Player1
            this.anims.create({
-            key: 'left',
-            frames: this.anims.generateFrameNumbers('dude', {start:0, 
+            key: k1 + 'left',
+            frames: this.anims.generateFrameNumbers(player1sprite, {start:0, 
                 end:3}),
                 frameRate: 10,
                 repeat: -1
             });
             this.anims.create({
-            key: 'iddle',
-            frames: [{key: 'dude', frame: 4}],
+            key: k1 + 'iddle',
+            frames: [{key: player1sprite, frame: 4}],
             frameRate: 20
             });
             this.anims.create({
-            key:'right',
-            frames: this.anims.generateFrameNumbers('dude', {start: 5, end: 8}),
+            key:k1 + 'right',
+            frames: this.anims.generateFrameNumbers(player1sprite, {start: 5, end: 8}),
             frameRate: 10,
             repeat: -1
             });
         //Animaciones Player2
             this.anims.create({
-            key: 'left2',
-            frames: this.anims.generateFrameNumbers('dude2', {start:0, 
+            key: k2 + 'left2',
+            frames: this.anims.generateFrameNumbers(player2sprite, {start:0, 
                 end:3}),
                 frameRate: 10,
                 repeat: -1
             });
             this.anims.create({
-            key: 'iddle2',
-            frames: [{key: 'dude2', frame: 4}],
+            key: k2 + 'iddle2',
+            frames: [{key: player2sprite, frame: 4}],
             frameRate: 20
             });
             this.anims.create({
-            key:'right2',
-            frames: this.anims.generateFrameNumbers('dude2', {start: 5, end: 8}),
+            key:k2 + 'right2',
+            frames: this.anims.generateFrameNumbers(player2sprite, {start: 5, end: 8}),
             frameRate: 10,
             repeat: -1
             });
+    }
+
+    updateAudio() {
+        if (musicOn === false) {
+          
+            this.trololoAudio.stop();
+
+        } 
+        else 
+        {
+
+            this.trololoAudio.play();
+        }
     }
 
     muerteCaida1() 
@@ -701,3 +795,4 @@ class DemoScene extends Phaser.Scene
 
     }
 }
+
