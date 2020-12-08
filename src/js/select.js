@@ -121,7 +121,7 @@ class Select extends Phaser.Scene
  
         this.nextButton.on('pointerdown', function (pointer) {
             this.selectAudio.stop();
-            this.scene.start('DemoScene', {eleccion1: this.eleccion1, eleccion2: this.eleccion2});
+            this.scene.start('GameScene', {eleccion1: this.eleccion1, eleccion2: this.eleccion2});
         }.bind(this));
  
         this.input.on('pointerover', () => this.nextButton.setTexture('redButton02'));

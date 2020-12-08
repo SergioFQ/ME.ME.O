@@ -105,9 +105,7 @@ class Preload extends Phaser.Scene
 
     create()
     {  
-        musicOn = true;      
-
-        this.logo = this.add.image(400, 150, 'logo').setScale(0.3);
+        musicOn = true;
     }
 
     createLoadingBar()
@@ -138,6 +136,7 @@ class Preload extends Phaser.Scene
         // Progress bar
         this.progress = this.add.graphics({x: x, y: y});
         this.border = this.add.graphics({x: x, y: y});
+        this.logo = this.add.image(400, 150, 'logo').setScale(0.3);
     }
 
     onProgress(val)

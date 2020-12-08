@@ -1,8 +1,8 @@
-class DemoScene extends Phaser.Scene
+class GameScene extends Phaser.Scene
 {
     constructor()//para poder llamar a la escena desde otras escenas
     {
-        super({ key: 'DemoScene', active: false});
+        super({ key: 'GameScene', active: false});
     }
 
     init (data)
