@@ -1,8 +1,8 @@
-class Win extends Phaser.Scene
+class Player1Victory extends Phaser.Scene
 {
     constructor()//para poder llamar a la escena desde otras escenas
     {
-        super({ key: 'Win', active: false});
+        super({ key: 'Player1Victory', active: false});
     }
 
     preload()
