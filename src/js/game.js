@@ -245,12 +245,10 @@ class GameScene extends Phaser.Scene
         this.meta.create(400,-800,'meta');
         this.overlapP1Win = this.physics.add.overlap(this.player1, this.meta, function(){
             this.trololoAudio.stop();
-            // this.scene.start('Player1Victory');//player 1 win
             this.scene.start('Player1Victory', {keyVidaP1: this.keyVidaP1});
         },null,this);
         this.overlapP2Win = this.physics.add.overlap(this.player2, this.meta, function() {
             this.trololoAudio.stop();
-           // this.scene.start('Player2Victory');//player 2 win
            this.scene.start('Player2Victory', {keyVidaP2: this.keyVidaP2});     
         },null,this);
 
@@ -676,8 +674,7 @@ class GameScene extends Phaser.Scene
         {
             this.vidasP1[0].setVisible(false);
             this.trololoAudio.stop();
-         //   this.scene.start('Player2Victory');//player 2 win
-         this.scene.start('Player2Victory', {keyVidaP2: this.keyVidaP2}); 
+            this.scene.start('Player2Victory', {keyVidaP2: this.keyVidaP2}); 
             //cambiar de escena 
         }
     }
@@ -704,7 +701,6 @@ class GameScene extends Phaser.Scene
         {
             this.vidasP2[0].setVisible(false);
             this.trololoAudio.stop();
-           // this.scene.start('Player1Victory');//player 1 win
             //cambiar de escena 
             this.scene.start('Player1Victory', {keyVidaP1: this.keyVidaP1});
         }

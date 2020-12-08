@@ -7,12 +7,11 @@ class Preload extends Phaser.Scene
 
     init()
     {
-        // Globals
+    
     }
 
     preload()
     {
-        // Creat loading bar
         this.createLoadingBar();
 
         this.load.on('progress', function (value) {
@@ -23,20 +22,11 @@ class Preload extends Phaser.Scene
             this.createButton();
         },this);
 
-        this.load.image('sky','../resources/img/sky.png');
         this.load.image('platform','../resources/img/Plataformas/Plataforma Buena (150x32).png');
         this.load.image('platformDislike','../resources/img/Plataformas/Plataforma Mala (150x32).png');
         this.load.image('platformCaida','../resources/img/platformCaida.png');
 
         this.load.image('bomb','../resources/img/Balas.png');
-        this.load.image('mamado','../resources/img/ez.PNG');
-        this.load.image('pepesad','../resources/img/PEPESAD.PNG');
-        this.load.spritesheet('dude','../resources/img/dude.png',
-        { frameWidth:32, frameHeight: 48});
-
-        this.load.spritesheet('dude2','../resources/img/dude2.png',
-        { frameWidth:32, frameHeight: 48});
-
 
         this.load.spritesheet('pepeS','../resources/img/SpriteSheets/Pepe the Frog SpriteSheet.png',
         { frameWidth:64.44, frameHeight: 100});

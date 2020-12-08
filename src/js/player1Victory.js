@@ -46,11 +46,6 @@ class Player1Victory extends Phaser.Scene
           this.cara3 = this.add.image(config.width / 2 + 50, config.height / 2, this.caras).setScale(2);
           this.cara2.y -= 100;
         
-        /*var button = this.add.bitmapText(370, 300, 'ClickPixel', 'MENU', 32, 'center')
-        .setInteractive()
-        .on('pointerdown', () => button.setScale( 1.2 ))
-        .on('pointerup', () => button.setScale( 1 ) && this.goMenu());*/
-        //this.add.graphics({x: 0,y: 0}).fillStyle('0xE5220F', 1).fillRect(225, 175, 350, 350);
         this.add.graphics({x: 0,y: 0}).fillStyle('0x000000', 1).fillRect(250, 200, 300, 300);
 
         this.backButton = this.add.sprite(400, 300, 'redButton01').setInteractive();
@@ -77,9 +72,7 @@ class Player1Victory extends Phaser.Scene
     update()
     {
         this.colores.angle += 5; 
-      //  this.colores.alpha = Math.sin(this.iter * 3);
-
-       
+      //  this.colores.alpha = Math.sin(this.iter * 3);       
 
         var children = this.carasGrupo.getChildren();
         for (var i = 0; i < children.length; i++) {
