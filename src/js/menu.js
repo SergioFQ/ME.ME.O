@@ -7,9 +7,7 @@ class Menu extends Phaser.Scene
 
     preload()
     {
-        this.load.audio('lala', '../resources/audio/lala.mp3');
-        this.load.image('titulo','../resources/img/titulo.png');
-        this.load.image('memes','../resources/img/memes.png');
+
     }
 
     init()

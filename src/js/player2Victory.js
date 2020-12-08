@@ -12,7 +12,7 @@ class Player2Victory extends Phaser.Scene
 
     preload()
     {
-        this.load.image('colores','../resources/img/colors.png');
+
     }
 
     create()

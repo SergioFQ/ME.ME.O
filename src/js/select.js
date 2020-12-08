@@ -12,11 +12,7 @@ class Select extends Phaser.Scene
 
     preload()
     {
-        this.load.audio('select', '../resources/audio/select.mp3');
-        
-        this.load.image('pepe','../resources/img/Personajes/Pepe the Frog.png');
-        this.load.image('trollface','../resources/img/Personajes/Troll Face.png');
-        this.load.image('coffindancer','../resources/img/Personajes/Coffin Dancer.png');
+
     }
 
     create()

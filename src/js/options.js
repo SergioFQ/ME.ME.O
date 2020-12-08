@@ -7,9 +7,7 @@ class Options extends Phaser.Scene
 
     preload()
     {
-        this.load.audio('options', '../resources/audio/options.mp3');
-        this.load.image('box','../resources/UIpack/PNG/red_button03.png');
-        this.load.image('checkedBox','../resources/UIpack/PNG/red_boxCheckmark.png');
+
     }
 
     init()

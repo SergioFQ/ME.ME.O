@@ -7,17 +7,7 @@ class Controls extends Phaser.Scene
 
     preload()
     {
-        this.load.audio('controls', '../resources/audio/controls.mp3');
-        
-        this.load.image('wad','../resources/img/wasd.png');
-        this.load.image('flechas','../resources/img/flechas.png');
-        this.load.image('emotes1','../resources/img/emotes1.png');
-        this.load.image('emotes2','../resources/img/emotes2.png');
 
-        this.load.image('pb','../resources/img/Plataformas/Plataforma Buena (150x32).png');
-        this.load.image('pm','../resources/img/Plataformas/Plataforma Mala (150x32).png');
-
-        this.load.image('haters','../resources/img/Balas.png');
     }
 
     init()

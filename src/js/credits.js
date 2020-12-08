@@ -12,11 +12,6 @@ class Credits extends Phaser.Scene
 
     preload()
     {
-        console.log("credits preload");
-        this.load.audio('creditsA', '../resources/audio/credits.mp3');
-        this.load.image('credits','../resources/img/Creditos.png');
-        this.load.image('smallButton01','../resources/UIpack/PNG/red_button08.png');
-        this.load.image('smallButton02','../resources/UIpack/PNG/red_button09.png');
     }
 
     create()

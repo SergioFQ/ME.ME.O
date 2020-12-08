@@ -7,7 +7,7 @@ class Player1Victory extends Phaser.Scene
 
     preload()
     {
-        this.load.image('colores','../resources/img/colors.png');
+
     }
 
     init(data)

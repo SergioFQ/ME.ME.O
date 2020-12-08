@@ -16,22 +16,26 @@ class DemoScene extends Phaser.Scene
         this.keyP2;
         this.keyVidaP1;
         this.keyVidaP2;
-        
+        this.keyGifP1;
+        this.keyGifP2;
         switch(this.eleccionJ1){
             case 1:
                 this.spriteP1 = 'pepeS';
                 this.keyP1 = 'pepeSK';
                 this.keyVidaP1 = 'pepe';
+                this.keyGifP1 = 'pepe';
                 break;
             case 2:
                 this.spriteP1 = 'trollfaceS';
                 this.keyP1 = 'trollfaceSK';
                 this.keyVidaP1 = 'trollface';
+                this.keyGifP1 = 'troll';
                 break;
             case 3:
                 this.spriteP1 = 'coffindancerS';
                 this.keyP1 = 'coffindancerSK';
                 this.keyVidaP1 = 'coffindancer';
+                //this.keyGifP1 = '';
                 break;
             
         }
@@ -40,17 +44,20 @@ class DemoScene extends Phaser.Scene
             case 1:
                 this.spriteP2 = 'pepeS';
                 this.keyP2 = 'pepeSK';
-                this.keyVidaP2 = 'pepe';
+                this.keyVidaP2 = 'pepe';                
+                this.keyGifP2 = 'pepe';
                 break;
             case 2:
                 this.spriteP2 = 'trollfaceS';
                 this.keyP2 = 'trollfaceSK';
-                this.keyVidaP2 = 'trollface';
+                this.keyVidaP2 = 'trollface';                
+                this.keyGifP2 = 'troll';
                 break;
             case 3:
                 this.spriteP2 = 'coffindancerS';
                 this.keyP2 = 'coffindancerSK';
                 this.keyVidaP2 = 'coffindancer';
+                //this.keyGifP2 = 'troll';
                 break;
             
         }
@@ -59,44 +66,13 @@ class DemoScene extends Phaser.Scene
 
     preload()
     {
-        this.load.image('sky','../resources/img/sky.png');
-        this.load.image('platform','../resources/img/Plataformas/Plataforma Buena (150x32).png');
-        this.load.image('platformDislike','../resources/img/Plataformas/Plataforma Mala (150x32).png');
-        this.load.image('platformCaida','../resources/img/platformCaida.png');
-
-        this.load.image('bomb','../resources/img/Balas.png');
-        this.load.image('mamado','../resources/img/ez.PNG');
-        this.load.image('pepesad','../resources/img/PEPESAD.PNG');
-        this.load.spritesheet('dude','../resources/img/dude.png',
-        { frameWidth:32, frameHeight: 48});
-
-        this.load.spritesheet('dude2','../resources/img/dude2.png',
-        { frameWidth:32, frameHeight: 48});
-
-
-        this.load.spritesheet('pepeS','../resources/img/SpriteSheets/Pepe the Frog SpriteSheet.png',
-        { frameWidth:64.44, frameHeight: 100});
-
-        this.load.spritesheet('trollfaceS','../resources/img/SpriteSheets/Trollface SpriteSheet.png',
-        { frameWidth:64.44, frameHeight: 100});
-
-        this.load.spritesheet('coffindancerS','../resources/img/SpriteSheets/Coffin Dancer SpriteSheet.png',
-        { frameWidth:64.44, frameHeight: 100});
-
-        this.load.audio('trololo', '../resources/audio/trololo.mp3');
-
-        this.load.audio('victory', '../resources/audio/victory.mp3');
-      
-        this.load.image('fondoVida','../resources/img/fondo vidas.png');//fondo auxiliar hasta que se tenga un fondo mejor
-
-        this.load.image('meta','../resources/img/Meta.png');
-
-        this.load.image('fondo','../resources/img/Fondo.png');
+        
     }
     
 
     create()
     {
+        this.createAnimations(this.spriteP1, this.spriteP2, this.keyP1, this.keyP2);
         this.add.image(400,1000,'fondo');
         this.platforms = this.physics.add.staticGroup();
         
@@ -118,7 +94,6 @@ class DemoScene extends Phaser.Scene
         this.player2.setCollideWorldBounds(true);
         this.player2.depth=10;//profundidad para aparecer siempre por delante de todo
         this.player2.id = 1;
-        this.createAnimations(this.spriteP1, this.spriteP2, this.keyP1, this.keyP2);
 
 
         this.colP1Plat = this.physics.add.collider(this.player1, this.platforms, this.allowJump1, null, this);
@@ -477,22 +452,24 @@ class DemoScene extends Phaser.Scene
        if(this.player1_emotes.T.isUp==false&&this.i==0){
         this.jugador1_a_emoteado=time;
         this.jugador1_quitar_emote=time+200;
-        this.emote_jug1=this.add.sprite(this.player1.x,this.player1.y+20,'mamado');
+        this.emote_jug1=this.add.sprite(this.player1.x-5,this.player1.y-50,this.keyGifP1+'Happy').setScale(0.5);
+        this.emote_jug1.anims.play(this.keyGifP1+'HappyGif');
         this.emote_jug1.depth=10;
         this.i=1;
        }
        else if(this.player1_emotes.U.isUp==false&&this.i==0){
         this.jugador1_a_emoteado=time;
         this.jugador1_quitar_emote=time+200;
-        this.emote_jug1=this.add.sprite(this.player1.x,this.player1.y+20,'pepesad');
+        this.emote_jug1=this.add.sprite(this.player1.x-5,this.player1.y-50,this.keyGifP1+'Sad').setScale(0.5);
+        this.emote_jug1.anims.play(this.keyGifP1+'SadGif');
         this.emote_jug1.depth=10;
         this.i=1;
        }
 
        if(this.jugador1_a_emoteado != this.jugador1_quitar_emote){
         this.jugador1_a_emoteado=this.jugador1_a_emoteado+1;
-        this.emote_jug1.x=this.player1.x;
-        this.emote_jug1.y=this.player1.y-20;
+        this.emote_jug1.x=this.player1.x-5;
+        this.emote_jug1.y=this.player1.y-50;
         if(  this.jugador1_a_emoteado==this.jugador1_quitar_emote){
         this.emote_jug1.destroy();
         this.i=0;
@@ -503,22 +480,22 @@ class DemoScene extends Phaser.Scene
        if(this.player2_emotes.B.isUp==false&&this.i2==0){
         this.jugador2_a_emoteado=time;
         this.jugador2_quitar_emote=time+200;
-        this.emote_jug2=this.add.sprite(this.player1.x,this.player1.y+20,'mamado');
+        this.emote_jug2=this.add.sprite(this.player1.x-10,this.player1.y-45,'mamado');
         this.emote_jug2.depth=10;
         this.i2=1;
        }
        else if(this.player2_emotes.M.isUp==false&&this.i2==0){
         this.jugador2_a_emoteado=time;
         this.jugador2_quitar_emote=time+200;
-        this.emote_jug2=this.add.sprite(this.player1.x,this.player1.y+20,'pepesad');
+        this.emote_jug2=this.add.sprite(this.player1.x-10,this.player1.y-45,'pepesad');
         this.emote_jug2.depth=10;
         this.i2=1;
        }
 
        if(this.jugador2_a_emoteado != this.jugador2_quitar_emote){
         this.jugador2_a_emoteado=this.jugador2_a_emoteado+1;
-        this.emote_jug2.x=this.player2.x;
-        this.emote_jug2.y=this.player2.y-20;
+        this.emote_jug2.x=this.player2.x-10;
+        this.emote_jug2.y=this.player2.y-45;
         if(  this.jugador2_a_emoteado==this.jugador2_quitar_emote){
         this.emote_jug2.destroy();
         this.i2=0;
@@ -616,6 +593,35 @@ class DemoScene extends Phaser.Scene
             frames: this.anims.generateFrameNumbers(player2sprite, {start: 5, end: 8}),
             frameRate: 10,
             repeat: -1
+            });
+            //Gif taunt
+            //pepeHappy
+            this.anims.create({
+                key:'pepeHappyGif',
+                frames: this.anims.generateFrameNumbers('pepeHappy',{start: 0, end: 4}),
+                frameRate: 10,
+                repeat: -1
+            });
+            //pepeSad
+            this.anims.create({
+                key:'pepeSadGif',
+                frames: this.anims.generateFrameNumbers('pepeSad',{start: 0, end: 7}),
+                frameRate: 10,
+                repeat: -1
+            });
+            //trollHappy
+            this.anims.create({
+                key:'trollHappyGif',
+                frames: this.anims.generateFrameNumbers('trollHappy',{start: 0, end: 8}),
+                frameRate: 10,
+                repeat: -1
+            });
+            //trollSad
+            this.anims.create({
+                key:'trollSadGif',
+                frames: this.anims.generateFrameNumbers('trollSad',{start: 0, end: 9}),
+                frameRate: 10,
+                repeat: -1
             });
     }
 
