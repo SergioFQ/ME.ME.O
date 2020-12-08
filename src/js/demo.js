@@ -270,11 +270,13 @@ class DemoScene extends Phaser.Scene
         this.meta.create(400,-800,'meta');
         this.overlapP1Win = this.physics.add.overlap(this.player1, this.meta, function(){
             this.trololoAudio.stop();
-            this.scene.start('Player1Victory');//player 1 win
+            // this.scene.start('Player1Victory');//player 1 win
+            this.scene.start('Player1Victory', {keyVidaP1: this.keyVidaP1});
         },null,this);
         this.overlapP2Win = this.physics.add.overlap(this.player2, this.meta, function() {
             this.trololoAudio.stop();
-            this.scene.start('Player2Victory');//player 2 win
+           // this.scene.start('Player2Victory');//player 2 win
+           this.scene.start('Player2Victory', {keyVidaP2: this.keyVidaP2});     
         },null,this);
 
         this.canJump1 = true;
@@ -640,6 +642,7 @@ class DemoScene extends Phaser.Scene
         this.canJump1 = false;
         if(this.p1Lives>0)
         {
+            this.overlapP1Win.active=false;
             this.vidasP1[this.p1Lives].setVisible(false);
             this.player1.alpha = 0.5;
             this.player1.body.setAllowGravity(false);
@@ -651,7 +654,8 @@ class DemoScene extends Phaser.Scene
         {
             this.vidasP1[0].setVisible(false);
             this.trololoAudio.stop();
-            this.scene.start('Player2Victory');//player 2 win
+         //   this.scene.start('Player2Victory');//player 2 win
+         this.scene.start('Player2Victory', {keyVidaP2: this.keyVidaP2}); 
             //cambiar de escena 
         }
     }
@@ -665,6 +669,7 @@ class DemoScene extends Phaser.Scene
         this.canJump2 = false;
         if(this.p2Lives>0)
         {
+            this.overlapP2Win.active=false;
             this.vidasP2[this.p2Lives].setVisible(false);
             this.player2.alpha = 0.5;
             this.player2.body.setAllowGravity(false);            
@@ -677,17 +682,24 @@ class DemoScene extends Phaser.Scene
         {
             this.vidasP2[0].setVisible(false);
             this.trololoAudio.stop();
-            this.scene.start('Player1Victory');//player 1 win
+           // this.scene.start('Player1Victory');//player 1 win
             //cambiar de escena 
+            this.scene.start('Player1Victory', {keyVidaP1: this.keyVidaP1});
         }
 
     }
     allowJump1()
     {
+        if( this.overlapP1Win.active==false){
+        this.overlapP1Win.active=true;
+        }
         this.canJump1 = true;
     }
     allowJump2()
     {
+        if( this.overlapP2Win.active==false){
+        this.overlapP2Win.active=true;
+        }
         this.canJump2 = true;
     }    
 
