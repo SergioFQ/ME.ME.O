@@ -11,7 +11,7 @@ var config = {
         }
     },
     backgroundColor: 0x747474,
-    scene: [Boot, Preload, Menu, Credits, Options, Select, DemoScene, Gameover, Win]
+    scene: [Boot, Preload, Menu, Credits, Options, Select, DemoScene, Player2Victory, Player1Victory]
 };
 //En scene ir añadiendo las diferentes escenas que se necesitarán
 var game = new Phaser.Game(config);
