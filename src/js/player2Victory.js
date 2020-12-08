@@ -1,8 +1,8 @@
-class Gameover extends Phaser.Scene
+class Player2Victory extends Phaser.Scene
 {
     constructor()//para poder llamar a la escena desde otras escenas
     {
-        super({ key: 'Gameover', active: false});
+        super({ key: 'Player2Victory', active: false});
     }
 
     init()

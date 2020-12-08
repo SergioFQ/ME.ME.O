@@ -5,6 +5,58 @@ class DemoScene extends Phaser.Scene
         super({ key: 'DemoScene', active: false});
     }
 
+    init (data)
+    {
+        this.eleccionJ1 = data.eleccion1;
+        this.eleccionJ2 = data.eleccion2;
+
+        this.spriteP1;
+        this.spriteP2;
+        this.keyP1;
+        this.keyP2;
+        this.keyVidaP1;
+        this.keyVidaP2;
+        
+        switch(this.eleccionJ1){
+            case 1:
+                this.spriteP1 = 'pepeS';
+                this.keyP1 = 'pepeSK';
+                this.keyVidaP1 = 'pepe';
+                break;
+            case 2:
+                this.spriteP1 = 'trollfaceS';
+                this.keyP1 = 'trollfaceSK';
+                this.keyVidaP1 = 'trollface';
+                break;
+            case 3:
+                this.spriteP1 = 'coffindancerS';
+                this.keyP1 = 'coffindancerSK';
+                this.keyVidaP1 = 'coffindancer';
+                break;
+            
+        }
+
+        switch(this.eleccionJ2){
+            case 1:
+                this.spriteP2 = 'pepeS';
+                this.keyP2 = 'pepeSK';
+                this.keyVidaP2 = 'pepe';
+                break;
+            case 2:
+                this.spriteP2 = 'trollfaceS';
+                this.keyP2 = 'trollfaceSK';
+                this.keyVidaP2 = 'trollface';
+                break;
+            case 3:
+                this.spriteP2 = 'coffindancerS';
+                this.keyP2 = 'coffindancerSK';
+                this.keyVidaP2 = 'coffindancer';
+                break;
+            
+        }
+
+    }
+
     preload()
     {
         this.load.image('sky','../resources/img/sky.png');
@@ -12,7 +64,7 @@ class DemoScene extends Phaser.Scene
         this.load.image('platformDislike','../resources/img/Plataformas/Plataforma Mala (150x32).png');
         this.load.image('platformCaida','../resources/img/platformCaida.png');
 
-        this.load.image('bomb','../resources/img/bomb.png');// ESTE ASSET SERA CAMBIADO POR UNA BALA AHORA SE USA DE TESTEO
+        this.load.image('bomb','../resources/img/Balas.png');
         this.load.image('mamado','../resources/img/ez.PNG');
         this.load.image('pepesad','../resources/img/PEPESAD.PNG');
         this.load.spritesheet('dude','../resources/img/dude.png',
@@ -23,74 +75,29 @@ class DemoScene extends Phaser.Scene
 
 
         this.load.spritesheet('pepeS','../resources/img/SpriteSheets/Pepe the Frog SpriteSheet.png',
-        { frameWidth:65, frameHeight: 96});
+        { frameWidth:64.44, frameHeight: 100});
 
         this.load.spritesheet('trollfaceS','../resources/img/SpriteSheets/Trollface SpriteSheet.png',
-        { frameWidth:65, frameHeight: 96});
+        { frameWidth:64.44, frameHeight: 100});
 
         this.load.spritesheet('coffindancerS','../resources/img/SpriteSheets/Coffin Dancer SpriteSheet.png',
-        { frameWidth:65, frameHeight: 96});
+        { frameWidth:64.44, frameHeight: 100});
 
         this.load.audio('trololo', '../resources/audio/trololo.mp3');
 
         this.load.audio('victory', '../resources/audio/victory.mp3');
       
         this.load.image('fondoVida','../resources/img/fondo vidas.png');//fondo auxiliar hasta que se tenga un fondo mejor
-        this.load.image('vidasPrueba','../resources/img/vida.png');//imagen auxiliar de las vidas
 
-        this.load.image('metaTest','../resources/img/metaProvisional.png');
+        this.load.image('meta','../resources/img/Meta.png');
+
+        this.load.image('fondo','../resources/img/Fondo.png');
     }
-
-    init (data)
-    {
-        this.eleccionJ1 = data.eleccion1;
-        console.log(this.eleccionJ1);
-
-        this.eleccionJ2 = data.eleccion2;
-        console.log(this.eleccionJ2);
-
-        this.spriteP1;
-        this.spriteP2;
-        this.keyP1;
-        this.keyP2;
-        
-        switch(this.eleccionJ1){
-            case 1:
-                this.spriteP1 = 'pepeS';
-                this.keyP1 = 'pepeSK';
-                break;
-            case 2:
-                this.spriteP1 = 'trollfaceS';
-                this.keyP1 = 'trollfaceSK';
-                break;
-            case 3:
-                this.spriteP1 = 'coffindancerS';
-                this.keyP1 = 'coffindancerSK';
-                break;
-            
-        }
-
-        switch(this.eleccionJ2){
-            case 1:
-                this.spriteP2 = 'pepeS';
-                this.keyP2 = 'pepeSK';
-                break;
-            case 2:
-                this.spriteP2 = 'trollfaceS';
-                this.keyP2 = 'trollfaceSK';
-                break;
-            case 3:
-                this.spriteP2 = 'coffindancerS';
-                this.keyP2 = 'coffindancerSK';
-                break;
-            
-        }
-
-    }
+    
 
     create()
     {
-        this.add.image(400,2700,'sky');
+        this.add.image(400,1000,'fondo');
         this.platforms = this.physics.add.staticGroup();
         
         this.platforms.create(400,2968,'platform').setScale(2).refreshBody();
@@ -100,13 +107,13 @@ class DemoScene extends Phaser.Scene
         this.platforms.create(420,2550,'platform');        
         this.platforms.create(420,2450,'platform');        
         this.platforms.create(300,2350,'platform');
-        this.player1 = this.physics.add.sprite(400,2900,'dude');
+        this.player1 = this.physics.add.sprite(400,2900,this.spriteP1).setScale(0.5);
         
         this.player1.setBounce(0);
         this.player1.setCollideWorldBounds(true);
         this.player1.depth=10;//profundidad para aparecer siempre por delante de todo
         this.player1.id = 0;
-        this.player2 = this.physics.add.sprite(400,2900,'dude2');
+        this.player2 = this.physics.add.sprite(400,2900,this.spriteP2).setScale(0.5);
         this.player2.setBounce(0);
         this.player2.setCollideWorldBounds(true);
         this.player2.depth=10;//profundidad para aparecer siempre por delante de todo
@@ -191,19 +198,19 @@ class DemoScene extends Phaser.Scene
         this.fondoVidaP2.depth=7;
 
         this.vidasP1 = new Array();
-        this.vidasP1[0] = this.add.image(this.fondoVidaP1.x-35,this.fondoVidaP1.y,'vidasPrueba').setScrollFactor(0,0);//cuando los menus esten, poner key dependiendo del personajes y que seea la cara la que aparezca, hasta entonces, cuadrado morados
+        this.vidasP1[0] = this.add.image(this.fondoVidaP1.x-35,this.fondoVidaP1.y,this.keyVidaP1).setScrollFactor(0,0);//cuando los menus esten, poner key dependiendo del personajes y que seea la cara la que aparezca, hasta entonces, cuadrado morados
         this.vidasP1[0].depth = 9;
-        this.vidasP1[1] = this.add.image(this.fondoVidaP1.x,this.fondoVidaP1.y,'vidasPrueba').setScrollFactor(0,0);
+        this.vidasP1[1] = this.add.image(this.fondoVidaP1.x,this.fondoVidaP1.y,this.keyVidaP1).setScrollFactor(0,0);
         this.vidasP1[1].depth = 9;
-        this.vidasP1[2] = this.add.image(this.fondoVidaP1.x+35,this.fondoVidaP1.y,'vidasPrueba').setScrollFactor(0,0);
+        this.vidasP1[2] = this.add.image(this.fondoVidaP1.x+35,this.fondoVidaP1.y,this.keyVidaP1).setScrollFactor(0,0);
         this.vidasP1[2].depth = 9;
 
         this.vidasP2 = new Array();
-        this.vidasP2[0] = this.add.image(this.fondoVidaP2.x-35,this.fondoVidaP2.y,'vidasPrueba').setScrollFactor(0,0);
+        this.vidasP2[0] = this.add.image(this.fondoVidaP2.x-35,this.fondoVidaP2.y,this.keyVidaP2).setScrollFactor(0,0);
         this.vidasP2[0].depth = 9;
-        this.vidasP2[1] = this.add.image(this.fondoVidaP2.x,this.fondoVidaP2.y,'vidasPrueba').setScrollFactor(0,0);
+        this.vidasP2[1] = this.add.image(this.fondoVidaP2.x,this.fondoVidaP2.y,this.keyVidaP2).setScrollFactor(0,0);
         this.vidasP2[1].depth = 9;
-        this.vidasP2[2] = this.add.image(this.fondoVidaP2.x+35,this.fondoVidaP2.y,'vidasPrueba').setScrollFactor(0,0);
+        this.vidasP2[2] = this.add.image(this.fondoVidaP2.x+35,this.fondoVidaP2.y,this.keyVidaP2).setScrollFactor(0,0);
         this.vidasP2[2].depth = 9;
       
 
@@ -260,18 +267,19 @@ class DemoScene extends Phaser.Scene
         this.timedEvent5 = this.time.addEvent({ delay: 2000, callback: this.generarBalasEnUnSitio, args:[40,this.alturaBala_Aux-2025,300],callbackScope: this, loop: true });
         
         this.meta = this.physics.add.staticGroup();
-        this.meta.create(400,-800,'metaTest').setScale(3).refreshBody();
+        this.meta.create(400,-800,'meta');
         this.overlapP1Win = this.physics.add.overlap(this.player1, this.meta, function(){
-            console.log("Gana el jugador 1");
-        });
+            this.trololoAudio.stop();
+            this.scene.start('Player1Victory');//player 1 win
+        },null,this);
         this.overlapP2Win = this.physics.add.overlap(this.player2, this.meta, function() {
-            console.log("Gana el jugador 2");
-        });
+            this.trololoAudio.stop();
+            this.scene.start('Player2Victory');//player 2 win
+        },null,this);
 
         this.canJump1 = true;
         this.canJump2 = true;
       
-        this.winOrDeath = this.input.keyboard.addKeys('K, L');
 
         this.trololoAudio = this.sound.add('trololo', { loop: true });
         this.trololoAudio.setVolume(0.02);
@@ -344,9 +352,7 @@ class DemoScene extends Phaser.Scene
         }
 
     update(time,delta)
-    {
-        console.log(musicOn);
-        
+    {        
         //Player1 control
     if(this.golpeado==true){
 
@@ -379,7 +385,7 @@ class DemoScene extends Phaser.Scene
             this.player1.anims.play(this.keyP1 + 'iddle');
         }
 
-        if(this.player1Controls.W.isDown && this.canJump1)
+        if(this.player1Controls.W.isDown && (this.canJump1 && this.player1.body.touching.down))
         {
             this.canJump1 = false;
             this.player1.setVelocityY(-400);
@@ -432,7 +438,7 @@ class DemoScene extends Phaser.Scene
             this.player2.anims.play(this.keyP2 + 'iddle2');
         }
 
-        if(this.player2Controls.UP.isDown && this.canJump2)
+        if(this.player2Controls.UP.isDown && (this.canJump2 && this.player2.body.touching.down))
         {
             this.canJump2 = false;
             this.player2.setVelocityY(-400);
@@ -460,19 +466,7 @@ class DemoScene extends Phaser.Scene
             this.platformCaida.setVelocity(0,0);// PLATAFORMA QUE MATA
             this.platformGeneradora.setVelocity(0,0);
         }
-        
-        if(this.winOrDeath.K.isDown)
-        {
-            this.trololoAudio.stop();
-            this.scene.start('Gameover');
-        }
-
-        if(this.winOrDeath.L.isDown)
-        {
-            this.trololoAudio.stop();
-            this.scene.start('Win');
-        }
-    //}
+          
 
        this.managePlatforms();
     
@@ -656,6 +650,8 @@ class DemoScene extends Phaser.Scene
         else
         {
             this.vidasP1[0].setVisible(false);
+            this.trololoAudio.stop();
+            this.scene.start('Player2Victory');//player 2 win
             //cambiar de escena 
         }
     }
@@ -680,6 +676,8 @@ class DemoScene extends Phaser.Scene
         else
         {
             this.vidasP2[0].setVisible(false);
+            this.trololoAudio.stop();
+            this.scene.start('Player1Victory');//player 1 win
             //cambiar de escena 
         }
 
