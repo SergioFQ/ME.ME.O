@@ -10,7 +10,8 @@ var config = {
             checkCollision: {up:false, down: false, left: true, right: true}
         }
     },
-    scene: [DemoScene]
+    backgroundColor: 0x747474,
+    scene: [Boot, Preload, Menu, Credits, Options, Select, DemoScene, Gameover, Win]
 };
 //En scene ir añadiendo las diferentes escenas que se necesitarán
 var game = new Phaser.Game(config);
