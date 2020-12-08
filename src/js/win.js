@@ -7,7 +7,7 @@ class Win extends Phaser.Scene
 
     preload()
     {
-        this.load.audio('victory', '../resources/audio/victory.mp3');
+        
     }
 
     init()

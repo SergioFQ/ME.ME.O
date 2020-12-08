@@ -125,7 +125,6 @@ class Select extends Phaser.Scene
  
         this.nextButton.on('pointerdown', function (pointer) {
             this.selectAudio.stop();
-            this.scene.restart('DemoScene');
             this.scene.start('DemoScene', {eleccion1: this.eleccion1, eleccion2: this.eleccion2});
         }.bind(this));
  

@@ -26,6 +26,8 @@ class DemoScene extends Phaser.Scene
         { frameWidth:65, frameHeight: 96});
 
         this.load.audio('trololo', '../resources/audio/trololo.mp3');
+
+        this.load.audio('victory', '../resources/audio/victory.mp3');
     }
 
     init (data)

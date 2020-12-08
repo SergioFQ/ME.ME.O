@@ -12,13 +12,13 @@ class Gameover extends Phaser.Scene
 
     preload()
     {
-        this.load.audio('lose', '../resources/audio/lose.mp3');
+        
     }
 
     create()
     {
-        this.loseAudio = this.sound.add('lose', { loop: false });
-        this.loseAudio.setVolume(0.07);
+        this.victoryAudio = this.sound.add('victory', { loop: false });
+        this.victoryAudio.setVolume(0.05);
         this.updateAudio();
 
         this.createBackground();
@@ -27,11 +27,6 @@ class Gameover extends Phaser.Scene
         this.text.setOrigin(0.5);
         this.text.setColor('#FFFFFF');
         
-        /*var button = this.add.bitmapText(370, 300, 'ClickPixel', 'MENU', 32, 'center')
-        .setInteractive()
-        .on('pointerdown', () => button.setScale( 1.2 ))
-        .on('pointerup', () => button.setScale( 1 ) && this.goMenu());*/
-
         this.backButton = this.add.sprite(400, 300, 'redButton01').setInteractive();
         this.centerButton(this.backButton, -0.5);
  
@@ -39,26 +34,29 @@ class Gameover extends Phaser.Scene
         this.centerButtonText(this.backText, this.backButton);
  
         this.backButton.on('pointerdown', function (pointer) {
-            this.loseAudio.stop();
+            this.victoryAudio.stop();
             this.scene.start('Menu');
         }.bind(this));
  
         this.input.on('pointerover', () => this.backButton.setTexture('redButton02'));
  
         this.input.on('pointerout', () => this.backButton.setTexture('redButton01'));
-        
-        
+          
+    }
+
+    update()
+    {
+          
     }
 
     updateAudio() {
         if (musicOn === false) {
           
-            this.loseAudio.stop();
-
+            this.victoryAudio.stop();
         } 
         else 
         {
-            this.loseAudio.play();
+            this.victoryAudio.play();
         }
     }
 
@@ -78,7 +76,7 @@ class Gameover extends Phaser.Scene
 
     goMenu ()
     {
-        this.loseAudio.stop();
+        this.victoryAudio.stop();
         this.scene.start('Menu');
     }
 
@@ -88,4 +86,5 @@ class Gameover extends Phaser.Scene
         this.bg.fillStyle('0x000000', 1);
         this.bg.fillRect(0, 0, 800, 600);
     }
+    
 }
