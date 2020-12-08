@@ -148,7 +148,6 @@ class Preload extends Phaser.Scene
         let perc = val + '%';
         this.txt_progress.setText(perc);
 
-        console.log(this.txt_progress.text);
     }
 
     createButton ()

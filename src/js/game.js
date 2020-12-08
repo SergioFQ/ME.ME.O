@@ -259,6 +259,10 @@ class GameScene extends Phaser.Scene
         this.trololoAudio = this.sound.add('trololo', { loop: true });
         this.trololoAudio.setVolume(0.02);
         this.updateAudio();
+        this.player1Name = this.add.text(this.player1.body.x, this.player1.body.y-25, 'Player 1', { fontFamily: 'Berlin Sans FB, "Goudy Bookletter 1911", Times, serif', fontSize: '20px', fill: ' #ffF'});
+        this.player1Name.depth = 9;
+        this.player2Name = this.add.text(this.player2.body.x, this.player2.body.y-25, 'Player 2', { fontFamily: 'Berlin Sans FB, "Goudy Bookletter 1911", Times, serif', fontSize: '20px', fill: '#fff' });
+        this.player2Name.depth = 9;
     }
 
     generarPlatEstatica(posX,posY){
@@ -431,6 +435,11 @@ class GameScene extends Phaser.Scene
             this.coll.active=false;
             this.colP2PlatqueSeMueve.active=false;
         }
+        this.player1Name.x = this.player1.body.x-15;
+        this.player1Name.y = this.player1.body.y-25;
+        this.player2Name.x = this.player2.body.x-15;
+        this.player2Name.y = this.player2.body.y-25;
+
       if(this.camera.scrollY>-1000)//ponemos un tope cualquiera al scroll de la camara // CON ESTO SE MUEVO
         {      
             this.platformCaida.setVelocity(0,-60*(delta/15));
