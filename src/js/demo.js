@@ -549,6 +549,7 @@ class DemoScene extends Phaser.Scene
         this.colll.active = false;
         this.colP1PlatqueSeMueve.active = false;
         this.colBalaP1.active = false;
+        this.canJump1 = false;
         if(this.p1Lives>0)
         {
             this.vidasP1[this.p1Lives].setVisible(false);
@@ -571,7 +572,7 @@ class DemoScene extends Phaser.Scene
         this.coll.active = false;
         this.colP2PlatqueSeMueve.active = false;
         this.colBalaP2.active = false;
-
+        this.canJump2 = false;
         if(this.p2Lives>0)
         {
             this.vidasP2[this.p2Lives].setVisible(false);
