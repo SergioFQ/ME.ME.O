@@ -23,6 +23,8 @@ class Menu extends Phaser.Scene
         
         this.createBackground();
         this.add.image(400, 300, 'memes');
+
+        this.add.graphics({x: 0,y: 0}).fillStyle('0x000000', 1).fillRect(250, 200, 300, 300);
         
         this.lalaAudio = this.sound.add('lala', { loop: true });
         this.lalaAudio.setVolume(0.02);

@@ -64,7 +64,7 @@ class Options extends Phaser.Scene
         this.input.on('pointerout', () => this.backButton.setTexture('redButton01'));
 
         this.optionsAudio = this.sound.add('options', { loop: true });
-        this.optionsAudio.setVolume(0.05);
+        this.optionsAudio.setVolume(0.02);
         this.updateAudio();
     }
 
