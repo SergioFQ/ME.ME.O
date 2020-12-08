@@ -35,7 +35,7 @@ class DemoScene extends Phaser.Scene
                 this.spriteP1 = 'coffindancerS';
                 this.keyP1 = 'coffindancerSK';
                 this.keyVidaP1 = 'coffindancer';
-                //this.keyGifP1 = '';
+                this.keyGifP1 = 'coffin';
                 break;
             
         }
@@ -57,7 +57,7 @@ class DemoScene extends Phaser.Scene
                 this.spriteP2 = 'coffindancerS';
                 this.keyP2 = 'coffindancerSK';
                 this.keyVidaP2 = 'coffindancer';
-                //this.keyGifP2 = 'troll';
+                this.keyGifP2 = 'coffin';
                 break;
             
         }
@@ -480,22 +480,24 @@ class DemoScene extends Phaser.Scene
        if(this.player2_emotes.B.isUp==false&&this.i2==0){
         this.jugador2_a_emoteado=time;
         this.jugador2_quitar_emote=time+200;
-        this.emote_jug2=this.add.sprite(this.player1.x-10,this.player1.y-45,'mamado');
+        this.emote_jug2=this.add.sprite(this.player2.x-5,this.player2.y-50,this.keyGifP2+'Happy').setScale(0.5);
+        this.emote_jug2.anims.play(this.keyGifP2+'HappyGif');
         this.emote_jug2.depth=10;
         this.i2=1;
        }
        else if(this.player2_emotes.M.isUp==false&&this.i2==0){
         this.jugador2_a_emoteado=time;
         this.jugador2_quitar_emote=time+200;
-        this.emote_jug2=this.add.sprite(this.player1.x-10,this.player1.y-45,'pepesad');
+        this.emote_jug2=this.add.sprite(this.player2.x-5,this.player2.y-50,this.keyGifP2+'Sad').setScale(0.5);
+        this.emote_jug2.anims.play(this.keyGifP2+'SadGif');
         this.emote_jug2.depth=10;
         this.i2=1;
        }
 
        if(this.jugador2_a_emoteado != this.jugador2_quitar_emote){
         this.jugador2_a_emoteado=this.jugador2_a_emoteado+1;
-        this.emote_jug2.x=this.player2.x-10;
-        this.emote_jug2.y=this.player2.y-45;
+        this.emote_jug2.x=this.player2.x-5;
+        this.emote_jug2.y=this.player2.y-50;
         if(  this.jugador2_a_emoteado==this.jugador2_quitar_emote){
         this.emote_jug2.destroy();
         this.i2=0;
@@ -620,6 +622,20 @@ class DemoScene extends Phaser.Scene
             this.anims.create({
                 key:'trollSadGif',
                 frames: this.anims.generateFrameNumbers('trollSad',{start: 0, end: 9}),
+                frameRate: 10,
+                repeat: -1
+            });
+            //coffinHappy
+            this.anims.create({
+                key:'coffinHappyGif',
+                frames: this.anims.generateFrameNumbers('coffinHappy',{start: 0, end: 16}),
+                frameRate: 10,
+                repeat: -1
+            });
+            //coffinSad
+            this.anims.create({
+                key:'coffinSadGif',
+                frames: this.anims.generateFrameNumbers('coffinSad',{start: 0, end: 11}),
                 frameRate: 10,
                 repeat: -1
             });

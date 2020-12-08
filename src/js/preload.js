@@ -64,6 +64,10 @@ class Preload extends Phaser.Scene
         {frameWidth: 117, frameHeight:111});
         this.load.spritesheet('trollSad','../resources/img/SpriteSheets/trollSad.png',
         {frameWidth:128, frameHeight:112});  
+        this.load.spritesheet('coffinHappy','../resources/img/SpriteSheets/coffin1.png',
+        {frameWidth:112, frameHeight:112});
+        this.load.spritesheet('coffinSad','../resources/img/SpriteSheets/coffin2.png',
+        {frameWidth:179, frameHeight:112});
 
         this.load.audio('controls', '../resources/audio/controls.mp3');
         
