@@ -39,7 +39,7 @@ class Preload extends Phaser.Scene
         { frameWidth:64.44, frameHeight: 100});
 
         this.load.audio('trololo', '../resources/audio/trololo.mp3');
-
+        this.load.audio('coffinSound','../resources/audio/coffinSound.mp3');
         this.load.audio('victory', '../resources/audio/victory.mp3');
       
         this.load.image('meta','../resources/img/Meta.png');

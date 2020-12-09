@@ -40,7 +40,10 @@ class Options extends Phaser.Scene
  
         this.backButton.on('pointerdown', function (pointer) {
             this.optionsAudio.stop();
-            this.scene.start('Menu');
+            this.cameras.main.fadeOut(500);
+            this.cameras.main.once('camerafadeoutcomplete', function (camera) {
+                this.scene.start('Menu');
+            }, this);
         }.bind(this));
  
         this.input.on('pointerover', () => this.backButton.setTexture('redButton02'));
@@ -50,6 +53,8 @@ class Options extends Phaser.Scene
         this.optionsAudio = this.sound.add('options', { loop: true });
         this.optionsAudio.setVolume(0.02);
         this.updateAudio();
+        
+        this.cameras.main.fadeIn(200);
     }
 
     updateAudio() {
@@ -83,7 +88,10 @@ class Options extends Phaser.Scene
 
     goMenu ()
     {
-        this.scene.start('Menu');
+        this.cameras.main.fadeOut(500);
+            this.cameras.main.once('camerafadeoutcomplete', function (camera) {
+                this.scene.start('Menu');
+            }, this);
     }
 
     createBackground ()

@@ -58,7 +58,10 @@ class Controls extends Phaser.Scene
  
         this.backButton.on('pointerdown', function (pointer) {
             this.controlsAudio.stop();
-            this.scene.start('Menu');
+            this.cameras.main.fadeOut(500);
+            this.cameras.main.once('camerafadeoutcomplete', function (camera) {
+                this.scene.start('Menu');
+            }, this);
         }.bind(this));
  
         this.input.on('pointerover', () => this.backButton.setTexture('redButton02'));
@@ -66,6 +69,7 @@ class Controls extends Phaser.Scene
         this.input.on('pointerout', () => this.backButton.setTexture('redButton01'));
         
         
+        this.cameras.main.fadeIn(200);
     }
 
     update()

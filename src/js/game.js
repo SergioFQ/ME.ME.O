@@ -72,6 +72,7 @@ class GameScene extends Phaser.Scene
 
     create()
     {
+        this.fadeEnd = false;
         this.createAnimations(this.spriteP1, this.spriteP2, this.keyP1, this.keyP2);
         this.add.image(400,1000,'fondo');
         this.platforms = this.physics.add.staticGroup();
@@ -240,11 +241,19 @@ class GameScene extends Phaser.Scene
         this.meta.create(400,-800,'meta');
         this.overlapP1Win = this.physics.add.overlap(this.player1, this.meta, function(){
             this.trololoAudio.stop();
-            this.scene.start('Player1Victory', {keyVidaP1: this.keyVidaP1});
+            this.coffinAudio.stop();
+            this.cameras.main.fadeOut(500);
+            this.cameras.main.once('camerafadeoutcomplete', function (camera) {
+                this.scene.start('PlayerVictory', {keyVida: this.keyVidaP1, player:0});
+            }, this);
         },null,this);
         this.overlapP2Win = this.physics.add.overlap(this.player2, this.meta, function() {
             this.trololoAudio.stop();
-           this.scene.start('Player2Victory', {keyVidaP2: this.keyVidaP2});     
+            this.coffinAudio.stop();
+            this.cameras.main.fadeOut(500);
+            this.cameras.main.once('camerafadeoutcomplete', function (camera) {
+                this.scene.start('PlayerVictory', {keyVida: this.keyVidaP2, player:1});
+            }, this);  
         },null,this);
 
         this.canJump1 = true;
@@ -253,11 +262,18 @@ class GameScene extends Phaser.Scene
 
         this.trololoAudio = this.sound.add('trololo', { loop: true });
         this.trololoAudio.setVolume(0.02);
+        this.coffinAudio = this.sound.add('coffinSound', { loop: true });
+        this.coffinAudio.setVolume(0.02);
         this.updateAudio();
         this.player1Name = this.add.text(this.player1.body.x, this.player1.body.y-25, 'Player 1', { fontFamily: 'Berlin Sans FB, "Goudy Bookletter 1911", Times, serif', fontSize: '20px', fill: ' #ffF'});
         this.player1Name.depth = 9;
         this.player2Name = this.add.text(this.player2.body.x, this.player2.body.y-25, 'Player 2', { fontFamily: 'Berlin Sans FB, "Goudy Bookletter 1911", Times, serif', fontSize: '20px', fill: '#fff' });
         this.player2Name.depth = 9;
+        this.cameras.main.fadeIn(200);
+        this.cameras.main.once('camerafadeincomplete', function (camera) {
+            this.fadeEnd = true;
+            //this.scene.start('GameScene', { eleccion1: this.eleccion1, eleccion2: this.eleccion2 });
+        }, this);
     }
 
     generarPlatEstatica(posX,posY){
@@ -327,6 +343,10 @@ class GameScene extends Phaser.Scene
 
     update(time,delta)
     {        
+        if(!this.fadeEnd)
+        {
+            return;
+        }
         //Player1 control
     if(this.golpeado==true){
 
@@ -647,12 +667,16 @@ class GameScene extends Phaser.Scene
         if (musicOn === false) {
           
             this.trololoAudio.stop();
-
+            this.coffinAudio.stop();
         } 
         else 
         {
-
-            this.trololoAudio.play();
+            if(Phaser.Math.Between(0,100)>=50)
+            {
+                this.trololoAudio.play();
+            }else{
+                this.coffinAudio.play();
+            }
         }
     }
 
@@ -678,7 +702,11 @@ class GameScene extends Phaser.Scene
         {
             this.vidasP1[0].setVisible(false);
             this.trololoAudio.stop();
-            this.scene.start('Player2Victory', {keyVidaP2: this.keyVidaP2}); 
+            this.coffinAudio.stop();
+            this.cameras.main.fadeOut(500);
+            this.cameras.main.once('camerafadeoutcomplete', function (camera) {
+                this.scene.start('PlayerVictory', {keyVida: this.keyVidaP2, player: 1});
+            }, this);
             //cambiar de escena 
         }
     }
@@ -705,8 +733,12 @@ class GameScene extends Phaser.Scene
         {
             this.vidasP2[0].setVisible(false);
             this.trololoAudio.stop();
+            this.coffinAudio.stop();
             //cambiar de escena 
-            this.scene.start('Player1Victory', {keyVidaP1: this.keyVidaP1});
+            this.cameras.main.fadeOut(500);
+            this.cameras.main.once('camerafadeoutcomplete', function (camera) {
+                this.scene.start('PlayerVictory', {keyVida: this.keyVidaP1, player: 0});
+            }, this);
         }
 
     }
