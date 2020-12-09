@@ -258,13 +258,12 @@ class GameScene extends Phaser.Scene {
         this.cameras.main.fadeIn(200);
         this.cameras.main.once('camerafadeincomplete', function (camera) {
             this.fadeEnd = true;
-            //this.scene.start('GameScene', { eleccion1: this.eleccion1, eleccion2: this.eleccion2 });
         }, this);
         this.gameEnded = false;
-        //
         this.menuButton = this.add.sprite(80, 570, 'redButton01').setInteractive().setScrollFactor(0,0).setScale(0.75);
-
+        this.menuButton.depth=12;
         this.menuText = this.add.text(0, 0, 'MENU', { fontFamily: 'Berlin Sans FB, "Goudy Bookletter 1911", Times, serif', fontSize: '32px', fill: '#fff' });
+        this.menuText.depth=13;
         this.menuText.setScrollFactor(0,0);
         this.centerButtonText(this.menuText, this.menuButton);
         
@@ -280,7 +279,6 @@ class GameScene extends Phaser.Scene {
         this.input.on('pointerover', () => this.menuButton.setTexture('redButton02'));
 
         this.input.on('pointerout', () => this.menuButton.setTexture('redButton01'));
-        //
     }
     
 
