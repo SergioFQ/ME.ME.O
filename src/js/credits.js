@@ -42,7 +42,7 @@ class Credits extends Phaser.Scene
     update ()
     {
         this.creditsImg.y--;
-        if (this.creditsImg.y < -600)
+        if (this.creditsImg.y < -800)
         {
             this.creditsAudio.stop();
             this.scene.start('Menu');
