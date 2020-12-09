@@ -23,6 +23,7 @@ class Preload extends Phaser.Scene
         },this);
 
         this.load.image('platform','../resources/img/Plataformas/Plataforma Buena (150x32).png');
+        this.load.image('origen','../resources/img/Plataformas/Plataforma Buena (800x64).png');
         this.load.image('platformDislike','../resources/img/Plataformas/Plataforma Mala (150x32).png');
         this.load.image('platformCaida','../resources/img/platformCaida.png');
 
@@ -41,8 +42,6 @@ class Preload extends Phaser.Scene
 
         this.load.audio('victory', '../resources/audio/victory.mp3');
       
-        this.load.image('fondoVida','../resources/img/fondo vidas.png');//fondo auxiliar hasta que se tenga un fondo mejor
-
         this.load.image('meta','../resources/img/Meta.png');
 
         this.load.image('fondo','../resources/img/Fondo.png');

@@ -76,20 +76,20 @@ class GameScene extends Phaser.Scene
         this.add.image(400,1000,'fondo');
         this.platforms = this.physics.add.staticGroup();
         
-        this.platforms.create(400,2968,'platform').setScale(2).refreshBody();
-        this.platforms.create(300,2850,'platform');
+        this.platforms.create(400,2968,'origen');
+        this.platforms.create(425,2850,'platform');
         this.platforms.create(450,2750,'platform');
         this.platforms.create(500,2650,'platform');
         this.platforms.create(420,2550,'platform');        
         this.platforms.create(420,2450,'platform');        
         this.platforms.create(300,2350,'platform');
-        this.player1 = this.physics.add.sprite(400,2900,this.spriteP1).setScale(0.5);
+        this.player1 = this.physics.add.sprite(250,2900,this.spriteP1).setScale(0.5);
         
         this.player1.setBounce(0);
         this.player1.setCollideWorldBounds(true);
         this.player1.depth=10;//profundidad para aparecer siempre por delante de todo
         this.player1.id = 0;
-        this.player2 = this.physics.add.sprite(400,2900,this.spriteP2).setScale(0.5);
+        this.player2 = this.physics.add.sprite(600,2900,this.spriteP2).setScale(0.5);
         this.player2.setBounce(0);
         this.player2.setCollideWorldBounds(true);
         this.player2.depth=10;//profundidad para aparecer siempre por delante de todo
@@ -167,25 +167,20 @@ class GameScene extends Phaser.Scene
         this.p1Death = this.p2Death = false;
         this.p1Scroll = this.p2Scroll = false; 
 
-        this.fondoVidaP1 = this.add.image(100,50,'fondoVida').setScrollFactor(0,0);
-        this.fondoVidaP1.depth=7;
-        this.fondoVidaP2 = this.add.image((config.width)-100,50,'fondoVida').setScrollFactor(0,0);
-        this.fondoVidaP2.depth=7;
-
         this.vidasP1 = new Array();
-        this.vidasP1[0] = this.add.image(this.fondoVidaP1.x-35,this.fondoVidaP1.y,this.keyVidaP1).setScrollFactor(0,0);//cuando los menus esten, poner key dependiendo del personajes y que seea la cara la que aparezca, hasta entonces, cuadrado morados
+        this.vidasP1[0] = this.add.image(100-35,50,this.keyVidaP1).setScrollFactor(0,0);//cuando los menus esten, poner key dependiendo del personajes y que seea la cara la que aparezca, hasta entonces, cuadrado morados
         this.vidasP1[0].depth = 9;
-        this.vidasP1[1] = this.add.image(this.fondoVidaP1.x,this.fondoVidaP1.y,this.keyVidaP1).setScrollFactor(0,0);
+        this.vidasP1[1] = this.add.image(100,50,this.keyVidaP1).setScrollFactor(0,0);
         this.vidasP1[1].depth = 9;
-        this.vidasP1[2] = this.add.image(this.fondoVidaP1.x+35,this.fondoVidaP1.y,this.keyVidaP1).setScrollFactor(0,0);
+        this.vidasP1[2] = this.add.image(100+35,50,this.keyVidaP1).setScrollFactor(0,0);
         this.vidasP1[2].depth = 9;
 
         this.vidasP2 = new Array();
-        this.vidasP2[0] = this.add.image(this.fondoVidaP2.x-35,this.fondoVidaP2.y,this.keyVidaP2).setScrollFactor(0,0);
+        this.vidasP2[0] = this.add.image((config.width)-100-35,50,this.keyVidaP2).setScrollFactor(0,0);
         this.vidasP2[0].depth = 9;
-        this.vidasP2[1] = this.add.image(this.fondoVidaP2.x,this.fondoVidaP2.y,this.keyVidaP2).setScrollFactor(0,0);
+        this.vidasP2[1] = this.add.image((config.width)-100,50,this.keyVidaP2).setScrollFactor(0,0);
         this.vidasP2[1].depth = 9;
-        this.vidasP2[2] = this.add.image(this.fondoVidaP2.x+35,this.fondoVidaP2.y,this.keyVidaP2).setScrollFactor(0,0);
+        this.vidasP2[2] = this.add.image((config.width)-100+35,50,this.keyVidaP2).setScrollFactor(0,0);
         this.vidasP2[2].depth = 9;
       
 
