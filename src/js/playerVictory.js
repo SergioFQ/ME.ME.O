@@ -53,12 +53,11 @@ class PlayerVictory extends Phaser.Scene {
         this.centerButtonText(this.backText, this.backButton);
 
         this.backButton.on('pointerdown', function (pointer) {
-            //this.victoryAudio.stop();
-            /*this.cameras.main.fadeOut(500);
+            this.cameras.main.fadeOut(500);
             this.cameras.main.once('camerafadeoutcomplete', function (camera) {                
-            this.victoryAudio.stop();*/
+            this.victoryAudio.stop();
             this.scene.start('Menu');
-            //}, this);
+            }, this);
         }.bind(this));
 
         this.input.on('pointerover', () => this.backButton.setTexture('redButton02'));

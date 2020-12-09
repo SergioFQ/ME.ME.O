@@ -151,7 +151,10 @@ class Preload extends Phaser.Scene {
         this.centerButtonText(this.backText, this.nextButton);
 
         this.nextButton.on('pointerdown', function (pointer) {
-            this.scene.start('Menu');
+            this.cameras.main.fadeOut(500);
+            this.cameras.main.once('camerafadeoutcomplete', function (camera) {
+                this.scene.start('Menu');
+            }, this);
         }.bind(this));
 
         this.input.on('pointerover', () => this.nextButton.setTexture('redButton02'));

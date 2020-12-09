@@ -36,18 +36,19 @@ class Credits extends Phaser.Scene {
         this.input.on('pointerover', () => this.skipButton.setTexture('smallButton02'));
 
         this.input.on('pointerout', () => this.skipButton.setTexture('smallButton01'));
-
+        this.moveImage = false;
         this.cameras.main.fadeIn(200);
     }
 
     update() {
         this.creditsImg.y--;
-        if (this.creditsImg.y < -800) {
+        if (this.creditsImg.y < -800 && !this.moveImage) {
+            this.moveImage = true;
             this.creditsAudio.stop();
-            //this.cameras.main.fadeOut(500);
-            //this.cameras.main.once('camerafadeoutcomplete', function (camera) {
+            this.cameras.main.fadeOut(500);
+            this.cameras.main.once('camerafadeoutcomplete', function (camera) {
             this.scene.start('Menu');
-            //}, this);
+            }, this);
         }
     }
 

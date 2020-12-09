@@ -112,7 +112,7 @@ class Select extends Phaser.Scene {
         this.centerButtonText(this.backText, this.nextButton);
 
         this.nextButton.on('pointerdown', function (pointer) {
-            this.cameras.main.fadeOut(1000);
+            this.cameras.main.fadeOut(500);
             this.cameras.main.once('camerafadeoutcomplete', function (camera) {
                 this.selectAudio.stop();
                 this.scene.start('GameScene', { eleccion1: this.eleccion1, eleccion2: this.eleccion2 });

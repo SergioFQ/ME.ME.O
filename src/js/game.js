@@ -236,20 +236,10 @@ class GameScene extends Phaser.Scene {
         this.meta = this.physics.add.staticGroup();
         this.meta.create(400, -800, 'meta');
         this.overlapP1Win = this.physics.add.overlap(this.player1, this.meta, function () {
-            this.cameras.main.fadeOut(500);
-            this.cameras.main.once('camerafadeoutcomplete', function (camera) {                
-            this.trololoAudio.stop();
-            this.coffinAudio.stop();
-                this.scene.start('PlayerVictory', { keyVida: this.keyVidaP1, player: 0 });
-            }, this);
+            this.goToVictory(this.keyVidaP1, this.player1.id);
         }, null, this);
         this.overlapP2Win = this.physics.add.overlap(this.player2, this.meta, function () {
-            this.cameras.main.fadeOut(500);
-            this.cameras.main.once('camerafadeoutcomplete', function (camera) {                
-            this.trololoAudio.stop();
-            this.coffinAudio.stop();
-                this.scene.start('PlayerVictory', { keyVida: this.keyVidaP2, player: 1 });
-            }, this);
+            this.goToVictory(this.keyVidaP2, this.player2.id);
         }, null, this);
 
         this.canJump1 = true;
@@ -270,6 +260,7 @@ class GameScene extends Phaser.Scene {
             this.fadeEnd = true;
             //this.scene.start('GameScene', { eleccion1: this.eleccion1, eleccion2: this.eleccion2 });
         }, this);
+        this.gameEnded = false;
     }
 
     generarPlatEstatica(posX, posY) {
@@ -680,15 +671,11 @@ class GameScene extends Phaser.Scene {
         }
         else {
             this.vidasP1[0].setVisible(false);
-            this.cameras.main.fadeOut(500);
-            this.cameras.main.once('camerafadeoutcomplete', function (camera) {
-                this.trololoAudio.stop();
-                this.coffinAudio.stop();
-                this.scene.start('PlayerVictory', { keyVida: this.keyVidaP2, player: 1 });
-            }, this);
-            //cambiar de escena 
+            this.goToVictory(this.keyVidaP1, this.player1.id);
         }
     }
+
+
     muerteCaida2() {
         this.p2Lives--;
         this.colP2Plat.active = false;
@@ -708,13 +695,7 @@ class GameScene extends Phaser.Scene {
         }
         else {
             this.vidasP2[0].setVisible(false);
-            //cambiar de escena 
-            this.cameras.main.fadeOut(500);
-            this.cameras.main.once('camerafadeoutcomplete', function (camera) {
-                this.trololoAudio.stop();
-                this.coffinAudio.stop();
-                this.scene.start('PlayerVictory', { keyVida: this.keyVidaP1, player: 0 });
-            }, this);
+            this.goToVictory(this.keyVidaP2, this.player2.id);
         }
 
     }
@@ -746,6 +727,19 @@ class GameScene extends Phaser.Scene {
         }
         player.setImmovable(false);
         player.body.setAllowGravity(true);
+    }
+
+    goToVictory(keyVida, id) {
+        if (!this.gameEnded) {
+            this.gameEnded = true;
+            this.cameras.main.fadeOut(500);
+            this.cameras.main.once('camerafadeoutcomplete', function (camera) {
+                this.trololoAudio.stop();
+                this.coffinAudio.stop();
+                this.scene.start('PlayerVictory', { keyVida: keyVida, player: id });
+            }, this);
+
+        }
     }
 
     managePlatforms() {

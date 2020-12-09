@@ -81,7 +81,6 @@ class Options extends Phaser.Scene {
         );
     }
 
-
     createBackground() {
         this.bg = this.add.graphics({ x: 0, y: 0 });
         this.bg.fillStyle('0x000000', 1);
