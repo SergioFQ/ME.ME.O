@@ -102,7 +102,7 @@ class Menu extends Phaser.Scene {
         this.input.on('pointerout', function (event, gameObjects) {
             gameObjects[0].setTexture('redButton01');
         });
-        
+
         this.cameras.main.fadeIn(200);
     }
 
