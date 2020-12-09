@@ -19,6 +19,22 @@ class Select extends Phaser.Scene {
         this.selectAudio.setVolume(0.05);
         this.updateAudio();
 
+        this.exitButton = this.add.sprite(750, 50, 'smallButton01').setInteractive();
+        this.backText = this.add.text(0, 0, 'X', { fontFamily: 'Berlin Sans FB, "Goudy Bookletter 1911", Times, serif', fontSize: '32px', fill: '#fff' });
+        this.centerButtonText(this.backText, this.exitButton);
+
+        this.exitButton.on('pointerdown', function (pointer) {
+            this.cameras.main.fadeOut(500);
+            this.cameras.main.once('camerafadeoutcomplete', function (camera) {
+                this.selectAudio.stop();
+                this.scene.start('Menu');
+            }, this);
+        }.bind(this));
+
+        this.input.on('pointerover', () => this.exitButton.setTexture('smallButton02'));
+
+        this.input.on('pointerout', () => this.exitButton.setTexture('smallButton01'));
+
         this.text = this.add.text(400, 100, 'Press to select character', { fontFamily: 'Berlin Sans FB, "Goudy Bookletter 1911", Times, serif', fontSize: '42px', fill: '#fff' });
         this.text.setOrigin(0.5);
         this.text.setColor('#FFFFFF');

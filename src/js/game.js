@@ -166,19 +166,19 @@ class GameScene extends Phaser.Scene {
 
         this.vidasP1 = new Array();
         this.vidasP1[0] = this.add.image(100 - 35, 50, this.keyVidaP1).setScrollFactor(0, 0);//cuando los menus esten, poner key dependiendo del personajes y que seea la cara la que aparezca, hasta entonces, cuadrado morados
-        this.vidasP1[0].depth = 9;
+        this.vidasP1[0].depth = 12;
         this.vidasP1[1] = this.add.image(100, 50, this.keyVidaP1).setScrollFactor(0, 0);
-        this.vidasP1[1].depth = 9;
+        this.vidasP1[1].depth = 12;
         this.vidasP1[2] = this.add.image(100 + 35, 50, this.keyVidaP1).setScrollFactor(0, 0);
-        this.vidasP1[2].depth = 9;
+        this.vidasP1[2].depth = 12;
 
         this.vidasP2 = new Array();
         this.vidasP2[0] = this.add.image((config.width) - 100 - 35, 50, this.keyVidaP2).setScrollFactor(0, 0);
-        this.vidasP2[0].depth = 9;
+        this.vidasP2[0].depth = 12;
         this.vidasP2[1] = this.add.image((config.width) - 100, 50, this.keyVidaP2).setScrollFactor(0, 0);
-        this.vidasP2[1].depth = 9;
+        this.vidasP2[1].depth = 12;
         this.vidasP2[2] = this.add.image((config.width) - 100 + 35, 50, this.keyVidaP2).setScrollFactor(0, 0);
-        this.vidasP2[2].depth = 9;
+        this.vidasP2[2].depth = 12;
 
 
 
@@ -261,6 +261,34 @@ class GameScene extends Phaser.Scene {
             //this.scene.start('GameScene', { eleccion1: this.eleccion1, eleccion2: this.eleccion2 });
         }, this);
         this.gameEnded = false;
+        //
+        this.menuButton = this.add.sprite(80, 570, 'redButton01').setInteractive().setScrollFactor(0,0).setScale(0.75);
+
+        this.menuText = this.add.text(0, 0, 'MENU', { fontFamily: 'Berlin Sans FB, "Goudy Bookletter 1911", Times, serif', fontSize: '32px', fill: '#fff' });
+        this.menuText.setScrollFactor(0,0);
+        this.centerButtonText(this.menuText, this.menuButton);
+        
+        this.menuButton.on('pointerdown', function (pointer) {
+            this.cameras.main.fadeOut(500);
+            this.cameras.main.once('camerafadeoutcomplete', function (camera) {
+                this.trololoAudio.stop();
+                this.coffinAudio.stop();
+                this.scene.start('Menu');
+            }, this);
+        }.bind(this));
+
+        this.input.on('pointerover', () => this.menuButton.setTexture('redButton02'));
+
+        this.input.on('pointerout', () => this.menuButton.setTexture('redButton01'));
+        //
+    }
+    
+
+    centerButtonText(gameText, gameButton) {
+        Phaser.Display.Align.In.Center(
+            gameText,
+            gameButton
+        );
     }
 
     generarPlatEstatica(posX, posY) {
