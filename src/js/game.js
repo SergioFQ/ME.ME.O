@@ -697,7 +697,7 @@ class GameScene extends Phaser.Scene {
         }
         else {
             this.vidasP1[0].setVisible(false);
-            this.goToVictory(this.keyVidaP1, this.player1.id);
+            this.goToVictory(this.keyVidaP2, this.player2.id);
         }
     }
 
@@ -721,7 +721,7 @@ class GameScene extends Phaser.Scene {
         }
         else {
             this.vidasP2[0].setVisible(false);
-            this.goToVictory(this.keyVidaP2, this.player2.id);
+            this.goToVictory(this.keyVidaP1, this.player1.id);
         }
 
     }
