@@ -236,18 +236,18 @@ class GameScene extends Phaser.Scene {
         this.meta = this.physics.add.staticGroup();
         this.meta.create(400, -800, 'meta');
         this.overlapP1Win = this.physics.add.overlap(this.player1, this.meta, function () {
+            this.cameras.main.fadeOut(500);
+            this.cameras.main.once('camerafadeoutcomplete', function (camera) {                
             this.trololoAudio.stop();
             this.coffinAudio.stop();
-            this.cameras.main.fadeOut(500);
-            this.cameras.main.once('camerafadeoutcomplete', function (camera) {
                 this.scene.start('PlayerVictory', { keyVida: this.keyVidaP1, player: 0 });
             }, this);
         }, null, this);
         this.overlapP2Win = this.physics.add.overlap(this.player2, this.meta, function () {
+            this.cameras.main.fadeOut(500);
+            this.cameras.main.once('camerafadeoutcomplete', function (camera) {                
             this.trololoAudio.stop();
             this.coffinAudio.stop();
-            this.cameras.main.fadeOut(500);
-            this.cameras.main.once('camerafadeoutcomplete', function (camera) {
                 this.scene.start('PlayerVictory', { keyVida: this.keyVidaP2, player: 1 });
             }, this);
         }, null, this);
@@ -680,10 +680,10 @@ class GameScene extends Phaser.Scene {
         }
         else {
             this.vidasP1[0].setVisible(false);
-            this.trololoAudio.stop();
-            this.coffinAudio.stop();
             this.cameras.main.fadeOut(500);
             this.cameras.main.once('camerafadeoutcomplete', function (camera) {
+                this.trololoAudio.stop();
+                this.coffinAudio.stop();
                 this.scene.start('PlayerVictory', { keyVida: this.keyVidaP2, player: 1 });
             }, this);
             //cambiar de escena 
@@ -708,11 +708,11 @@ class GameScene extends Phaser.Scene {
         }
         else {
             this.vidasP2[0].setVisible(false);
-            this.trololoAudio.stop();
-            this.coffinAudio.stop();
             //cambiar de escena 
             this.cameras.main.fadeOut(500);
             this.cameras.main.once('camerafadeoutcomplete', function (camera) {
+                this.trololoAudio.stop();
+                this.coffinAudio.stop();
                 this.scene.start('PlayerVictory', { keyVida: this.keyVidaP1, player: 0 });
             }, this);
         }

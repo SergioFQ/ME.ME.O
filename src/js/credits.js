@@ -26,9 +26,9 @@ class Credits extends Phaser.Scene {
         this.centerButtonText(this.backText, this.skipButton);
 
         this.skipButton.on('pointerdown', function (pointer) {
-            this.creditsAudio.stop();
             this.cameras.main.fadeOut(500);
             this.cameras.main.once('camerafadeoutcomplete', function (camera) {
+                this.creditsAudio.stop();
                 this.scene.start('Menu');
             }, this);
         }.bind(this));

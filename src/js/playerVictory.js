@@ -16,7 +16,7 @@ class PlayerVictory extends Phaser.Scene {
     create() {
 
         this.victoryAudio = this.sound.add('victory', { loop: false });
-        this.victoryAudio.setVolume(0.05);
+        this.victoryAudio.setVolume(0.01);
         this.updateAudio();
 
         this.createBackground();
@@ -53,7 +53,7 @@ class PlayerVictory extends Phaser.Scene {
         this.centerButtonText(this.backText, this.backButton);
 
         this.backButton.on('pointerdown', function (pointer) {
-            this.victoryAudio.stop();
+            //this.victoryAudio.stop();
             /*this.cameras.main.fadeOut(500);
             this.cameras.main.once('camerafadeoutcomplete', function (camera) {                
             this.victoryAudio.stop();*/
@@ -116,15 +116,6 @@ class PlayerVictory extends Phaser.Scene {
             gameObject,
             this.add.zone(800 / 2, 600 / 2 - offset * 100, 800, 600)
         );
-    }
-
-    goMenu() {
-        this.victoryAudio.stop();
-        /*this.cameras.main.fadeOut(500);
-            this.cameras.main.once('camerafadeoutcomplete', function (camera) {                
-                this.victoryAudio.stop();*/
-        this.scene.start('Menu');
-        //}, this);
     }
 
     createBackground() {

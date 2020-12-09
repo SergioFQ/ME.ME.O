@@ -35,9 +35,9 @@ class Options extends Phaser.Scene {
         this.centerButtonText(this.backText, this.backButton);
 
         this.backButton.on('pointerdown', function (pointer) {
-            this.optionsAudio.stop();
             this.cameras.main.fadeOut(500);
             this.cameras.main.once('camerafadeoutcomplete', function (camera) {
+                this.optionsAudio.stop();
                 this.scene.start('Menu');
             }, this);
         }.bind(this));
@@ -81,12 +81,6 @@ class Options extends Phaser.Scene {
         );
     }
 
-    goMenu() {
-        this.cameras.main.fadeOut(500);
-        this.cameras.main.once('camerafadeoutcomplete', function (camera) {
-            this.scene.start('Menu');
-        }, this);
-    }
 
     createBackground() {
         this.bg = this.add.graphics({ x: 0, y: 0 });

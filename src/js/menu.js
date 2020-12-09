@@ -35,9 +35,9 @@ class Menu extends Phaser.Scene {
         this.centerButtonText(this.gameText, this.gameButton);
 
         this.gameButton.on('pointerdown', function (pointer) {
-            this.lalaAudio.stop();
             this.cameras.main.fadeOut(500);
             this.cameras.main.once('camerafadeoutcomplete', function (camera) {
+                this.lalaAudio.stop();
                 this.scene.start('Select');
             }, this);
         }.bind(this));
@@ -59,9 +59,9 @@ class Menu extends Phaser.Scene {
         this.centerButtonText(this.optionsText, this.optionsButton);
 
         this.optionsButton.on('pointerdown', function (pointer) {
-            this.lalaAudio.stop();
             this.cameras.main.fadeOut(500);
             this.cameras.main.once('camerafadeoutcomplete', function (camera) {
+                this.lalaAudio.stop();
                 this.scene.start('Options');
             }, this);
         }.bind(this));
@@ -73,9 +73,9 @@ class Menu extends Phaser.Scene {
         this.centerButtonText(this.optionsText, this.controlsButton);
 
         this.controlsButton.on('pointerdown', function (pointer) {
-            this.lalaAudio.stop();
             this.cameras.main.fadeOut(500);
             this.cameras.main.once('camerafadeoutcomplete', function (camera) {
+                this.lalaAudio.stop();
                 this.scene.start('Controls');
             }, this);
         }.bind(this));
@@ -88,9 +88,9 @@ class Menu extends Phaser.Scene {
         this.centerButtonText(this.creditsText, this.creditsButton);
 
         this.creditsButton.on('pointerdown', function (pointer) {
-            this.lalaAudio.stop();
             this.cameras.main.fadeOut(500);
             this.cameras.main.once('camerafadeoutcomplete', function (camera) {
+                this.lalaAudio.stop();
                 this.scene.start('Credits');
             }, this);
         }.bind(this));
