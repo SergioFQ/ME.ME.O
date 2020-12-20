@@ -26,12 +26,12 @@ class Menu extends Phaser.Scene {
         this.add.image(400, 80, 'titulo');
 
 
-        //Play
+        //Play Standalone
 
         this.gameButton = this.add.sprite(400, 300, 'redButton01').setInteractive();
         this.centerButton(this.gameButton, 1);
 
-        this.gameText = this.add.text(0, 0, 'PLAY', { fontFamily: 'Berlin Sans FB, "Goudy Bookletter 1911", Times, serif', fontSize: '32px', fill: '#fff' });
+        this.gameText = this.add.text(0, 0, 'PLAY Local', { fontFamily: 'Berlin Sans FB, "Goudy Bookletter 1911", Times, serif', fontSize: '32px', fill: '#fff' });
         this.centerButtonText(this.gameText, this.gameButton);
 
         this.gameButton.on('pointerdown', function (pointer) {
@@ -39,6 +39,30 @@ class Menu extends Phaser.Scene {
             this.cameras.main.once('camerafadeoutcomplete', function (camera) {
                 this.lalaAudio.stop();
                 this.scene.start('Select');
+            }, this);
+        }.bind(this));
+
+        this.input.on('pointerover', function (event, gameObjects) {
+            gameObjects[0].setTexture('redButton02');
+        });
+
+        this.input.on('pointerout', function (event, gameObjects) {
+            gameObjects[0].setTexture('redButton01');
+        });
+
+        //Play Multi
+
+        this.gameButton = this.add.sprite(650, 300, 'redButton01').setInteractive();
+        //this.centerButton(this.gameButton, 1);
+
+        this.gameText = this.add.text(0, 0, 'PLAY Multi', { fontFamily: 'Berlin Sans FB, "Goudy Bookletter 1911", Times, serif', fontSize: '32px', fill: '#fff' });
+        this.centerButtonText(this.gameText, this.gameButton);
+
+        this.gameButton.on('pointerdown', function (pointer) {
+            this.cameras.main.fadeOut(500);
+            this.cameras.main.once('camerafadeoutcomplete', function (camera) {
+                this.lalaAudio.stop();
+                this.scene.start('SelectName');
             }, this);
         }.bind(this));
 
