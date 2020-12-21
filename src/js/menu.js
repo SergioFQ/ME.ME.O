@@ -13,6 +13,13 @@ class Menu extends Phaser.Scene {
     }
 
     create() {
+        this.i=document.getElementById("nameInput");
+        this.i.style.position="absolute";
+        this.i.style.display="none";
+        this.i.style.top="300px";
+        this.i.style.right="400px";
+
+
 
         this.createBackground();
         this.add.image(400, 300, 'memes');
@@ -62,7 +69,7 @@ class Menu extends Phaser.Scene {
             this.cameras.main.fadeOut(500);
             this.cameras.main.once('camerafadeoutcomplete', function (camera) {
                 this.lalaAudio.stop();
-                this.scene.start('SelectName');
+                this.scene.start('SelectName');//AQUI PUEDO PONER API REST AQUIIIIIIIII
             }, this);
         }.bind(this));
 
