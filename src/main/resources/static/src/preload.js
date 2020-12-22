@@ -91,6 +91,7 @@ class Preload extends Phaser.Scene {
 
     create() {
         musicOn = true;
+        console.log(direccionWeb);
     }
 
     createLoadingBar() {
@@ -178,3 +179,4 @@ class Preload extends Phaser.Scene {
 }
 
 var musicOn;
+var direccionWeb = window.location.href;

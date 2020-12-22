@@ -131,7 +131,7 @@ class SelectApiRest extends Phaser.Scene {
         }.bind(this))
 
         this.metodoGet();//Para que el chat aparezca
-        this.time.addEvent({ delay: 1000, callback: this.metodoGet, callbackScope: this, loop: true });
+        this.time.addEvent({ delay: 2500, callback: this.metodoGet, callbackScope: this, loop: true });
         this.estadoServidor=this.add.text(300,10,"");
         
      /*   this.marcelo={
@@ -142,7 +142,7 @@ class SelectApiRest extends Phaser.Scene {
         this.estadoJugadores=this.add.text(500,10,"");
         this.estadoJugadores2=this.add.text(500,30,"");
         this.metodoGetJugadores();
-        this.time.addEvent({ delay: 1000, callback: this.metodoGetJugadores, callbackScope: this, loop: true });
+        this.time.addEvent({ delay: 3000, callback: this.metodoGetJugadores, callbackScope: this, loop: true });
         
         
     }
@@ -156,7 +156,7 @@ class SelectApiRest extends Phaser.Scene {
     metodoPost(frase){
         $.ajax({
             method: "POST",
-            url: 'http://localhost:8080/chat',
+            url: direccionWeb+'/chat',
             data: JSON.stringify(frase),
             processData: false,
             headers: {
@@ -169,7 +169,7 @@ class SelectApiRest extends Phaser.Scene {
       
         $.ajax({
             method: "POST",
-            url: 'http://localhost:8080/chat/jugador',
+            url: direccionWeb+'chat/jugador',
             data: JSON.stringify(jugad),
             processData: false,
             headers: {
@@ -181,7 +181,7 @@ class SelectApiRest extends Phaser.Scene {
    metodoGetJugadores(){
 
         $.ajax({
-             url: 'http://localhost:8080/chat/jugador'
+             url: direccionWeb+'chat/jugador'
 
         }).done(function(data){
 
@@ -206,12 +206,12 @@ class SelectApiRest extends Phaser.Scene {
         console.log("Llamado borrar");
         $.ajax({
             method: "DELETE",
-            url: 'http://localhost:8080/chat/jugador/'+this.jugador
+            url: direccionWeb+'chat/jugador/'+this.jugador
         },this).done(function(data){})
     }
     metodoGet(){
         $.ajax({
-            url: 'http://localhost:8080/chat'
+            url: direccionWeb+'chat'
         }).done(function (data) {
             let textoAmeter=[];
             for(var iter=data.length-1;iter>=0;iter--){

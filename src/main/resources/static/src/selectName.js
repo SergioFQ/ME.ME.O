@@ -5,12 +5,13 @@ class SelectName extends Phaser.Scene {
     }
     create(){
 
+        console.log(direccionWeb);
         this.i=document.getElementById("nameInput");
-      //  this.i.style.position="absolute";
+        this.i.style.position="absolute";
         this.i.style.display="block";
-        //this.i.style.top="300px";
-        //this.i.style.right="400px";*
-        this.nombreCreado=true;
+        this.i.style.top="300px";
+        this.i.style.right="400px";
+        this.nombreCreado=false;
 
        $("#nameInput").on('keyup',function(ele){
             if(ele.key=='Enter'){
@@ -21,38 +22,47 @@ class SelectName extends Phaser.Scene {
 
                 //this.metodoPost(this.jugador);
             this.metodoGetJugadores();
-                if(this.nombreCreado==true){
-                    this.i.display="none";
-                    this.metodoPostJugador(this.jugador);
-                    this.scene.start('SelectApiRest',{ nombre: this.jugador.nombre});
-                }
+                
            $('#nameInput').val("");
           // this.nombreJug=null;
             }
         }.bind(this))
     }
 
+    update(){
+        console.log(this.nombreCreado);
+        if(this.nombreCreado==true){
+            this.i.display="none";
+            this.metodoPostJugador(this.jugador);
+            this.scene.start('SelectApiRest',{ nombre: this.jugador.nombre});
+        }
+    }
     metodoGetJugadores(){
         $.ajax({
-             url: window.location.href+'/chat/jugador'
+             url: direccionWeb+'chat/jugador'
         }).done(function(data){
-            if(data[0]!=null){
-                if(data[0].nombre==this.jugador.nombre){
-                    console.log("Nombre ya elegido por otro");
-                    console.log(data[0].nombre);
-                    console.log(this.jugador.nombre);
-                    this.nombreCreado=false;
-                 }
-            }
-            if(data[1]!=null){
-                if(data[1].nombre==this.jugador.nombre){
-                    console.log("Nombre ya elegido por otro");
-                    this.nombreCreado=false;
+
+            if(data[0]==null || data[1]==null){
+                console.log("Entro al if inicial");
+                if(data[0]!=null){
+                    if(data[0].nombre==this.jugador.nombre){
+                        console.log("El plagio es un delito");
+                        this.nombreCreado = false;
+                    }else{
+                        this.nombreCreado = true;
                     }
-            }
-            if(this.nombreCreado==true){
-                console.log("Has creado tu nombre");
-                this.nombreCreado=true;
+                }else if(data[1]!=null){
+                    if(data[1].nombre==this.jugador.nombre){
+                        console.log("El plagio es un delito");
+                        this.nombreCreado = false;
+                    }else{
+                        this.nombreCreado = true;
+                    }
+                }else{
+                    this.nombreCreado = true;
+                }
+            }else{
+                this.nombreCreado =false;
             }
             
         }.bind(this))
@@ -62,7 +72,7 @@ class SelectName extends Phaser.Scene {
       
         $.ajax({
             method: "POST",
-            url: 'http://localhost:8080/chat/jugador',
+            url: direccionWeb + 'chat/jugador',
             data: JSON.stringify(jugad),
             processData: false,
             headers: {

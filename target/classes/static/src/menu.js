@@ -13,11 +13,11 @@ class Menu extends Phaser.Scene {
     }
 
     create() {
-        this.i=document.getElementById("nameInput");
+        /*this.i=document.getElementById("nameInput");
         this.i.style.position="absolute";
         this.i.style.display="none";
         this.i.style.top="300px";
-        this.i.style.right="400px";
+        this.i.style.right="400px";*/
 
 
 

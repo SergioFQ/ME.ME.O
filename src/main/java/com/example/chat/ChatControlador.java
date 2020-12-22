@@ -14,7 +14,7 @@ import java.util.List;
 
 
 @RestController
-@RequestMapping(value="/chat")
+@RequestMapping(value="chat")
 public class ChatControlador {
 
 	private int contador=0;

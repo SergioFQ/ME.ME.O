@@ -14,21 +14,25 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 @RestController
-@RequestMapping(value="/chat/jugador")
+@RequestMapping(value="chat/jugador")
 public class JugadorControlador {
 	private Jugador jugadores[]=new Jugador[2];
+	private int numberPlayers = 0;
 	
 	@CrossOrigin
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
 	public Jugador postJugador(@RequestBody Jugador jugador){
-		if(jugadores[0]==null) {
-			jugadores[0]=jugador;
+		if(numberPlayers<2) {
+			if(jugadores[0]==null) {
+				jugadores[0]=jugador;
+			}
+			else {
+				jugadores[1]=jugador;
+			}
+			numberPlayers++;
 		}
-		else {
-			jugadores[1]=jugador;
-		}
-		return jugador;
+		return jugador;	
 	}
 	
 	@CrossOrigin
@@ -40,15 +44,19 @@ public class JugadorControlador {
 	@CrossOrigin
 	@DeleteMapping(value="/{jug}")
 	public ResponseEntity<String> deleteJugador(@PathVariable String jug) {
-		//MIRAR SI EL PRIMERO NULL
-		if(jug.equals(jugadores[0].getNombre())) {
-			jugadores[0]=null;
-			return new ResponseEntity<>(jug,HttpStatus.OK);
+		if(jugadores[0]==null&&numberPlayers>0) {
+			jugadores[1] = null;
+		}else {
+
+			if(jug.equals(jugadores[0].getNombre())) {
+				jugadores[0]=null;
+			}
+			else{
+			jugadores[1]=null;
+			}
 		}
-		else{
-		jugadores[1]=null;
+		numberPlayers--;
 		return new ResponseEntity<>(jug,HttpStatus.OK);
-		}
 		
 	}
 	
