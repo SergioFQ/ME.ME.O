@@ -3,7 +3,8 @@ package com.example.chat;
 public class Frase {
 
 	private String frase;
-	private long id;
+	private String id;
+
 	
 	public Frase(){}
 	
@@ -13,10 +14,10 @@ public class Frase {
 	public void setFrase(String frase) {
 		this.frase = frase;
 	}
-	public long getId() {
+	public String getId() {
 		return id;
 	}
-	public void setId(long id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 	

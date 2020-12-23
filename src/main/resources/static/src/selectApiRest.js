@@ -14,8 +14,22 @@ class SelectApiRest extends Phaser.Scene {
     }
 
     create(data) {
-        this.jugador=data.nombre;
-        console.log(this.jugador);
+        document.addEventListener("visibilitychange", () => {
+            
+            if (document.visibilityState == "visible") {
+              if(timer!=null){
+              if(timer.paused==true){
+                  this.scene.start('Menu');
+              }
+                  }
+            } else {
+                if(timer!=null){
+              timer.paused=true;
+                }
+            }
+          },this)
+
+        this.jugador=data.jugador;
         this.next = 0;
 
         this.selectAudio = this.sound.add('select', { loop: true });
@@ -119,7 +133,7 @@ class SelectApiRest extends Phaser.Scene {
             if(ele.key=='Enter'){
                 this.frase= $('#input').val();
                 this.frasess={
-                    id: 1,
+                    id: nom_jug,
                     frase: this.frase
                  }
                 this.metodoPost(this.frasess);
@@ -131,22 +145,30 @@ class SelectApiRest extends Phaser.Scene {
         }.bind(this))
 
         this.metodoGet();//Para que el chat aparezca
-        this.time.addEvent({ delay: 2500, callback: this.metodoGet, callbackScope: this, loop: true });
+        timer =this.time.addEvent({ delay: 2500, callback: this.metodoGet, callbackScope: this, loop: true });
         this.estadoServidor=this.add.text(300,10,"");
         
-     /*   this.marcelo={
-            nombre: 'marcelo'
-         }
-        this.metodoPostJugador(this.marcelo);//CUANDO ME UNO A LA SALA DE SELECCIONAR, LLAMO AL SERVER(CUANDO SE VUELVE A CONECTAR EL SERVER DEBERIA PONER ESTA LLAMADA TMB)
-       */
         this.estadoJugadores=this.add.text(500,10,"");
         this.estadoJugadores2=this.add.text(500,30,"");
         this.metodoGetJugadores();
         this.time.addEvent({ delay: 3000, callback: this.metodoGetJugadores, callbackScope: this, loop: true });
-        
-        
+        this.time.addEvent({ delay: 2000, callback: this.metodoEstadoJug, callbackScope: this, loop: true });
+ 
     }
 
+    metodoEstadoJug(){
+        $.ajax({
+            method: 'POST',
+            url: direccionWeb+'chat/jugador/estado',
+            data: JSON.stringify(this.jugador),
+            processData: false,
+            headers: {
+                "Content-Type": "application/json"
+            }
+        },this).done(function(dat){
+           
+        })
+    }
     update() {
         if (this.next == 2) {
             this.createButton();
@@ -189,13 +211,13 @@ class SelectApiRest extends Phaser.Scene {
                 this.estadoJugadores.setText("Jugador 1: Desconectado");
             }
             else{
-                this.estadoJugadores.setText("Jugador 1: Conectado");
+                this.estadoJugadores.setText(data[0].nombre+": Conectado");
             }
             if(data[1]==null){
                 this.estadoJugadores2.setText("Jugador 2: Desconectado");
             }
             else{
-                this.estadoJugadores2.setText("Jugador 2:  Conectado");
+                this.estadoJugadores2.setText(data[1].nombre+": Conectado");
                 }
         }.bind(this))
     }
@@ -203,10 +225,10 @@ class SelectApiRest extends Phaser.Scene {
 
 
     metodoDeleteJugador(){
-        console.log("Llamado borrar");
+        nom_jug=null;
         $.ajax({
             method: "DELETE",
-            url: direccionWeb+'chat/jugador/'+this.jugador
+            url: direccionWeb+'chat/jugador/'+this.jugador.nombre
         },this).done(function(data){})
     }
     metodoGet(){
@@ -215,7 +237,6 @@ class SelectApiRest extends Phaser.Scene {
         }).done(function (data) {
             let textoAmeter=[];
             for(var iter=data.length-1;iter>=0;iter--){
-            console.log(data[iter].id+":"+data[iter].frase);
           textoAmeter.push(data[iter].id+":"+data[iter].frase);
             if(textoAmeter.length>5){
                 textoAmeter.shift();
@@ -293,3 +314,4 @@ class SelectApiRest extends Phaser.Scene {
 
 
 }
+

@@ -5,7 +5,7 @@ class SelectName extends Phaser.Scene {
     }
     create(){
 
-        console.log(direccionWeb);
+       //console.log(direccionWeb);
         this.i=document.getElementById("nameInput");
         this.i.style.position="absolute";
         this.i.style.display="block";
@@ -30,11 +30,11 @@ class SelectName extends Phaser.Scene {
     }
 
     update(){
-        console.log(this.nombreCreado);
         if(this.nombreCreado==true){
             this.i.display="none";
             this.metodoPostJugador(this.jugador);
-            this.scene.start('SelectApiRest',{ nombre: this.jugador.nombre});
+            nom_jug=this.jugador.nombre;
+            this.scene.start('SelectApiRest',{ jugador: this.jugador});
         }
     }
     metodoGetJugadores(){
@@ -43,17 +43,15 @@ class SelectName extends Phaser.Scene {
         }).done(function(data){
 
             if(data[0]==null || data[1]==null){
-                console.log("Entro al if inicial");
+               
                 if(data[0]!=null){
                     if(data[0].nombre==this.jugador.nombre){
-                        console.log("El plagio es un delito");
                         this.nombreCreado = false;
                     }else{
                         this.nombreCreado = true;
                     }
                 }else if(data[1]!=null){
                     if(data[1].nombre==this.jugador.nombre){
-                        console.log("El plagio es un delito");
                         this.nombreCreado = false;
                     }else{
                         this.nombreCreado = true;

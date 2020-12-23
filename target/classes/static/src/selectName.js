@@ -34,7 +34,8 @@ class SelectName extends Phaser.Scene {
         if(this.nombreCreado==true){
             this.i.display="none";
             this.metodoPostJugador(this.jugador);
-            this.scene.start('SelectApiRest',{ nombre: this.jugador.nombre});
+            nom_jug=this.jugador.nombre;
+            this.scene.start('SelectApiRest',{ jugador: this.jugador});
         }
     }
     metodoGetJugadores(){
@@ -64,28 +65,6 @@ class SelectName extends Phaser.Scene {
             }else{
                 this.nombreCreado =false;
             }
-            /*if(data[0]!=null){
-                if(data[0].nombre==this.jugador.nombre){
-                    console.log("Nombre ya elegido por otro");
-                    console.log(data[0].nombre);
-                    console.log(this.jugador.nombre);
-                    this.nombreCreado=false;                    
-                 }else{
-                    this.nombreCreado=true;
-                 }
-            }else if(data[1]!=null){
-                if(data[1].nombre==this.jugador.nombre){
-                    console.log('Bendiciones: '+data[1]);
-                    this.nombreCreado=false;
-                    }else{
-                        this.nombreCreado=true;
-                    }
-            }else{
-                this.nombreCreado = true;
-            }*/
-            /*if(this.nombreCreado==true){
-                console.log("Has creado tu nombre");
-            }*/
             
         }.bind(this))
     }
