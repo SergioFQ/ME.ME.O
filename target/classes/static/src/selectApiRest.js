@@ -305,9 +305,9 @@ class SelectApiRest extends Phaser.Scene {
     }
 
     createButton() {
-        this.nextButton = this.add.sprite(400, 300, 'redButton01')//.setInteractive()
-        /*.on('pointerover', () => this.nextButton.setTexture('redButton02'))
-        .on('pointerout', () => this.nextButton.setTexture('redButton01'));*/
+        this.nextButton = this.add.sprite(400, 300, 'redButton01').setInteractive()
+        .on('pointerover', () => this.nextButton.setTexture('redButton02'))
+        .on('pointerout', () => this.nextButton.setTexture('redButton01'));
         this.centerButton(this.nextButton, -2);
 
         this.nextText = this.add.text(0, 0, 'PLAY', { fontFamily: 'Berlin Sans FB, "Goudy Bookletter 1911", Times, serif', fontSize: '32px', fill: '#fff' });
