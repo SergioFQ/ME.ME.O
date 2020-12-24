@@ -17,7 +17,8 @@ class SelectName extends Phaser.Scene {
             if(ele.key=='Enter'){
                 this.nombreJug= $('#nameInput').val();
                 this.jugador={
-                    nombre: this.nombreJug
+                    nombre: this.nombreJug,
+                    sprite: -1
                  }
 
                 //this.metodoPost(this.jugador);

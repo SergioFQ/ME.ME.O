@@ -91,6 +91,7 @@ class Preload extends Phaser.Scene {
 
     create() {
         musicOn = true;
+        visibility = false;
         //console.log(direccionWeb);
     }
 
@@ -181,3 +182,4 @@ class Preload extends Phaser.Scene {
 var musicOn;
 var direccionWeb = window.location.href;
 var cerrarVentana;
+var visibility;

@@ -22,12 +22,15 @@ import javax.swing.Timer;
 public class JugadorControlador {
 	private Jugador jugadores[]=new Jugador[2];
 	private int numberPlayers = 0;
+	private int readyPlayers = 0;
 	
 	Timer timerJug0 = new Timer(4000, new ActionListener(){
         @Override
         public void actionPerformed(ActionEvent e) {
         	if(jugadores[0]!=null) {
-        	
+        		if(jugadores[0].getSprite()>=0) {
+    				readyPlayers--;
+    			}
             jugadores[0]=null;
             numberPlayers=numberPlayers-1;
         	}
@@ -37,12 +40,69 @@ public class JugadorControlador {
 	Timer timerJug1 = new Timer(4000, new ActionListener(){
         @Override
         public void actionPerformed(ActionEvent e) {
-        	if(jugadores[1]!=null) {           	
+        	if(jugadores[1]!=null) {     
+        		if(jugadores[1].getSprite()>=0) {
+    				readyPlayers--;
+    			}
         	 jugadores[1]=null;
         	 numberPlayers=numberPlayers-1;
         	}
         }
     });
+	
+	@CrossOrigin
+	@PostMapping(value="/ready")
+	@ResponseStatus(HttpStatus.CREATED)
+	public void postReady(@RequestBody Jugador jugador) {
+		if(jugadores[0]!=null) {
+			if(jugadores[0].getNombre().equals(jugador.getNombre())) {
+				jugadores[0].setSprite(jugador.getSprite());
+				readyPlayers++;
+			}
+		}
+		if(jugadores[1]!=null) {
+			if(jugadores[1].getNombre().equals(jugador.getNombre())) {
+				jugadores[1].setSprite(jugador.getSprite());
+				readyPlayers++;
+			}
+		}
+		
+	}
+	
+	
+	
+	@CrossOrigin
+	@GetMapping(value="/ready")
+	public boolean getReadyPlayers() {
+		if(readyPlayers>=2) {
+			return true;
+		}else {
+			return false;
+		}
+	}
+	
+	
+	@CrossOrigin
+	@GetMapping(value = "/regreso/{jug}")
+	public boolean postRegresoJug(@PathVariable String jug){
+		
+		if(numberPlayers<=0) {
+			return false;
+		}
+		if(jugadores[0]!=null) {
+			if(jugadores[0].getNombre().equals(jug)) {
+				return true;
+			}
+		}
+		
+		if(jugadores[1]!=null) {
+			if(jugadores[1].getNombre().equals(jug)) {
+				return true;
+			}
+		}
+		
+		return false;	
+	}
 	
 	@CrossOrigin
 	@PostMapping
@@ -83,7 +143,6 @@ public class JugadorControlador {
 			}
 		}
 		return jugador;
-		//return jugador;
 	}
 	@CrossOrigin
 	@GetMapping
@@ -95,6 +154,9 @@ public class JugadorControlador {
 	@DeleteMapping(value="/{jug}")
 	public ResponseEntity<String> deleteJugador(@PathVariable String jug) {
 		if(jugadores[0]==null&&numberPlayers>0) {
+			if(jugadores[1].getSprite()>=0) {
+				readyPlayers--;
+			}
 			jugadores[1] = null;
 			timerJug1.restart();
 			timerJug1.stop();
@@ -102,11 +164,17 @@ public class JugadorControlador {
 		}else if(numberPlayers>0) {
 
 			if(jug.equals(jugadores[0].getNombre())) {
+				if(jugadores[0].getSprite()>=0) {
+					readyPlayers--;
+				}
 				jugadores[0]=null;
 				timerJug0.restart();
 				timerJug0.stop();
 			} 
 			else{
+				if(jugadores[1].getSprite()>=0) {
+					readyPlayers--;
+				}
 			jugadores[1]=null;
 			timerJug1.restart();
 			timerJug1.stop();

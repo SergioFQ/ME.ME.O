@@ -20,7 +20,7 @@ class Menu extends Phaser.Scene {
         this.i.style.right="400px";*/
 
 
-
+        visibility = false;
         this.createBackground();
         this.add.image(400, 300, 'memes');
 

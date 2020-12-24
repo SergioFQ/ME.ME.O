@@ -14,23 +14,38 @@ class SelectApiRest extends Phaser.Scene {
     }
 
     create(data) {
-        document.addEventListener("visibilitychange", () => {
-            
-            if (document.visibilityState == "visible") {
-              if(timer!=null){
-              if(timer.paused==true){
-                  this.scene.start('Menu');
-              }
-                  }
-            } else {
-                if(timer!=null){
-              timer.paused=true;
-                }
-            }
-          },this)
+        
 
         this.jugador=data.jugador;
         this.next = 0;
+        this.pulsadoReady=false;
+        this.buttonCreated=false;
+        visibility = true;
+        document.addEventListener("visibilitychange", () => {
+            if(visibility){
+                if (document.visibilityState == "visible") {
+                    if(timer!=null){
+                    if(timer.paused==true){
+                      $.ajax({
+                          url: direccionWeb+'chat/jugador/regreso/'+this.jugador.nombre
+                      },this).done(function(dat){
+                         if(!dat){
+                          this.selectAudio.stop();
+                          this.scene.start('Menu');
+                         }else{
+                          this.metodoEstadoJug(); 
+                         }
+                      }.bind(this))
+                    }
+                        }
+                  } else {
+                      if(timer!=null){
+                    timer.paused=true;
+                      }
+                  }
+            }
+            
+          },this)
 
         this.selectAudio = this.sound.add('select', { loop: true });
         this.selectAudio.setVolume(0.05);
@@ -63,9 +78,9 @@ class SelectApiRest extends Phaser.Scene {
         this.text.setOrigin(0.5);
         this.text.setColor('#FFFFFF');
 
-        this.text = this.add.text(400, 325, 'Player 2', { fontFamily: 'Berlin Sans FB, "Goudy Bookletter 1911", Times, serif', fontSize: '32px', fill: '#fff' });
+        /*this.text = this.add.text(400, 325, 'Player 2', { fontFamily: 'Berlin Sans FB, "Goudy Bookletter 1911", Times, serif', fontSize: '32px', fill: '#fff' });
         this.text.setOrigin(0.5);
-        this.text.setColor('#FFFFFF');
+        this.text.setColor('#FFFFFF');*/
 
         this.p1 = this.add.image(200, 250, 'pepe').setInteractive()
             .on('pointerover', () => this.p1.setScale(1.2))
@@ -79,7 +94,7 @@ class SelectApiRest extends Phaser.Scene {
             .on('pointerover', () => this.p3.setScale(1.2))
             .on('pointerout', () => this.p3.setScale(1));
 
-        this.p4 = this.add.image(200, 400, 'pepe').setInteractive()
+        /*this.p4 = this.add.image(200, 400, 'pepe').setInteractive()
             .on('pointerover', () => this.p4.setScale(1.2))
             .on('pointerout', () => this.p4.setScale(1));
 
@@ -89,18 +104,18 @@ class SelectApiRest extends Phaser.Scene {
 
         this.p6 = this.add.image(600, 400, 'coffindancer').setInteractive()
             .on('pointerover', () => this.p6.setScale(1.2))
-            .on('pointerout', () => this.p6.setScale(1));
+            .on('pointerout', () => this.p6.setScale(1));*/
 
         this.eleccion1;
-        this.eleccion2;
+        //this.eleccion2;
 
         this.p1.on('pointerdown', () => this.cambio(this.p1, this.p2, this.p3, 1));
         this.p2.on('pointerdown', () => this.cambio(this.p2, this.p1, this.p3, 2));
         this.p3.on('pointerdown', () => this.cambio(this.p3, this.p1, this.p2, 3));
 
-        this.p4.on('pointerdown', () => this.cambio(this.p4, this.p5, this.p6, 4));
+        /*this.p4.on('pointerdown', () => this.cambio(this.p4, this.p5, this.p6, 4));
         this.p5.on('pointerdown', () => this.cambio(this.p5, this.p4, this.p6, 5));
-        this.p6.on('pointerdown', () => this.cambio(this.p6, this.p4, this.p5, 6));
+        this.p6.on('pointerdown', () => this.cambio(this.p6, this.p4, this.p5, 6));*/
 
         this.cameras.main.fadeIn(200);
 
@@ -152,6 +167,7 @@ class SelectApiRest extends Phaser.Scene {
         this.estadoJugadores2=this.add.text(500,30,"");
         this.metodoGetJugadores();
         this.time.addEvent({ delay: 3000, callback: this.metodoGetJugadores, callbackScope: this, loop: true });
+        this.metodoEstadoJug();
         this.time.addEvent({ delay: 2000, callback: this.metodoEstadoJug, callbackScope: this, loop: true });
  
     }
@@ -170,7 +186,8 @@ class SelectApiRest extends Phaser.Scene {
         })
     }
     update() {
-        if (this.next == 2) {
+        if (this.next == 1 && !this.buttonCreated) {
+            this.buttonCreated = true;
             this.createButton();
         }
 
@@ -263,6 +280,7 @@ class SelectApiRest extends Phaser.Scene {
         }
         else {
             this.eleccion1 = num;
+            this.jugador.sprite = num;
         }
         this.next++;
     }
@@ -284,20 +302,57 @@ class SelectApiRest extends Phaser.Scene {
         this.nextButton = this.add.sprite(400, 300, 'redButton01').setInteractive();
         this.centerButton(this.nextButton, -2);
 
-        this.backText = this.add.text(0, 0, 'PLAY', { fontFamily: 'Berlin Sans FB, "Goudy Bookletter 1911", Times, serif', fontSize: '32px', fill: '#fff' });
-        this.centerButtonText(this.backText, this.nextButton);
+        this.nextText = this.add.text(0, 0, 'PLAY', { fontFamily: 'Berlin Sans FB, "Goudy Bookletter 1911", Times, serif', fontSize: '32px', fill: '#fff' });
+        this.centerButtonText(this.nextText, this.nextButton);
+
+        this.waitingPlayer = this.add.text(0, 0, 'Waiting for another player...', { fontFamily: 'Berlin Sans FB, "Goudy Bookletter 1911", Times, serif', fontSize: '32px', fill: '#fff' });
+        this.centerButtonText(this.waitingPlayer, this.nextButton);
+        this.waitingPlayer.setVisible(false);
 
         this.nextButton.on('pointerdown', function (pointer) {
-            this.cameras.main.fadeOut(500);
+            if(!this.pulsadoReady){
+                this.pulsadoReady = true;
+                $.ajax({
+                    method: "POST",
+                    url: direccionWeb+'chat/jugador/ready',
+                    data: JSON.stringify(this.jugador),
+                    processData: false,
+                    headers: {
+                        "Content-Type": "application/json"
+                    }
+                },this).done(function(data){    
+                    this.startGameTimer = this.time.addEvent({ delay: 1000, callback: this.getReady, callbackScope: this, loop: true });    
+                }.bind(this))
+                this.nextButton.setVisible(false);
+                this.nextText.setVisible(false);
+                this.waitingPlayer.setVisible(true);
+            }
+            
+            /*this.cameras.main.fadeOut(500);
             this.cameras.main.once('camerafadeoutcomplete', function (camera) {
                 this.selectAudio.stop();
                 this.scene.start('GameScene', { eleccion1: this.eleccion1, eleccion2: this.eleccion2 });
-            }, this);
+            }, this);*/
         }.bind(this));
 
         this.input.on('pointerover', () => this.nextButton.setTexture('redButton02'));
 
         this.input.on('pointerout', () => this.nextButton.setTexture('redButton01'));
+    }
+
+    getReady(){
+        $.ajax({
+            url: direccionWeb+'chat/jugador/ready'
+       }).done(function (data) {
+           if(data){
+            this.startGameTimer.paused = true;
+            this.cameras.main.fadeOut(500);
+            this.cameras.main.once('camerafadeoutcomplete', function (camera) {
+                this.selectAudio.stop();
+                this.scene.start('GameScene', { eleccion1: this.eleccion1, eleccion2: this.eleccion2 });
+            }, this);
+           }
+       }.bind(this))
     }
 
     updateAudio() {
