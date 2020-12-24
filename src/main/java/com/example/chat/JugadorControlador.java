@@ -151,6 +151,23 @@ public class JugadorControlador {
 	}
 	
 	@CrossOrigin
+	@GetMapping(value="/pos/{jug}")
+	public int getPosJugadores(@PathVariable String jug){
+		if(jugadores[0]!=null) {
+			if(jugadores[0].getNombre().equals(jug)) {
+				return 0;
+			}
+		}
+		if(jugadores[1]!=null) {
+			if(jugadores[1].getNombre().equals(jug)) {
+				return 1;
+			}
+		}
+		
+	return -1;	
+	}
+	
+	@CrossOrigin
 	@DeleteMapping(value="/{jug}")
 	public ResponseEntity<String> deleteJugador(@PathVariable String jug) {
 		if(jugadores[0]==null&&numberPlayers>0) {

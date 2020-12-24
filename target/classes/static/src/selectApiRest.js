@@ -9,43 +9,49 @@ class SelectApiRest extends Phaser.Scene {
     }
 
     preload() {
-     
+
 
     }
 
     create(data) {
-        
 
-        this.jugador=data.jugador;
+        this.enemigo = {
+            nombre: null,
+            sprite: -1
+        }
+
+        this.jugador = data.jugador;
         this.next = 0;
-        this.pulsadoReady=false;
-        this.buttonCreated=false;
+        this.pulsadoReady = false;
+        this.buttonCreated = false;
         visibility = true;
+        this.numberPlayer;
+        this.numberEnemy;
         document.addEventListener("visibilitychange", () => {
-            if(visibility){
+            if (visibility) {
                 if (document.visibilityState == "visible") {
-                    if(timer!=null){
-                    if(timer.paused==true){
-                      $.ajax({
-                          url: direccionWeb+'chat/jugador/regreso/'+this.jugador.nombre
-                      },this).done(function(dat){
-                         if(!dat){
-                          this.selectAudio.stop();
-                          this.scene.start('Menu');
-                         }else{
-                          this.metodoEstadoJug(); 
-                         }
-                      }.bind(this))
-                    }
+                    if (timer != null) {
+                        if (timer.paused == true) {
+                            $.ajax({
+                                url: direccionWeb + 'chat/jugador/regreso/' + this.jugador.nombre
+                            }, this).done(function (dat) {
+                                if (!dat) {
+                                    this.selectAudio.stop();
+                                    this.scene.start('Menu');
+                                } else {
+                                    this.metodoEstadoJug();
+                                }
+                            }.bind(this))
                         }
-                  } else {
-                      if(timer!=null){
-                    timer.paused=true;
-                      }
-                  }
+                    }
+                } else {
+                    if (timer != null) {
+                        timer.paused = true;
+                    }
+                }
             }
-            
-          },this)
+
+        }, this)
 
         this.selectAudio = this.sound.add('select', { loop: true });
         this.selectAudio.setVolume(0.05);
@@ -63,7 +69,7 @@ class SelectApiRest extends Phaser.Scene {
                 this.selectAudio.stop();
                 this.scene.start('Menu');
             }, this);
-            
+
         }.bind(this));
 
         this.input.on('pointerover', () => this.exitButton.setTexture('smallButton02'));
@@ -123,66 +129,66 @@ class SelectApiRest extends Phaser.Scene {
         //PRUEBAS 
         this.boton = this.add.sprite(100, 300, 'redButton01').setInteractive();
         this.boton.on('pointerdown', function () {
-            this.frases={
-               id: 1,
-               frase: "DE LOCOS"
+            this.frases = {
+                id: 1,
+                frase: "DE LOCOS"
             }
             this.metodoPost(this.frases);
 
         }.bind(this))
 
-        this.i=document.getElementById("input");
-        this.i.style.position="absolute";
-        this.i.style.display="block";
-        this.i.style.top="570px";
+        this.i = document.getElementById("input");
+        this.i.style.position = "absolute";
+        this.i.style.display = "block";
+        this.i.style.top = "570px";
 
-        this.chat=this.add.text(10,10,"",{
+        this.chat = this.add.text(10, 10, "", {
             lineSpacing: 5,
-            backgroundColor:"#FFFFFF",
-            color:"#000000",
+            backgroundColor: "#FFFFFF",
+            color: "#000000",
             padding: 10,
-            fontStyle:"bold"
+            fontStyle: "bold"
         });
 
-        $("#input").on('keydown',function(ele){
-            if(ele.key=='Enter'){
-                this.frase= $('#input').val();
-                this.frasess={
+        $("#input").on('keydown', function (ele) {
+            if (ele.key == 'Enter') {
+                this.frase = $('#input').val();
+                this.frasess = {
                     id: nom_jug,
                     frase: this.frase
-                 }
+                }
                 this.metodoPost(this.frasess);
                 $('#input').val("");
-                
-           
+
+
 
             }
         }.bind(this))
 
         this.metodoGet();//Para que el chat aparezca
-        timer =this.time.addEvent({ delay: 2500, callback: this.metodoGet, callbackScope: this, loop: true });
-        this.estadoServidor=this.add.text(300,10,"");
-        
-        this.estadoJugadores=this.add.text(500,10,"");
-        this.estadoJugadores2=this.add.text(500,30,"");
+        timer = this.time.addEvent({ delay: 2500, callback: this.metodoGet, callbackScope: this, loop: true });
+        this.estadoServidor = this.add.text(300, 10, "");
+
+        this.estadoJugadores = this.add.text(500, 10, "");
+        this.estadoJugadores2 = this.add.text(500, 30, "");
         this.metodoGetJugadores();
         this.time.addEvent({ delay: 3000, callback: this.metodoGetJugadores, callbackScope: this, loop: true });
         this.metodoEstadoJug();
         this.time.addEvent({ delay: 2000, callback: this.metodoEstadoJug, callbackScope: this, loop: true });
- 
+
     }
 
-    metodoEstadoJug(){
+    metodoEstadoJug() {
         $.ajax({
             method: 'POST',
-            url: direccionWeb+'chat/jugador/estado',
+            url: direccionWeb + 'chat/jugador/estado',
             data: JSON.stringify(this.jugador),
             processData: false,
             headers: {
                 "Content-Type": "application/json"
             }
-        },this).done(function(dat){
-           
+        }, this).done(function (dat) {
+
         })
     }
     update() {
@@ -192,10 +198,10 @@ class SelectApiRest extends Phaser.Scene {
         }
 
     }
-    metodoPost(frase){
+    metodoPost(frase) {
         $.ajax({
             method: "POST",
-            url: direccionWeb+'/chat',
+            url: direccionWeb + '/chat',
             data: JSON.stringify(frase),
             processData: false,
             headers: {
@@ -203,12 +209,12 @@ class SelectApiRest extends Phaser.Scene {
             }
         })
     }
-    
-    metodoPostJugador(jugad){
-      
+
+    metodoPostJugador(jugad) {
+
         $.ajax({
             method: "POST",
-            url: direccionWeb+'chat/jugador',
+            url: direccionWeb + 'chat/jugador',
             data: JSON.stringify(jugad),
             processData: false,
             headers: {
@@ -217,57 +223,57 @@ class SelectApiRest extends Phaser.Scene {
         })
     }
 
-   metodoGetJugadores(){
+    metodoGetJugadores() {
 
         $.ajax({
-             url: direccionWeb+'chat/jugador'
+            url: direccionWeb + 'chat/jugador'
 
-        }).done(function(data){
+        }).done(function (data) {
 
-            if(data[0]==null){
+            if (data[0] == null) {
                 this.estadoJugadores.setText("Jugador 1: Desconectado");
             }
-            else{
-                this.estadoJugadores.setText(data[0].nombre+": Conectado");
+            else {
+                this.estadoJugadores.setText(data[0].nombre + ": Conectado");
             }
-            if(data[1]==null){
+            if (data[1] == null) {
                 this.estadoJugadores2.setText("Jugador 2: Desconectado");
             }
-            else{
-                this.estadoJugadores2.setText(data[1].nombre+": Conectado");
-                }
+            else {
+                this.estadoJugadores2.setText(data[1].nombre + ": Conectado");
+            }
         }.bind(this))
     }
 
 
 
-    metodoDeleteJugador(){
-        nom_jug=null;
+    metodoDeleteJugador() {
+        nom_jug = null;
         $.ajax({
             method: "DELETE",
-            url: direccionWeb+'chat/jugador/'+this.jugador.nombre
-        },this).done(function(data){})
+            url: direccionWeb + 'chat/jugador/' + this.jugador.nombre
+        }, this).done(function (data) { })
     }
-    metodoGet(){
+    metodoGet() {
         $.ajax({
-            url: direccionWeb+'chat'
+            url: direccionWeb + 'chat'
         }).done(function (data) {
-            let textoAmeter=[];
-            for(var iter=data.length-1;iter>=0;iter--){
-          textoAmeter.push(data[iter].id+":"+data[iter].frase);
-            if(textoAmeter.length>5){
-                textoAmeter.shift();
+            let textoAmeter = [];
+            for (var iter = data.length - 1; iter >= 0; iter--) {
+                textoAmeter.push(data[iter].id + ":" + data[iter].frase);
+                if (textoAmeter.length > 5) {
+                    textoAmeter.shift();
+                }
             }
-            }
-            this.chat.setText(textoAmeter);   
+            this.chat.setText(textoAmeter);
             this.estadoServidor.setText("Servidor: Conectado")
-        }.bind(this)).fail(function(data){
+        }.bind(this)).fail(function (data) {
             this.estadoServidor.setText("Servidor: No disponible");
         }.bind(this))
 
     }
 
-    
+
 
     cambio(p1, p2, p3, num) {
 
@@ -299,7 +305,9 @@ class SelectApiRest extends Phaser.Scene {
     }
 
     createButton() {
-        this.nextButton = this.add.sprite(400, 300, 'redButton01').setInteractive();
+        this.nextButton = this.add.sprite(400, 300, 'redButton01')//.setInteractive()
+        /*.on('pointerover', () => this.nextButton.setTexture('redButton02'))
+        .on('pointerout', () => this.nextButton.setTexture('redButton01'));*/
         this.centerButton(this.nextButton, -2);
 
         this.nextText = this.add.text(0, 0, 'PLAY', { fontFamily: 'Berlin Sans FB, "Goudy Bookletter 1911", Times, serif', fontSize: '32px', fill: '#fff' });
@@ -310,24 +318,24 @@ class SelectApiRest extends Phaser.Scene {
         this.waitingPlayer.setVisible(false);
 
         this.nextButton.on('pointerdown', function (pointer) {
-            if(!this.pulsadoReady){
+            if (!this.pulsadoReady) {
                 this.pulsadoReady = true;
                 $.ajax({
                     method: "POST",
-                    url: direccionWeb+'chat/jugador/ready',
+                    url: direccionWeb + 'chat/jugador/ready',
                     data: JSON.stringify(this.jugador),
                     processData: false,
                     headers: {
                         "Content-Type": "application/json"
                     }
-                },this).done(function(data){    
-                    this.startGameTimer = this.time.addEvent({ delay: 1000, callback: this.getReady, callbackScope: this, loop: true });    
+                }, this).done(function (data) {
+                    this.startGameTimer = this.time.addEvent({ delay: 1000, callback: this.getReady, callbackScope: this, loop: true });
                 }.bind(this))
                 this.nextButton.setVisible(false);
                 this.nextText.setVisible(false);
                 this.waitingPlayer.setVisible(true);
             }
-            
+
             /*this.cameras.main.fadeOut(500);
             this.cameras.main.once('camerafadeoutcomplete', function (camera) {
                 this.selectAudio.stop();
@@ -335,24 +343,87 @@ class SelectApiRest extends Phaser.Scene {
             }, this);*/
         }.bind(this));
 
-        this.input.on('pointerover', () => this.nextButton.setTexture('redButton02'));
+        /*this.input.on('pointerover', () => this.nextButton.setTexture('redButton02'));
 
-        this.input.on('pointerout', () => this.nextButton.setTexture('redButton01'));
+        this.input.on('pointerout', () => this.nextButton.setTexture('redButton01'));*/
     }
 
-    getReady(){
+    getReady() {
+        /*$.ajax({
+            url: direccionWeb + 'chat/jugador/pos/' + this.jugador.nombre
+        }).done(function (data) {
+            this.numberPlayer = data;
+            if (this.numberPlayer == 0) {
+                this.numberEnemy = 1;
+            } else {
+                this.numberEnemy = 0;
+            }
+
+            $.ajax({
+                url: direccionWeb + 'chat/jugador'
+            }).done(function (data) {
+
+                //console.log(data[this.numberPlayer]);
+                //console.log(data[this.numberEnemy]);
+                this.jugadorEnemigo = data[this.numberEnemy];
+                
+            }.bind(this))
+
+        }.bind(this))*/
         $.ajax({
+            url: direccionWeb + 'chat/jugador/ready'
+        }).done(function (data) {
+            if (data) {
+                this.startGameTimer.paused = true;
+                /*this.cameras.main.fadeOut(500);
+                this.cameras.main.once('camerafadeoutcomplete', function (camera) {
+                    this.selectAudio.stop();
+                    this.scene.start('GameSceneApi', { jugador: this.jugador, enemigo: this.enemigo });
+                }, this);*/
+                $.ajax({
+                    url: direccionWeb + 'chat/jugador/pos/' + this.jugador.nombre
+                }).done(function (data) {
+                    this.numberPlayer = data;
+                    if (this.numberPlayer == 0) {
+                        this.numberEnemy = 1;
+                    } else {
+                        this.numberEnemy = 0;
+                    }
+                    $.ajax({
+                        url: direccionWeb + 'chat/jugador'
+                    }).done(function (data) {
+
+                        //console.log(data[this.numberPlayer]);
+                        //console.log(data[this.numberEnemy]);
+                        this.enemigo = data[this.numberEnemy];
+                        this.cameras.main.fadeOut(500);
+                        this.cameras.main.once('camerafadeoutcomplete', function (camera) {
+                            this.selectAudio.stop();
+                            this.scene.start('GameSceneApi', { jugador: this.jugador, enemigo: this.enemigo });
+                        }, this);
+                    }.bind(this))
+                }.bind(this))
+            }
+        }.bind(this))
+
+        /*$.ajax({
+            url: direccionWeb+'chat/jugador'
+       }).done(function (data) {
+           
+
+       }.bind(this))*/
+
+        /*$.ajax({
             url: direccionWeb+'chat/jugador/ready'
        }).done(function (data) {
            if(data){
-            this.startGameTimer.paused = true;
             this.cameras.main.fadeOut(500);
             this.cameras.main.once('camerafadeoutcomplete', function (camera) {
                 this.selectAudio.stop();
-                this.scene.start('GameScene', { eleccion1: this.eleccion1, eleccion2: this.eleccion2 });
+                this.scene.start('GameSceneApi', { jugador: this.jugador });
             }, this);
            }
-       }.bind(this))
+       }.bind(this))*/
     }
 
     updateAudio() {
