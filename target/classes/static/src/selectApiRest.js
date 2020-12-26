@@ -27,7 +27,7 @@ class SelectApiRest extends Phaser.Scene {
         visibility = true;
         this.numberPlayer;
         this.numberEnemy;
-        document.addEventListener("visibilitychange", () => {
+        this.testeo= document.addEventListener("visibilitychange", () => {
             if (visibility) {
                 if (document.visibilityState == "visible") {
                     if (timer != null) {
@@ -139,7 +139,7 @@ class SelectApiRest extends Phaser.Scene {
 
         this.i = document.getElementById("input");
         this.i.style.position = "absolute";
-        this.i.style.display = "block";
+        this.i.style.display = "block"; 
         this.i.style.top = "570px";
 
         this.chat = this.add.text(10, 10, "", {
@@ -153,12 +153,16 @@ class SelectApiRest extends Phaser.Scene {
         $("#input").on('keydown', function (ele) {
             if (ele.key == 'Enter') {
                 this.frase = $('#input').val();
+                if(this.frase!==''){ 
                 this.frasess = {
                     id: nom_jug,
                     frase: this.frase
                 }
+                
                 this.metodoPost(this.frasess);
-                $('#input').val("");
+            }
+                $('#input').val('');
+
 
 
 
@@ -166,15 +170,15 @@ class SelectApiRest extends Phaser.Scene {
         }.bind(this))
 
         this.metodoGet();//Para que el chat aparezca
-        timer = this.time.addEvent({ delay: 2500, callback: this.metodoGet, callbackScope: this, loop: true });
+        timer = this.time.addEvent({ delay: 2500, callback: this.metodoGet, callbackScope: this, loop: true });//CONTADOR
         this.estadoServidor = this.add.text(300, 10, "");
 
         this.estadoJugadores = this.add.text(500, 10, "");
         this.estadoJugadores2 = this.add.text(500, 30, "");
         this.metodoGetJugadores();
-        this.time.addEvent({ delay: 3000, callback: this.metodoGetJugadores, callbackScope: this, loop: true });
+        this.timer2=this.time.addEvent({ delay: 3000, callback: this.metodoGetJugadores, callbackScope: this, loop: true });//CONTADOR
         this.metodoEstadoJug();
-        this.time.addEvent({ delay: 2000, callback: this.metodoEstadoJug, callbackScope: this, loop: true });
+        this.timer3=this.time.addEvent({ delay: 2000, callback: this.metodoEstadoJug, callbackScope: this, loop: true });//CONTADOR
 
     }
 
@@ -189,7 +193,9 @@ class SelectApiRest extends Phaser.Scene {
             }
         }, this).done(function (dat) {
 
-        })
+        }).fail(function(){
+            this.timer3.paused=true;
+        }.bind(this))
     }
     update() {
         if (this.next == 1 && !this.buttonCreated) {
@@ -242,6 +248,8 @@ class SelectApiRest extends Phaser.Scene {
             else {
                 this.estadoJugadores2.setText(data[1].nombre + ": Conectado");
             }
+        }.bind(this)).fail(function(){
+            this.timer2.paused = true;
         }.bind(this))
     }
 
@@ -269,6 +277,8 @@ class SelectApiRest extends Phaser.Scene {
             this.estadoServidor.setText("Servidor: Conectado")
         }.bind(this)).fail(function (data) {
             this.estadoServidor.setText("Servidor: No disponible");
+            timer.paused=true;
+
         }.bind(this))
 
     }

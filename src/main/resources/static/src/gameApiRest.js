@@ -70,6 +70,10 @@ class GameSceneApi extends Phaser.Scene {
 
     create() {
         this.fadeEnd = false;
+
+        this.metodoEstadoJug();
+        this.time.addEvent({ delay: 2000, callback: this.metodoEstadoJug, callbackScope: this, loop: true });
+
         this.createAnimations(this.spriteP1, this.spriteP2, this.keyP1, this.keyP2);
         this.add.image(400, 1000, 'fondo');
         this.platforms = this.physics.add.staticGroup();
@@ -126,7 +130,44 @@ class GameSceneApi extends Phaser.Scene {
 
         console.log(this.jugadorEnemigo);
 
-        //
+        
+        this.estadoJugadores = this.add.text(500, 10, "").setScrollFactor(0, 0);
+        this.estadoJugadores2 = this.add.text(500, 30, "").setScrollFactor(0, 0);
+        this.estadoServidor = this.add.text(300, 10, "").setScrollFactor(0, 0);
+        
+        this.metodoGetJugadores();
+        this.time.addEvent({ delay: 3000, callback: this.metodoGetJugadores, callbackScope: this, loop: true });
+
+        this.metodoGet();//Para que el chat aparezca
+        this.timer2 = this.time.addEvent({ delay: 2500, callback: this.metodoGet, callbackScope: this, loop: true });
+
+        visibility = true;
+        this.testeo=document.addEventListener("visibilitychange", () => {
+            if (visibility) {
+                if (document.visibilityState == "visible") {
+                    if (this.timer2 != null) {
+                        if (this.timer2.paused == true) {
+                            $.ajax({
+                                url: direccionWeb + 'chat/jugador/regreso/' + this.jugador.nombre
+                            }, this).done(function (dat) {
+                                if (!dat) {
+                                  //  this.trololoAudio.stop();
+                                // this.coffinAudio.stop();
+                                    this.scene.start('Menu');
+                                } else {
+                                    this.metodoEstadoJug();
+                                }
+                            }.bind(this))
+                        }
+                    }
+                } else {
+                    if (this.timer2 != null) {
+                        this.timer2.paused = true;
+                    }
+                }
+            }
+
+        }, this)
 
         /*if(this.numberPlayer==0){
          this.playerLocal = this.physics.add.sprite(250, 2900, this.spriteP1).setScale(0.5);//cambiar lo de los sprites estos(switch del init)
@@ -911,5 +952,53 @@ class GameSceneApi extends Phaser.Scene {
         }
 
     }
-}
+    metodoGetJugadores() {
 
+        $.ajax({
+            url: direccionWeb + 'chat/jugador'
+
+        }).done(function (data) {
+
+            if (data[0] == null) {
+                this.estadoJugadores.setText("Jugador 1: Desconectado");
+                this.scene.start('Menu');
+                this.timer2.paused=true;
+            }
+            else {
+                this.estadoJugadores.setText(data[0].nombre + ": Conectado");
+            }
+            if (data[1] == null) {
+                this.estadoJugadores2.setText("Jugador 2: Desconectado");
+                this.scene.start('Menu');
+                this.timer2.paused=true;
+            }
+            else {
+                this.estadoJugadores2.setText(data[1].nombre + ": Conectado");
+            }
+        }.bind(this))
+    }
+
+    metodoEstadoJug() {
+        $.ajax({
+            method: 'POST',
+            url: direccionWeb + 'chat/jugador/estado',
+            data: JSON.stringify(this.jugador),
+            processData: false,
+            headers: {
+                "Content-Type": "application/json"
+            }
+        }, this).done(function (dat) {
+
+        })
+    }
+    metodoGet() {
+        $.ajax({
+            url: direccionWeb + 'chat'
+        }).done(function (data) {
+            this.estadoServidor.setText("Servidor: Conectado")
+        }.bind(this)).fail(function (data) {
+            this.estadoServidor.setText("Servidor: No disponible");
+            this.timer2.paused=true;
+        }.bind(this))
+    }
+}

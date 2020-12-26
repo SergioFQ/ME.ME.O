@@ -1,12 +1,18 @@
 package com.example.chat;
 
-public class Frase {
+import java.io.Serializable;
+
+public class Frase implements Serializable{
 
 	private String frase;
 	private String id;
 
 	
 	public Frase(){}
+	public Frase(String id,String frase){
+		this.id=id;
+		this.frase=frase;
+	}
 	
 	public String getFrase() {
 		return frase;
