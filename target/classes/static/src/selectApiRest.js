@@ -86,11 +86,6 @@ class SelectApiRest extends Phaser.Scene {
         this.text.setOrigin(0.5);
         this.text.setColor('#FFFFFF');
 
-
-        /*this.text = this.add.text(400, 325, 'Player 2', { fontFamily: 'Berlin Sans FB, "Goudy Bookletter 1911", Times, serif', fontSize: '32px', fill: '#fff' });
-        this.text.setOrigin(0.5);
-        this.text.setColor('#FFFFFF');*/
-
         this.p1 = this.add.image(200, 375, 'pepe').setInteractive()
             .on('pointerover', () => this.p1.setScale(1.2))
             .on('pointerout', () => this.p1.setScale(1));
@@ -103,18 +98,6 @@ class SelectApiRest extends Phaser.Scene {
             .on('pointerover', () => this.p3.setScale(1.2))
             .on('pointerout', () => this.p3.setScale(1));
 
-        /*this.p4 = this.add.image(200, 400, 'pepe').setInteractive()
-            .on('pointerover', () => this.p4.setScale(1.2))
-            .on('pointerout', () => this.p4.setScale(1));
-
-        this.p5 = this.add.image(400, 400, 'trollface').setInteractive()
-            .on('pointerover', () => this.p5.setScale(1.2))
-            .on('pointerout', () => this.p5.setScale(1));
-
-        this.p6 = this.add.image(600, 400, 'coffindancer').setInteractive()
-            .on('pointerover', () => this.p6.setScale(1.2))
-            .on('pointerout', () => this.p6.setScale(1));*/
-
         this.eleccion1;
         //this.eleccion2;
 
@@ -122,19 +105,7 @@ class SelectApiRest extends Phaser.Scene {
         this.p2.on('pointerdown', () => this.cambio(this.p2, this.p1, this.p3, 2));
         this.p3.on('pointerdown', () => this.cambio(this.p3, this.p1, this.p2, 3));
 
-        /*this.p4.on('pointerdown', () => this.cambio(this.p4, this.p5, this.p6, 4));
-        this.p5.on('pointerdown', () => this.cambio(this.p5, this.p4, this.p6, 5));
-        this.p6.on('pointerdown', () => this.cambio(this.p6, this.p4, this.p5, 6));*/
-
         this.cameras.main.fadeIn(200);
-
-
-        
-
-        /*this.i = document.getElementById("input");
-        this.i.style.position = "absolute";
-        this.i.style.display = "block"; 
-        this.i.style.top = "570px";*/
 
         this.chat = this.add.text(10, 85, '', {
             lineSpacing: 5,
@@ -151,15 +122,10 @@ class SelectApiRest extends Phaser.Scene {
                 this.frasess = {
                     id: nom_jug,
                     frase: this.frase
-                }
-                
+                }                
                 this.metodoPost(this.frasess);
             }
                 $('#input').val('');
-
-
-
-
             }
         }.bind(this))
 
@@ -202,7 +168,7 @@ class SelectApiRest extends Phaser.Scene {
     }
     metodoPost(frase) {
         $.ajax({
-            method: "POST",
+            method: 'POST',
             url: direccionWeb + '/chat',
             data: JSON.stringify(frase),
             processData: false,
@@ -215,7 +181,7 @@ class SelectApiRest extends Phaser.Scene {
     metodoPostJugador(jugad) {
 
         $.ajax({
-            method: "POST",
+            method: 'POST',
             url: direccionWeb + 'chat/jugador',
             data: JSON.stringify(jugad),
             processData: false,
@@ -250,8 +216,6 @@ class SelectApiRest extends Phaser.Scene {
             this.timer2.paused = true;
         }.bind(this))
     }
-
-
 
     metodoDeleteJugador() {
         nom_jug = null;
@@ -291,8 +255,6 @@ class SelectApiRest extends Phaser.Scene {
         }.bind(this))
 
     }
-
-
 
     cambio(p1, p2, p3, num) {
 
@@ -340,7 +302,7 @@ class SelectApiRest extends Phaser.Scene {
             if (!this.pulsadoReady) {
                 this.pulsadoReady = true;
                 $.ajax({
-                    method: "POST",
+                    method: 'POST',
                     url: direccionWeb + 'chat/jugador/ready',
                     data: JSON.stringify(this.jugador),
                     processData: false,
@@ -357,17 +319,7 @@ class SelectApiRest extends Phaser.Scene {
                 this.nextText.setVisible(false);
                 this.waitingPlayer.setVisible(true);
             }
-
-            /*this.cameras.main.fadeOut(500);
-            this.cameras.main.once('camerafadeoutcomplete', function (camera) {
-                this.selectAudio.stop();
-                this.scene.start('GameScene', { eleccion1: this.eleccion1, eleccion2: this.eleccion2 });
-            }, this);*/
         }.bind(this));
-
-        /*this.input.on('pointerover', () => this.nextButton.setTexture('redButton02'));
-
-        this.input.on('pointerout', () => this.nextButton.setTexture('redButton01'));*/
     }
 
     getReady() {
@@ -398,8 +350,6 @@ class SelectApiRest extends Phaser.Scene {
                         if(!this.scene.isActive('SelectApiRest')){
                             return;
                         }
-                        //console.log(data[this.numberPlayer]);
-                        //console.log(data[this.numberEnemy]);
                         this.enemigo = data[this.numberEnemy];
                         this.cameras.main.fadeOut(500);
                         this.cameras.main.once('camerafadeoutcomplete', function (camera) {
@@ -416,12 +366,9 @@ class SelectApiRest extends Phaser.Scene {
 
     updateAudio() {
         if (musicOn === false) {
-
             this.selectAudio.stop();
-
         }
         else {
-
             this.selectAudio.play();
         }
     }

@@ -4,13 +4,6 @@ class SelectName extends Phaser.Scene {
         super({ key: 'SelectName', active: false });
     }
     create(){
-
-       //console.log(direccionWeb);
-        /*this.i=document.getElementById("nameInput");
-        this.i.style.position="absolute";
-        this.i.style.display="block";
-        this.i.style.top="300px";
-        this.i.style.right="400px";*/
         inputName.style.display='block';
         this.nombreCreado=false;
         this.huecoSala = true;
@@ -44,7 +37,7 @@ class SelectName extends Phaser.Scene {
 
         this.exitButton.on('pointerout', () => this.exitButton.setTexture('smallButton01'));
 
-       this.valorInput = $("#nameInput").on('keyup',function(ele){
+       this.valorInput = $('#nameInput').on('keyup',function(ele){
             if(ele.key=='Enter'){
                 if(!$('#nameInput').val().trim()){
                     this.sameNameText.setVisible(false);
@@ -58,11 +51,7 @@ class SelectName extends Phaser.Scene {
                         sprite: -1
                      }
     
-                    //this.metodoPost(this.jugador);
                 this.metodoGetJugadores();
-                    
-               //$('#nameInput').val('');
-              // this.nombreJug=null;
                 }
             }
         }.bind(this))
@@ -116,7 +105,7 @@ class SelectName extends Phaser.Scene {
     metodoPostJugador(jugad){
       
         $.ajax({
-            method: "POST",
+            method: 'POST',
             url: direccionWeb + 'chat/jugador',
             data: JSON.stringify(jugad),
             processData: false,
