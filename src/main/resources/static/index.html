@@ -18,6 +18,7 @@
     <script src="src/select.js"></script>    
     <script src="src/selectName.js"></script>
     <script src="src/selectApiRest.js"></script>
+    <script src="src/notificaciones.js"></script>
     <script src="src/game.js"></script>
     <script src="src/gameApiRest.js"></script>
     <script src="src/playerVictory.js"></script>
@@ -30,20 +31,24 @@
 </head>
 
 <body>
-    <input id='nameInput' type='text' style="display: none">
-    <input id='input' type='text' style="display: none">
+    <input id='nameInput' type='text' placeholder='Write here...' style="display: none">
+    <input id='input' type='text' placeholder='Write here...' style="display: none">
 
     <script type="text/javascript"> 
      var nom_jug=null;
      var timer=null;
- 
-   /* Offline.check();
-    Offline.on('up', alert('up'));
-    Offline.on('down',alert('down'));*/
-    
-    
-
-       
+     var inputName;
+     inputName=document.getElementById('nameInput');
+    inputName.style.position='absolute';
+    inputName.style.display='none';
+    inputName.style.top='310px';
+    inputName.style.left='300px';
+    var inputChat;
+    inputChat = document.getElementById('input');
+    inputChat.style.position = 'absolute';
+    inputChat.style.display = 'none';
+    inputChat.style.top = '570px';
+    inputChat.style.left='25px';
     </script> 
         
 

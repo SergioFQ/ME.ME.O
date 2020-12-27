@@ -14,7 +14,8 @@ class SelectApiRest extends Phaser.Scene {
     }
 
     create(data) {
-
+        this.add.graphics({ x: 0, y: 0 }).fillStyle('0xFFFFFF', 1).fillRect(10, 85, 780, 115);
+        inputChat.style.display = 'block';
         this.enemigo = {
             nombre: null,
             sprite: -1
@@ -27,9 +28,9 @@ class SelectApiRest extends Phaser.Scene {
         visibility = true;
         this.numberPlayer;
         this.numberEnemy;
-        this.testeo= document.addEventListener("visibilitychange", () => {
+        this.testeo= document.addEventListener('visibilitychange', () => {
             if (visibility) {
-                if (document.visibilityState == "visible") {
+                if (document.visibilityState == 'visible') {
                     if (timer != null) {
                         if (timer.paused == true) {
                             $.ajax({
@@ -37,7 +38,9 @@ class SelectApiRest extends Phaser.Scene {
                             }, this).done(function (dat) {
                                 if (!dat) {
                                     this.selectAudio.stop();
-                                    this.scene.start('Menu');
+                                    $('#input').val('');
+                                    inputChat.style.display = 'none';
+                                    this.scene.start('Notificaciones',{ valor: 0});
                                 } else {
                                     this.metodoEstadoJug();
                                 }
@@ -52,7 +55,7 @@ class SelectApiRest extends Phaser.Scene {
             }
 
         }, this)
-
+        
         this.selectAudio = this.sound.add('select', { loop: true });
         this.selectAudio.setVolume(0.05);
         this.updateAudio();
@@ -63,40 +66,40 @@ class SelectApiRest extends Phaser.Scene {
 
         this.exitButton.on('pointerdown', function (pointer) {
             this.metodoDeleteJugador();
-            this.i.style.display = "none";
+            //this.i.style.display = "none";
+            inputChat.style.display = 'none';
             this.cameras.main.fadeOut(500);
             this.cameras.main.once('camerafadeoutcomplete', function (camera) {
                 this.selectAudio.stop();
+                $('#input').val('');
+                inputChat.style.display = 'none';
                 this.scene.start('Menu');
             }, this);
 
         }.bind(this));
 
-        this.input.on('pointerover', () => this.exitButton.setTexture('smallButton02'));
+        this.exitButton.on('pointerover', () => this.exitButton.setTexture('smallButton02'));
 
-        this.input.on('pointerout', () => this.exitButton.setTexture('smallButton01'));
+        this.exitButton.on('pointerout', () => this.exitButton.setTexture('smallButton01'));
 
-        this.text = this.add.text(400, 100, 'Press to select character', { fontFamily: 'Berlin Sans FB, "Goudy Bookletter 1911", Times, serif', fontSize: '42px', fill: '#fff' });
+        this.text = this.add.text(400, 250, 'Press to select character', { fontFamily: 'Berlin Sans FB, "Goudy Bookletter 1911", Times, serif', fontSize: '42px', fill: '#fff' });
         this.text.setOrigin(0.5);
         this.text.setColor('#FFFFFF');
 
-        this.text = this.add.text(400, 175, 'Player 1', { fontFamily: 'Berlin Sans FB, "Goudy Bookletter 1911", Times, serif', fontSize: '32px', fill: '#fff' });
-        this.text.setOrigin(0.5);
-        this.text.setColor('#FFFFFF');
 
         /*this.text = this.add.text(400, 325, 'Player 2', { fontFamily: 'Berlin Sans FB, "Goudy Bookletter 1911", Times, serif', fontSize: '32px', fill: '#fff' });
         this.text.setOrigin(0.5);
         this.text.setColor('#FFFFFF');*/
 
-        this.p1 = this.add.image(200, 250, 'pepe').setInteractive()
+        this.p1 = this.add.image(200, 375, 'pepe').setInteractive()
             .on('pointerover', () => this.p1.setScale(1.2))
             .on('pointerout', () => this.p1.setScale(1));
 
-        this.p2 = this.add.image(400, 250, 'trollface').setInteractive()
+        this.p2 = this.add.image(400, 375, 'trollface').setInteractive()
             .on('pointerover', () => this.p2.setScale(1.2))
             .on('pointerout', () => this.p2.setScale(1));
 
-        this.p3 = this.add.image(600, 250, 'coffindancer').setInteractive()
+        this.p3 = this.add.image(600, 375, 'coffindancer').setInteractive()
             .on('pointerover', () => this.p3.setScale(1.2))
             .on('pointerout', () => this.p3.setScale(1));
 
@@ -126,34 +129,25 @@ class SelectApiRest extends Phaser.Scene {
         this.cameras.main.fadeIn(200);
 
 
-        //PRUEBAS 
-        this.boton = this.add.sprite(100, 300, 'redButton01').setInteractive();
-        this.boton.on('pointerdown', function () {
-            this.frases = {
-                id: 1,
-                frase: "DE LOCOS"
-            }
-            this.metodoPost(this.frases);
+        
 
-        }.bind(this))
-
-        this.i = document.getElementById("input");
+        /*this.i = document.getElementById("input");
         this.i.style.position = "absolute";
         this.i.style.display = "block"; 
-        this.i.style.top = "570px";
+        this.i.style.top = "570px";*/
 
-        this.chat = this.add.text(10, 10, "", {
+        this.chat = this.add.text(10, 85, '', {
             lineSpacing: 5,
-            backgroundColor: "#FFFFFF",
-            color: "#000000",
+            backgroundColor: '#FFFFFF',
+            color: '#000000',
             padding: 10,
-            fontStyle: "bold"
+            fontStyle: 'bold'
         });
 
         $("#input").on('keydown', function (ele) {
             if (ele.key == 'Enter') {
                 this.frase = $('#input').val();
-                if(this.frase!==''){ 
+                if(this.frase.trim()){ 
                 this.frasess = {
                     id: nom_jug,
                     frase: this.frase
@@ -171,10 +165,10 @@ class SelectApiRest extends Phaser.Scene {
 
         this.metodoGet();//Para que el chat aparezca
         timer = this.time.addEvent({ delay: 2500, callback: this.metodoGet, callbackScope: this, loop: true });//CONTADOR
-        this.estadoServidor = this.add.text(300, 10, "");
+        this.estadoServidor = this.add.text(250, 10, '');
 
-        this.estadoJugadores = this.add.text(500, 10, "");
-        this.estadoJugadores2 = this.add.text(500, 30, "");
+        this.estadoJugadores = this.add.text(500, 10, '');
+        this.estadoJugadores2 = this.add.text(500, 30, '');
         this.metodoGetJugadores();
         this.timer2=this.time.addEvent({ delay: 3000, callback: this.metodoGetJugadores, callbackScope: this, loop: true });//CONTADOR
         this.metodoEstadoJug();
@@ -192,8 +186,10 @@ class SelectApiRest extends Phaser.Scene {
                 "Content-Type": "application/json"
             }
         }, this).done(function (dat) {
-
-        }).fail(function(){
+            if(!this.scene.isActive('SelectApiRest')){
+                return;
+            }
+        }.bind(this)).fail(function(){
             this.timer3.paused=true;
         }.bind(this))
     }
@@ -235,7 +231,9 @@ class SelectApiRest extends Phaser.Scene {
             url: direccionWeb + 'chat/jugador'
 
         }).done(function (data) {
-
+            if(!this.scene.isActive('SelectApiRest')){
+                return;
+            }
             if (data[0] == null) {
                 this.estadoJugadores.setText("Jugador 1: Desconectado");
             }
@@ -258,26 +256,37 @@ class SelectApiRest extends Phaser.Scene {
     metodoDeleteJugador() {
         nom_jug = null;
         $.ajax({
-            method: "DELETE",
+            method: 'DELETE',
             url: direccionWeb + 'chat/jugador/' + this.jugador.nombre
-        }, this).done(function (data) { })
+        }, this).done(function (data) {
+            if(!this.scene.isActive('SelectApiRest')){
+                return;
+            }
+         }.bind(this))
     }
     metodoGet() {
         $.ajax({
             url: direccionWeb + 'chat'
         }).done(function (data) {
+            if(!this.scene.isActive('SelectApiRest')){
+                return;
+            }
             let textoAmeter = [];
             for (var iter = data.length - 1; iter >= 0; iter--) {
-                textoAmeter.push(data[iter].id + ":" + data[iter].frase);
+                textoAmeter.push(data[iter].id + ": " + data[iter].frase);
                 if (textoAmeter.length > 5) {
                     textoAmeter.shift();
                 }
             }
             this.chat.setText(textoAmeter);
-            this.estadoServidor.setText("Servidor: Conectado")
+            this.estadoServidor.setText('Servidor: Conectado')
         }.bind(this)).fail(function (data) {
-            this.estadoServidor.setText("Servidor: No disponible");
+            this.estadoServidor.setText('Servidor: No disponible');
             timer.paused=true;
+            this.selectAudio.stop();
+            $('#input').val('');
+            inputChat.style.display = 'none';
+            this.scene.start('Notificaciones',{ valor: 1});
 
         }.bind(this))
 
@@ -339,6 +348,9 @@ class SelectApiRest extends Phaser.Scene {
                         "Content-Type": "application/json"
                     }
                 }, this).done(function (data) {
+                    if(!this.scene.isActive('SelectApiRest')){
+                        return;
+                    }
                     this.startGameTimer = this.time.addEvent({ delay: 1000, callback: this.getReady, callbackScope: this, loop: true });
                 }.bind(this))
                 this.nextButton.setVisible(false);
@@ -359,40 +371,21 @@ class SelectApiRest extends Phaser.Scene {
     }
 
     getReady() {
-        /*$.ajax({
-            url: direccionWeb + 'chat/jugador/pos/' + this.jugador.nombre
-        }).done(function (data) {
-            this.numberPlayer = data;
-            if (this.numberPlayer == 0) {
-                this.numberEnemy = 1;
-            } else {
-                this.numberEnemy = 0;
-            }
-
-            $.ajax({
-                url: direccionWeb + 'chat/jugador'
-            }).done(function (data) {
-
-                //console.log(data[this.numberPlayer]);
-                //console.log(data[this.numberEnemy]);
-                this.jugadorEnemigo = data[this.numberEnemy];
-                
-            }.bind(this))
-
-        }.bind(this))*/
         $.ajax({
             url: direccionWeb + 'chat/jugador/ready'
         }).done(function (data) {
+            if(!this.scene.isActive('SelectApiRest')){
+                return;
+            }
             if (data) {
                 this.startGameTimer.paused = true;
-                /*this.cameras.main.fadeOut(500);
-                this.cameras.main.once('camerafadeoutcomplete', function (camera) {
-                    this.selectAudio.stop();
-                    this.scene.start('GameSceneApi', { jugador: this.jugador, enemigo: this.enemigo });
-                }, this);*/
+
                 $.ajax({
                     url: direccionWeb + 'chat/jugador/pos/' + this.jugador.nombre
                 }).done(function (data) {
+                    if(!this.scene.isActive('SelectApiRest')){
+                        return;
+                    }
                     this.numberPlayer = data;
                     if (this.numberPlayer == 0) {
                         this.numberEnemy = 1;
@@ -402,38 +395,23 @@ class SelectApiRest extends Phaser.Scene {
                     $.ajax({
                         url: direccionWeb + 'chat/jugador'
                     }).done(function (data) {
-
+                        if(!this.scene.isActive('SelectApiRest')){
+                            return;
+                        }
                         //console.log(data[this.numberPlayer]);
                         //console.log(data[this.numberEnemy]);
                         this.enemigo = data[this.numberEnemy];
                         this.cameras.main.fadeOut(500);
                         this.cameras.main.once('camerafadeoutcomplete', function (camera) {
                             this.selectAudio.stop();
+                            $('#input').val('');
+                            inputChat.style.display = 'none';
                             this.scene.start('GameSceneApi', { jugador: this.jugador, enemigo: this.enemigo });
                         }, this);
                     }.bind(this))
                 }.bind(this))
             }
         }.bind(this))
-
-        /*$.ajax({
-            url: direccionWeb+'chat/jugador'
-       }).done(function (data) {
-           
-
-       }.bind(this))*/
-
-        /*$.ajax({
-            url: direccionWeb+'chat/jugador/ready'
-       }).done(function (data) {
-           if(data){
-            this.cameras.main.fadeOut(500);
-            this.cameras.main.once('camerafadeoutcomplete', function (camera) {
-                this.selectAudio.stop();
-                this.scene.start('GameSceneApi', { jugador: this.jugador });
-            }, this);
-           }
-       }.bind(this))*/
     }
 
     updateAudio() {

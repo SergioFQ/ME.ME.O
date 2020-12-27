@@ -31,9 +31,9 @@ class Select extends Phaser.Scene {
             }, this);
         }.bind(this));
 
-        this.input.on('pointerover', () => this.exitButton.setTexture('smallButton02'));
+        this.exitButton.on('pointerover', () => this.exitButton.setTexture('smallButton02'));
 
-        this.input.on('pointerout', () => this.exitButton.setTexture('smallButton01'));
+        this.exitButton.on('pointerout', () => this.exitButton.setTexture('smallButton01'));
 
         this.text = this.add.text(400, 100, 'Press to select character', { fontFamily: 'Berlin Sans FB, "Goudy Bookletter 1911", Times, serif', fontSize: '42px', fill: '#fff' });
         this.text.setOrigin(0.5);

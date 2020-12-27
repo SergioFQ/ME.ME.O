@@ -36,7 +36,6 @@ class GameSceneApi extends Phaser.Scene {
                 this.keyVidaP1 = 'coffindancer';
                 this.keyGifP1 = 'coffin';
                 break;
-
         }
 
         switch (this.jugadorEnemigo.sprite) {
@@ -58,15 +57,12 @@ class GameSceneApi extends Phaser.Scene {
                 this.keyVidaP2 = 'coffindancer';
                 this.keyGifP2 = 'coffin';
                 break;
-
         }
-
     }
 
     preload() {
 
     }
-
 
     create() {
         this.fadeEnd = false;
@@ -87,15 +83,15 @@ class GameSceneApi extends Phaser.Scene {
         this.platforms.create(300, 2350, 'platform');
         this.camera = this.cameras.main;//camara de la escena
         this.camera.setScroll(0, 2400);//posición inicial de la cámara (podría cambiar)
-        //this.eleccionEnemy;
+        
         this.numberPlayer;
         this.numberEnemy;
-        // = this.jugador;
-        //console.log(this.jugadorEnemigo);
-        //getPos del player usado
         $.ajax({
             url: direccionWeb + 'chat/jugador/pos/' + this.jugador.nombre
         }).done(function (data) {
+            if (!this.scene.isActive('GameSceneApi')) {
+                return;
+            }
             this.numberPlayer = data;
             if (this.numberPlayer == 0) {
                 console.log('soy 0');
@@ -116,25 +112,19 @@ class GameSceneApi extends Phaser.Scene {
             this.playerEnemy.setCollideWorldBounds(true);
             this.playerEnemy.depth = 10;
             this.colP2Plat = this.physics.add.collider(this.playerEnemy, this.platforms);
+
+            this.playerLocalName = this.add.text(this.playerLocal.body.x, this.playerLocal.body.y - 25, this.jugador.nombre, { fontFamily: 'Berlin Sans FB, "Goudy Bookletter 1911", Times, serif', fontSize: '20px', fill: ' #ffF' });
+            this.playerLocalName.depth = 9;
+            this.playerEnemyName = this.add.text(this.playerEnemy.body.x, this.playerEnemy.body.y - 25, this.jugadorEnemigo.nombre, { fontFamily: 'Berlin Sans FB, "Goudy Bookletter 1911", Times, serif', fontSize: '20px', fill: ' #ffF' });
+            this.playerEnemyName.depth = 9;
         }.bind(this))
-
-        /*   $.ajax({
-            url: direccionWeb+'chat/jugador'
-        }).done(function (data) {
-            
-            console.log(data[this.numberPlayer]);
-            console.log(data[this.numberEnemy]);
-           this.jugadorEnemigo = data[this.numberEnemy];
-        }.bind(this))*/
-
 
         console.log(this.jugadorEnemigo);
 
-        
-        this.estadoJugadores = this.add.text(500, 10, "").setScrollFactor(0, 0);
-        this.estadoJugadores2 = this.add.text(500, 30, "").setScrollFactor(0, 0);
-        this.estadoServidor = this.add.text(300, 10, "").setScrollFactor(0, 0);
-        
+        this.estadoJugadores = this.add.text(500, 10, '').setScrollFactor(0, 0);
+        this.estadoJugadores2 = this.add.text(500, 30, '').setScrollFactor(0, 0);
+        this.estadoServidor = this.add.text(300, 10, '').setScrollFactor(0, 0);
+
         this.metodoGetJugadores();
         this.time.addEvent({ delay: 3000, callback: this.metodoGetJugadores, callbackScope: this, loop: true });
 
@@ -142,7 +132,7 @@ class GameSceneApi extends Phaser.Scene {
         this.timer2 = this.time.addEvent({ delay: 2500, callback: this.metodoGet, callbackScope: this, loop: true });
 
         visibility = true;
-        this.testeo=document.addEventListener("visibilitychange", () => {
+        this.testeo = document.addEventListener("visibilitychange", () => {
             if (visibility) {
                 if (document.visibilityState == "visible") {
                     if (this.timer2 != null) {
@@ -150,10 +140,14 @@ class GameSceneApi extends Phaser.Scene {
                             $.ajax({
                                 url: direccionWeb + 'chat/jugador/regreso/' + this.jugador.nombre
                             }, this).done(function (dat) {
+
+                                if (!this.scene.isActive('GameSceneApi')) {
+                                    return;
+                                }
                                 if (!dat) {
-                                  //  this.trololoAudio.stop();
-                                // this.coffinAudio.stop();
-                                    this.scene.start('Menu');
+                                    this.trololoAudio.stop();
+                                    this.coffinAudio.stop();
+                                    this.scene.start('Notificaciones', { valor: 0 });
                                 } else {
                                     this.metodoEstadoJug();
                                 }
@@ -345,14 +339,34 @@ class GameSceneApi extends Phaser.Scene {
 
         this.canJump1 = true;
         this.canJump2 = true;
-
+        */
 
         this.trololoAudio = this.sound.add('trololo', { loop: true });
         this.trololoAudio.setVolume(0.02);
         this.coffinAudio = this.sound.add('coffinSound', { loop: true });
         this.coffinAudio.setVolume(0.02);
         this.updateAudio();
-        this.player1Name = this.add.text(this.player1.body.x, this.player1.body.y - 25, 'Player 1', { fontFamily: 'Berlin Sans FB, "Goudy Bookletter 1911", Times, serif', fontSize: '20px', fill: ' #ffF' });
+        this.menuButton = this.add.sprite(80, 570, 'redButton01').setInteractive().setScrollFactor(0,0).setScale(0.75);
+        this.menuButton.depth=12;
+        this.menuText = this.add.text(0, 0, 'MENU', { fontFamily: 'Berlin Sans FB, "Goudy Bookletter 1911", Times, serif', fontSize: '32px', fill: '#fff' });
+        this.menuText.depth=13;
+        this.menuText.setScrollFactor(0,0);
+        this.centerButtonText(this.menuText, this.menuButton);
+        
+        this.menuButton.on('pointerdown', function (pointer) {
+            this.metodoDeleteJugador();
+            this.cameras.main.fadeOut(500);
+            this.cameras.main.once('camerafadeoutcomplete', function (camera) {
+                this.trololoAudio.stop();
+                this.coffinAudio.stop();
+                this.scene.start('Menu');
+            }, this);
+        }.bind(this));
+
+        this.input.on('pointerover', () => this.menuButton.setTexture('redButton02'));
+
+        this.input.on('pointerout', () => this.menuButton.setTexture('redButton01'));
+        /*this.player1Name = this.add.text(this.player1.body.x, this.player1.body.y - 25, 'Player 1', { fontFamily: 'Berlin Sans FB, "Goudy Bookletter 1911", Times, serif', fontSize: '20px', fill: ' #ffF' });
         this.player1Name.depth = 9;
         this.player2Name = this.add.text(this.player2.body.x, this.player2.body.y - 25, 'Player 2', { fontFamily: 'Berlin Sans FB, "Goudy Bookletter 1911", Times, serif', fontSize: '20px', fill: '#fff' });
         this.player2Name.depth = 9;
@@ -382,6 +396,17 @@ class GameSceneApi extends Phaser.Scene {
         this.input.on('pointerout', () => this.menuButton.setTexture('redButton01'));*/
     }
 
+    metodoDeleteJugador() {
+        nom_jug = null;
+        $.ajax({
+            method: 'DELETE',
+            url: direccionWeb + 'chat/jugador/' + this.jugador.nombre
+        }, this).done(function (data) {
+            if(!this.scene.isActive('SelectApiRest')){
+                return;
+            }
+         }.bind(this))
+    }
 
     centerButtonText(gameText, gameButton) {
         Phaser.Display.Align.In.Center(
@@ -445,7 +470,6 @@ class GameSceneApi extends Phaser.Scene {
         this.plataforma1.setBounce(1);
         this.grupoPlataformasQueRebotan.add(this.plataforma1);
     }
-
 
     destruirBalasFueraDelMapa(gb) {// FUNCION QUE DESTRUYE LAS BALAS QUE SE SALEN DEL MAPA PARA NO SOBRECARGAR EL JUEGO
         for (var j = 0; j < gb.getChildren().length; j++) {
@@ -802,7 +826,6 @@ class GameSceneApi extends Phaser.Scene {
         }
     }
 
-
     muerteCaida2() {
         this.p2Lives--;
         this.colP2Plat.active = false;
@@ -943,14 +966,11 @@ class GameSceneApi extends Phaser.Scene {
                             this.platDch = true;
                             this.generarPlatEstatica(Phaser.Math.Between(450, 650), this.altura);
                         }
-
                         this.seHaGeneradoPlat = true;
                     }
-
                 } while (this.seHaGeneradoPlat == false);
             } while (this.platDch == false && this.contador < this.generarUnaPlataforma_O_Dos);
         }
-
     }
     metodoGetJugadores() {
 
@@ -959,21 +979,28 @@ class GameSceneApi extends Phaser.Scene {
 
         }).done(function (data) {
 
+            if (!this.scene.isActive('GameSceneApi')) {
+                return;
+            }
             if (data[0] == null) {
-                this.estadoJugadores.setText("Jugador 1: Desconectado");
-                this.scene.start('Menu');
-                this.timer2.paused=true;
+                this.estadoJugadores.setText('Jugador 1: Desconectado');
+                this.timer2.paused = true;
+                this.trololoAudio.stop();
+                this.coffinAudio.stop();
+                this.scene.start('Notificaciones', { valor: 2 });
             }
             else {
-                this.estadoJugadores.setText(data[0].nombre + ": Conectado");
+                this.estadoJugadores.setText(data[0].nombre + ': Conectado');
             }
             if (data[1] == null) {
-                this.estadoJugadores2.setText("Jugador 2: Desconectado");
-                this.scene.start('Menu');
-                this.timer2.paused=true;
+                this.estadoJugadores2.setText('Jugador 2: Desconectado');
+                this.timer2.paused = true;
+                this.trololoAudio.stop();
+                this.coffinAudio.stop();
+                this.scene.start('Notificaciones', { valor: 2 });
             }
             else {
-                this.estadoJugadores2.setText(data[1].nombre + ": Conectado");
+                this.estadoJugadores2.setText(data[1].nombre + ': Conectado');
             }
         }.bind(this))
     }
@@ -989,16 +1016,26 @@ class GameSceneApi extends Phaser.Scene {
             }
         }, this).done(function (dat) {
 
-        })
+            if (!this.scene.isActive('GameSceneApi')) {
+                return;
+            }
+        }.bind(this))
     }
     metodoGet() {
         $.ajax({
             url: direccionWeb + 'chat'
         }).done(function (data) {
-            this.estadoServidor.setText("Servidor: Conectado")
+
+            if (!this.scene.isActive('GameSceneApi')) {
+                return;
+            }
+            this.estadoServidor.setText('Servidor: Conectado')
         }.bind(this)).fail(function (data) {
-            this.estadoServidor.setText("Servidor: No disponible");
-            this.timer2.paused=true;
+            this.estadoServidor.setText('Servidor: No disponible');
+            this.timer2.paused = true;
+            this.trololoAudio.stop();
+            this.coffinAudio.stop();
+            this.scene.start('Notificaciones', { valor: 1 });
         }.bind(this))
     }
 }
