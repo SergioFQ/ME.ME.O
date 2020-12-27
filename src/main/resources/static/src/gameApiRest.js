@@ -94,12 +94,10 @@ class GameSceneApi extends Phaser.Scene {
             }
             this.numberPlayer = data;
             if (this.numberPlayer == 0) {
-                console.log('soy 0');
                 this.numberEnemy = 1;
                 this.playerLocal = this.physics.add.sprite(250, 2900, this.spriteP1).setScale(0.5);//cambiar lo de los sprites estos(switch del init)
                 this.playerEnemy = this.physics.add.sprite(600, 2900, this.spriteP2).setScale(0.5);
             } else {
-                console.log('soy 1');
                 this.numberEnemy = 0;
                 this.playerLocal = this.physics.add.sprite(600, 2900, this.spriteP1).setScale(0.5);
                 this.playerEnemy = this.physics.add.sprite(250, 2900, this.spriteP2).setScale(0.5);
@@ -118,8 +116,6 @@ class GameSceneApi extends Phaser.Scene {
             this.playerEnemyName = this.add.text(this.playerEnemy.body.x, this.playerEnemy.body.y - 25, this.jugadorEnemigo.nombre, { fontFamily: 'Berlin Sans FB, "Goudy Bookletter 1911", Times, serif', fontSize: '20px', fill: ' #ffF' });
             this.playerEnemyName.depth = 9;
         }.bind(this))
-
-        console.log(this.jugadorEnemigo);
 
         this.estadoJugadores = this.add.text(500, 10, '').setScrollFactor(0, 0);
         this.estadoJugadores2 = this.add.text(500, 30, '').setScrollFactor(0, 0);

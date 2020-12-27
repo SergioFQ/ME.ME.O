@@ -92,7 +92,6 @@ class Preload extends Phaser.Scene {
     create() {
         musicOn = true;
         visibility = false;
-        //console.log(direccionWeb);
     }
 
     createLoadingBar() {
