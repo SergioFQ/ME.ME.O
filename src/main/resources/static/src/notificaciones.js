@@ -5,10 +5,10 @@ class Notificaciones extends Phaser.Scene {
     }
 
     create(data) {
-        this.exitButton = this.add.sprite(750, 50, 'smallButton01').setInteractive()
-            .on('pointerover', () => this.exitButton.setTexture('smallButton02'))
-            .on('pointerout', () => this.exitButton.setTexture('smallButton01'));
-        this.backText = this.add.text(0, 0, 'X', { fontFamily: 'Berlin Sans FB, "Goudy Bookletter 1911", Times, serif', fontSize: '32px', fill: '#fff' });
+        this.exitButton = this.add.sprite(400, 400, 'redButton01').setInteractive()
+            .on('pointerover', () => this.exitButton.setTexture('redButton02'))
+            .on('pointerout', () => this.exitButton.setTexture('redButton01'));
+        this.backText = this.add.text(0, 0, 'MENU', { fontFamily: 'Berlin Sans FB, "Goudy Bookletter 1911", Times, serif', fontSize: '32px', fill: '#fff' });
         this.centerButtonText(this.backText, this.exitButton);
 
         this.exitButton.on('pointerdown', function (pointer) {
@@ -21,11 +21,11 @@ class Notificaciones extends Phaser.Scene {
             }, this);
         }.bind(this));
 
-        this.inactivityText = this.add.text(225, 250, 'Kicked out for inactivity', { fontFamily: 'Berlin Sans FB, "Goudy Bookletter 1911", Times, serif', fontSize: '32px', fill: '#fff' });
+        this.inactivityText = this.add.text(240, 250, 'Kicked out for inactivity', { fontFamily: 'Berlin Sans FB, "Goudy Bookletter 1911", Times, serif', fontSize: '32px', fill: '#fff' });
         this.inactivityText.setVisible(false);
         this.serverOutText = this.add.text(250, 250, 'Server disconnected', { fontFamily: 'Berlin Sans FB, "Goudy Bookletter 1911", Times, serif', fontSize: '32px', fill: '#fff' });
         this.serverOutText.setVisible(false);
-        this.enemyDisconnectText = this.add.text(150, 250, 'Opponent disconnected from server', { fontFamily: 'Berlin Sans FB, "Goudy Bookletter 1911", Times, serif', fontSize: '32px', fill: '#fff' });
+        this.enemyDisconnectText = this.add.text(165, 250, 'Opponent disconnected from server', { fontFamily: 'Berlin Sans FB, "Goudy Bookletter 1911", Times, serif', fontSize: '32px', fill: '#fff' });
         this.enemyDisconnectText.setVisible(false);
 
         switch (data.valor) {

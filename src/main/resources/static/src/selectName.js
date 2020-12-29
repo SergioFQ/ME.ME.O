@@ -12,7 +12,7 @@ class SelectName extends Phaser.Scene {
         this.text = this.add.text(400, 175, 'Write your name', { fontFamily: 'Berlin Sans FB, "Goudy Bookletter 1911", Times, serif', fontSize: '42px', fill: '#fff' });
         this.text.setOrigin(0.5);
         this.text.setColor('#FFFFFF');
-        this.sameNameText = this.add.text(150, 250, 'Name selected by another player\n             Choose another one', { fontFamily: 'Berlin Sans FB, "Goudy Bookletter 1911", Times, serif', fontSize: '32px', fill: '#fff' });
+        this.sameNameText = this.add.text(165, 250, 'Name selected by another player\n             Choose another one', { fontFamily: 'Berlin Sans FB, "Goudy Bookletter 1911", Times, serif', fontSize: '32px', fill: '#fff' });
         this.sameNameText.setVisible(false);
 
         this.fullServerText = this.add.text(150, 250, 'Out of space - Server full of players', { fontFamily: 'Berlin Sans FB, "Goudy Bookletter 1911", Times, serif', fontSize: '32px', fill: '#fff' });
