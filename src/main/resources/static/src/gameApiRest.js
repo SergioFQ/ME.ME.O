@@ -65,6 +65,7 @@ class GameSceneApi extends Phaser.Scene {
     }
 
     create() {
+
         this.sceneChanged = false;
         this.connectionLost = false;
         this.fadeEnd = false;
@@ -511,7 +512,9 @@ class GameSceneApi extends Phaser.Scene {
                 this.coffinAudio.stop();
                 this.scene.start('Notificaciones',{ valor: 1});
             }
+           
         }
+       
         //Player1 control
         /*if (this.golpeado == true) {
 
@@ -1002,6 +1005,7 @@ class GameSceneApi extends Phaser.Scene {
         }
     }
     metodoGetJugadores() {
+        
         if(this.connectionLost){
             return;
         }
@@ -1009,7 +1013,7 @@ class GameSceneApi extends Phaser.Scene {
             url: direccionWeb + 'chat/jugador'
 
         }).done(function (data) {
-
+            this.badConect=true;
             if (!this.scene.isActive('GameSceneApi')) {
                 return;
             }
@@ -1024,6 +1028,9 @@ class GameSceneApi extends Phaser.Scene {
                 }
             }
             else {
+                if(data[0].nombre == this.jugador.nombre){
+                    this.badConect = false;
+                }
                 this.estadoJugadores.setText(data[0].nombre + ': Conectado');
             }
             if (data[1] == null) {
@@ -1037,7 +1044,18 @@ class GameSceneApi extends Phaser.Scene {
                 }
             }
             else {
+                if(data[1].nombre == this.jugador.nombre){
+                    this.badConect = false;
+                }
                 this.estadoJugadores2.setText(data[1].nombre + ': Conectado');
+            }
+            if(this.badConect){
+                if(!this.sceneChanged){
+                    this.sceneChanged = true;
+                    this.trololoAudio.stop();
+                    this.coffinAudio.stop();
+                    this.scene.start('Notificaciones',{ valor: 3});
+                }
             }
         }.bind(this)).fail(function(){
             this.connectionLost = true;

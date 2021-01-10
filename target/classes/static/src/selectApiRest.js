@@ -208,6 +208,7 @@ class SelectApiRest extends Phaser.Scene {
             this.createButton();
         }
 
+       
     }
     metodoPost(frase) {
         
@@ -234,7 +235,6 @@ class SelectApiRest extends Phaser.Scene {
             }
         })
     }
-
     metodoGetJugadores() {
         if(this.connectionLost){
             return;
@@ -243,6 +243,7 @@ class SelectApiRest extends Phaser.Scene {
             url: direccionWeb + 'chat/jugador'
 
         }).done(function (data) {
+            this.badConect = true;
             if(!this.scene.isActive('SelectApiRest')){
                 return;
             }
@@ -250,14 +251,31 @@ class SelectApiRest extends Phaser.Scene {
                 this.estadoJugadores.setText("Jugador 1: Desconectado");
             }
             else {
+                if(data[0].nombre == this.jugador.nombre){
+                    this.badConect = false;
+                }
                 this.estadoJugadores.setText(data[0].nombre + ": Conectado");
             }
             if (data[1] == null) {
                 this.estadoJugadores2.setText("Jugador 2: Desconectado");
             }
             else {
+                if(data[1].nombre == this.jugador.nombre){
+                    this.badConect = false;
+                }
                 this.estadoJugadores2.setText(data[1].nombre + ": Conectado");
             }
+
+            if(this.badConect){
+                if(!this.sceneChanged){
+                    this.sceneChanged = true;
+                    this.selectAudio.stop();
+                    $('#input').val('');
+                    inputChat.style.display = 'none';
+                    this.scene.start('Notificaciones',{ valor: 3});
+                }
+            }
+            
         }.bind(this)).fail(function(){
             this.connectionLost = true;
             this.timer2.paused = true;            

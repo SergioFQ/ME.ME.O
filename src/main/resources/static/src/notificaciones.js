@@ -27,6 +27,8 @@ class Notificaciones extends Phaser.Scene {
         this.serverOutText.setVisible(false);
         this.enemyDisconnectText = this.add.text(165, 250, 'Opponent disconnected from server', { fontFamily: 'Berlin Sans FB, "Goudy Bookletter 1911", Times, serif', fontSize: '32px', fill: '#fff' });
         this.enemyDisconnectText.setVisible(false);
+        this.pingDisconnectText = this.add.text(259, 250, 'Your ping is very high', { fontFamily: 'Berlin Sans FB, "Goudy Bookletter 1911", Times, serif', fontSize: '32px', fill: '#fff' });
+        this.pingDisconnectText.setVisible(false);
 
         switch (data.valor) {
             case 0:
@@ -37,6 +39,9 @@ class Notificaciones extends Phaser.Scene {
                 break;
             case 2:
                 this.enemyDisconnectText.setVisible(true);
+                break;
+            case 3:
+                this.pingDisconnectText.setVisible(true);
                 break;
         }
     }
