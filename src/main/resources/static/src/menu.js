@@ -35,10 +35,10 @@ class Menu extends Phaser.Scene {
 
         //Play Standalone
 
-        this.gameButton = this.add.sprite(400, 300, 'redButton01').setInteractive();
+        this.gameButton = this.add.sprite(400, 200, 'redButton01').setInteractive();
         this.centerButton(this.gameButton, 1);
 
-        this.gameText = this.add.text(0, 0, 'PLAY Local', { fontFamily: 'Berlin Sans FB, "Goudy Bookletter 1911", Times, serif', fontSize: '32px', fill: '#fff' });
+        this.gameText = this.add.text(0, 0, 'LOCAL', { fontFamily: 'Berlin Sans FB, "Goudy Bookletter 1911", Times, serif', fontSize: '32px', fill: '#fff' });
         this.centerButtonText(this.gameText, this.gameButton);
 
         this.gameButton.on('pointerdown', function (pointer) {
@@ -59,10 +59,10 @@ class Menu extends Phaser.Scene {
 
         //Play Multi
 
-        this.gameButton = this.add.sprite(650, 300, 'redButton01').setInteractive();
-        //this.centerButton(this.gameButton, 1);
+        this.gameButton = this.add.sprite(400, 300, 'redButton01').setInteractive();
+        this.centerButton(this.gameButton, 0.25);
 
-        this.gameText = this.add.text(0, 0, 'PLAY Multi', { fontFamily: 'Berlin Sans FB, "Goudy Bookletter 1911", Times, serif', fontSize: '32px', fill: '#fff' });
+        this.gameText = this.add.text(0, 0, 'ONLINE', { fontFamily: 'Berlin Sans FB, "Goudy Bookletter 1911", Times, serif', fontSize: '32px', fill: '#fff' });
         this.centerButtonText(this.gameText, this.gameButton);
 
         this.gameButton.on('pointerdown', function (pointer) {
@@ -84,7 +84,7 @@ class Menu extends Phaser.Scene {
         //Options
 
         this.optionsButton = this.add.sprite(300, 200, 'redButton01').setInteractive();
-        this.centerButton(this.optionsButton, 0);
+        this.centerButton(this.optionsButton, -0.5);
 
         this.optionsText = this.add.text(0, 0, 'OPTIONS', { fontFamily: 'Berlin Sans FB, "Goudy Bookletter 1911", Times, serif', fontSize: '32px', fill: '#fff' });
         this.centerButtonText(this.optionsText, this.optionsButton);
@@ -98,7 +98,7 @@ class Menu extends Phaser.Scene {
         }.bind(this));
 
         this.controlsButton = this.add.sprite(300, 200, 'redButton01').setInteractive();
-        this.centerButton(this.controlsButton, -1);
+        this.centerButton(this.controlsButton, -1.25);
 
         this.optionsText = this.add.text(0, 0, 'CONTROLS', { fontFamily: 'Berlin Sans FB, "Goudy Bookletter 1911", Times, serif', fontSize: '32px', fill: '#fff' });
         this.centerButtonText(this.optionsText, this.controlsButton);

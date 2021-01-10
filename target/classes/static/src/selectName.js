@@ -19,6 +19,8 @@ class SelectName extends Phaser.Scene {
         this.fullServerText.setVisible(false);
         this.emptyNameText = this.add.text(200, 250, 'Empty name is not allowed', { fontFamily: 'Berlin Sans FB, "Goudy Bookletter 1911", Times, serif', fontSize: '32px', fill: '#fff' });
         this.emptyNameText.setVisible(false);
+        this.serverOffText = this.add.text(300, 250, 'Sever is closed', { fontFamily: 'Berlin Sans FB, "Goudy Bookletter 1911", Times, serif', fontSize: '32px', fill: '#fff' });
+        this.serverOffText.setVisible(false);
 
         this.exitButton = this.add.sprite(750, 50, 'smallButton01').setInteractive();
         this.backText = this.add.text(0, 0, 'X', { fontFamily: 'Berlin Sans FB, "Goudy Bookletter 1911", Times, serif', fontSize: '32px', fill: '#fff' });
@@ -68,7 +70,8 @@ class SelectName extends Phaser.Scene {
     }
     metodoGetJugadores(){
         $.ajax({
-             url: direccionWeb+'chat/jugador'
+             url: direccionWeb+'chat/jugador',
+             timeout: 2500
         }).done(function(data){
 
             if(data[0]==null || data[1]==null){
@@ -99,6 +102,13 @@ class SelectName extends Phaser.Scene {
                 this.fullServerText.setVisible(false);
                 this.sameNameText.setVisible(true);
             }
+        }.bind(this)).fail(function(){
+            this.sameNameText.setVisible(false);
+            this.fullServerText.setVisible(false);
+            this.emptyNameText.setVisible(false);
+            this.serverOffText.setVisible(true);            
+            $('#nameInput').val('');
+            console.log('de locos');
         }.bind(this))
     }
 
@@ -111,10 +121,18 @@ class SelectName extends Phaser.Scene {
             processData: false,
             headers: {
                 "Content-Type": "application/json"
-            }
+            },
+            timeout: 2500
         }).done(function(data){
             $('#nameInput').val('');
             this.scene.start('SelectApiRest',{ jugador: this.jugador});
+        }.bind(this)).fail(function(){
+            this.sameNameText.setVisible(false);
+            this.fullServerText.setVisible(false);
+            this.emptyNameText.setVisible(false);
+            this.serverOffText.setVisible(true);            
+            $('#nameInput').val('');
+            console.log('de locos');
         }.bind(this))
     }
 

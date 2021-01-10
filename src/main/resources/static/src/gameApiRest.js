@@ -65,10 +65,12 @@ class GameSceneApi extends Phaser.Scene {
     }
 
     create() {
+        this.sceneChanged = false;
+        this.connectionLost = false;
         this.fadeEnd = false;
 
         this.metodoEstadoJug();
-        this.time.addEvent({ delay: 2000, callback: this.metodoEstadoJug, callbackScope: this, loop: true });
+        this.timer1 = this.time.addEvent({ delay: 2000, callback: this.metodoEstadoJug, callbackScope: this, loop: true });
 
         this.createAnimations(this.spriteP1, this.spriteP2, this.keyP1, this.keyP2);
         this.add.image(400, 1000, 'fondo');
@@ -122,17 +124,23 @@ class GameSceneApi extends Phaser.Scene {
         this.estadoServidor = this.add.text(300, 10, '').setScrollFactor(0, 0);
 
         this.metodoGetJugadores();
-        this.time.addEvent({ delay: 3000, callback: this.metodoGetJugadores, callbackScope: this, loop: true });
+        this.timer3 = this.time.addEvent({ delay: 3000, callback: this.metodoGetJugadores, callbackScope: this, loop: true });
 
         this.metodoGet();//Para que el chat aparezca
         this.timer2 = this.time.addEvent({ delay: 2500, callback: this.metodoGet, callbackScope: this, loop: true });
 
         visibility = true;
-        this.testeo = document.addEventListener("visibilitychange", () => {
+        this.testeo = document.addEventListener('visibilitychange', () => {
             if (visibility) {
-                if (document.visibilityState == "visible") {
+                if (document.visibilityState == 'visible') {
+                    if(!(this.scene.isActive('SelectApiRest') || this.scene.isActive('GameSceneApi'))){
+                        return;
+                    }
                     if (this.timer2 != null) {
                         if (this.timer2.paused == true) {
+                            if(this.connectionLost){
+                                return;
+                            }
                             $.ajax({
                                 url: direccionWeb + 'chat/jugador/regreso/' + this.jugador.nombre
                             }, this).done(function (dat) {
@@ -141,18 +149,32 @@ class GameSceneApi extends Phaser.Scene {
                                     return;
                                 }
                                 if (!dat) {
+                                    if(!this.sceneChanged){
+                                    this.sceneChanged = true;
                                     this.trololoAudio.stop();
                                     this.coffinAudio.stop();
                                     this.scene.start('Notificaciones', { valor: 0 });
+                                    }
                                 } else {
+                                    this.timer2.paused = false;
+                                    this.timer1.paused = false;
+                                    this.timer3.paused = false;
                                     this.metodoEstadoJug();
                                 }
+                            }.bind(this)).fail(function(){
+                                console.log('toma merienda');
+                                this.connectionLost = true;
+                                this.timer2.paused = false;
+                                this.timer1.paused = true;
+                                this.timer3.paused = true;
                             }.bind(this))
                         }
                     }
                 } else {
                     if (this.timer2 != null) {
                         this.timer2.paused = true;
+                        this.timer1.paused = true;
+                        this.timer3.paused = true;
                     }
                 }
             }
@@ -350,6 +372,8 @@ class GameSceneApi extends Phaser.Scene {
         this.centerButtonText(this.menuText, this.menuButton);
         
         this.menuButton.on('pointerdown', function (pointer) {
+            if(!this.sceneChanged){
+            this.sceneChanged = true;
             this.metodoDeleteJugador();
             this.cameras.main.fadeOut(500);
             this.cameras.main.once('camerafadeoutcomplete', function (camera) {
@@ -357,6 +381,7 @@ class GameSceneApi extends Phaser.Scene {
                 this.coffinAudio.stop();
                 this.scene.start('Menu');
             }, this);
+        }
         }.bind(this));
 
         this.input.on('pointerover', () => this.menuButton.setTexture('redButton02'));
@@ -476,8 +501,16 @@ class GameSceneApi extends Phaser.Scene {
     }
 
     update(time, delta) {
-        if (!this.fadeEnd) {
+        /*if (!this.fadeEnd) {
             return;
+        }*/
+        if(this.connectionLost){
+            if(!this.sceneChanged){
+                this.sceneChanged = true;    
+                this.trololoAudio.stop();
+                this.coffinAudio.stop();
+                this.scene.start('Notificaciones',{ valor: 1});
+            }
         }
         //Player1 control
         /*if (this.golpeado == true) {
@@ -969,7 +1002,9 @@ class GameSceneApi extends Phaser.Scene {
         }
     }
     metodoGetJugadores() {
-
+        if(this.connectionLost){
+            return;
+        }
         $.ajax({
             url: direccionWeb + 'chat/jugador'
 
@@ -981,9 +1016,12 @@ class GameSceneApi extends Phaser.Scene {
             if (data[0] == null) {
                 this.estadoJugadores.setText('Jugador 1: Desconectado');
                 this.timer2.paused = true;
+                if(!this.sceneChanged){
+                this.sceneChanged = true;
                 this.trololoAudio.stop();
                 this.coffinAudio.stop();
                 this.scene.start('Notificaciones', { valor: 2 });
+                }
             }
             else {
                 this.estadoJugadores.setText(data[0].nombre + ': Conectado');
@@ -991,17 +1029,27 @@ class GameSceneApi extends Phaser.Scene {
             if (data[1] == null) {
                 this.estadoJugadores2.setText('Jugador 2: Desconectado');
                 this.timer2.paused = true;
+                if(!this.sceneChanged){
+                this.sceneChanged = true;
                 this.trololoAudio.stop();
                 this.coffinAudio.stop();
                 this.scene.start('Notificaciones', { valor: 2 });
+                }
             }
             else {
                 this.estadoJugadores2.setText(data[1].nombre + ': Conectado');
             }
+        }.bind(this)).fail(function(){
+            this.connectionLost = true;
+            this.timer1.paused = true;            
+            this.timer3.paused = true;
         }.bind(this))
     }
 
     metodoEstadoJug() {
+        if(this.connectionLost){
+            return;
+        }
         $.ajax({
             method: 'POST',
             url: direccionWeb + 'chat/jugador/estado',
@@ -1015,6 +1063,10 @@ class GameSceneApi extends Phaser.Scene {
             if (!this.scene.isActive('GameSceneApi')) {
                 return;
             }
+        }.bind(this)).fail(function(){
+            this.connectionLost = true;
+            this.timer3.paused=true;            
+            this.timer1.paused = true;
         }.bind(this))
     }
     metodoGet() {
@@ -1027,11 +1079,11 @@ class GameSceneApi extends Phaser.Scene {
             }
             this.estadoServidor.setText('Servidor: Conectado')
         }.bind(this)).fail(function (data) {
-            this.estadoServidor.setText('Servidor: No disponible');
-            this.timer2.paused = true;
-            this.trololoAudio.stop();
-            this.coffinAudio.stop();
-            this.scene.start('Notificaciones', { valor: 1 });
+            if(this.scene.isActive('GameSceneApi')){                
+              this.estadoServidor.setText('Servidor: No disponible');                
+            }
+            this.connectionLost = true;
+            this.timer2.paused = true;            
         }.bind(this))
     }
 }
