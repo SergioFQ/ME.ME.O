@@ -22,6 +22,13 @@ class SelectName extends Phaser.Scene {
         this.serverOffText = this.add.text(300, 250, 'Sever is closed', { fontFamily: 'Berlin Sans FB, "Goudy Bookletter 1911", Times, serif', fontSize: '32px', fill: '#fff' });
         this.serverOffText.setVisible(false);
 
+        this.sendButton = this.add.sprite(402, 400, 'redButton01').setInteractive();
+        this.sendText = this.add.text(0, 0, 'SEND', { fontFamily: 'Berlin Sans FB, "Goudy Bookletter 1911", Times, serif', fontSize: '32px', fill: '#fff' });
+        this.centerButtonText(this.sendText, this.sendButton);
+
+        this.sendButton.on('pointerover', () => this.sendButton.setTexture('redButton02'));
+        this.sendButton.on('pointerout', () => this.sendButton.setTexture('redButton01'));
+
         this.exitButton = this.add.sprite(750, 50, 'smallButton01').setInteractive();
         this.backText = this.add.text(0, 0, 'X', { fontFamily: 'Berlin Sans FB, "Goudy Bookletter 1911", Times, serif', fontSize: '32px', fill: '#fff' });
         this.centerButtonText(this.backText, this.exitButton);
