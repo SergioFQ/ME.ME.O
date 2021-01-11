@@ -6,12 +6,14 @@ public class Frase implements Serializable{
 
 	private String frase;
 	private String id;
+	private String fecha;
 
 	
 	public Frase(){}
-	public Frase(String id,String frase){
+	public Frase(String id,String frase,String fecha){
 		this.id=id;
 		this.frase=frase;
+		this.fecha=fecha;
 	}
 	
 	public String getFrase() {
@@ -19,6 +21,12 @@ public class Frase implements Serializable{
 	}
 	public void setFrase(String frase) {
 		this.frase = frase;
+	}
+	public String getFecha() {
+		return fecha;
+	}
+	public void setFecha(String fecha) {
+		this.fecha=fecha;
 	}
 	public String getId() {
 		return id;

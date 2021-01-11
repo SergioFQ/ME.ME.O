@@ -146,10 +146,14 @@ class SelectApiRest extends Phaser.Scene {
         $("#input").on('keydown', function (ele) {
             if (ele.key == 'Enter') {
                 this.frase = $('#input').val();
+            
                 if(this.frase.trim()){ 
+                this.fecha=new Date();
+                new Date().getHours() 
                 this.frasess = {
                     id: nom_jug,
-                    frase: this.frase
+                    frase: this.frase,
+                    fecha: this.fecha.getHours()+':'+ this.fecha.getMinutes() 
                 }                
                 this.metodoPost(this.frasess);
             }
@@ -303,8 +307,13 @@ class SelectApiRest extends Phaser.Scene {
                 return;
             }
             let textoAmeter = [];
+            let guarro=[];
+            let fechaColor;
             for (var iter = data.length - 1; iter >= 0; iter--) {
-                textoAmeter.push(data[iter].id + ": " + data[iter].frase);
+             //  fechaColor=this.add.text(0,0,data[iter].fecha,{ fontFamily: 'Arial', fontSize: 64, color: '#00ff00' }).setVisible(true);
+            // fechaColor=this.add.text(0,0,data[iter].fecha).setColor('green');
+                
+                textoAmeter.push("["+data[iter].fecha+"]"+data[iter].id+ ':' + data[iter].frase);
                 if (textoAmeter.length > 5) {
                     textoAmeter.shift();
                 }

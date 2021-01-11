@@ -39,7 +39,8 @@ public class ChatControlador {
 	@PostConstruct
 	public void init() throws IOException {
 			myWriter = new FileWriter("chat.txt", true);
-			String[] arra ;
+			String[] arra;
+			String[] arra2;
 			String linea;
 			a=new Scanner(new File("chat.txt"));
 			if(new BufferedReader(new FileReader("chat.txt")).lines().count()>0) {
@@ -48,7 +49,8 @@ public class ChatControlador {
 				while (a.hasNextLine()){
 				    linea=a.nextLine();
 				    arra= linea.split(":");
-				    chat.add(0,(new Frase(arra[0],arra[1])) );
+				    arra2= arra[1].split("-");
+				    chat.add(0,(new Frase(arra[0],arra2[0],arra2[1]+":"+arra[2])));
 				}
 					
 			}
@@ -59,7 +61,8 @@ public class ChatControlador {
 				while (a.hasNextLine()){
 				    linea=a.nextLine();
 				    arra=linea.split(":");
-				    chat.add(0, (new Frase(arra[0],arra[1])) );
+				    arra2= arra[1].split("-");
+				    chat.add(0, (new Frase(arra[0],arra2[0],arra2[1]+":"+arra[2])));
 				}
 				}
 			
@@ -102,12 +105,12 @@ public class ChatControlador {
 				for(int i=0;i<lista.size();i++) {
 					myWriter.write(lista.get(i)+"\n");					
 				}
-				myWriter.write(frase.getId()+":"+frase.getFrase()+"\n");
+				myWriter.write(frase.getId()+":"+frase.getFrase()+"-"+frase.getFecha()+"\n");
 				myWriter.close();
 				lista.clear();
 			}
 			else {
-				myWriter.write(frase.getId()+":"+frase.getFrase()+"\n");
+				myWriter.write(frase.getId()+":"+frase.getFrase()+"-"+frase.getFecha()+"\n");
 				myWriter.close();
 			}
 			System.out.println("Lines"+new BufferedReader(new FileReader("chat.txt")).lines().count());
