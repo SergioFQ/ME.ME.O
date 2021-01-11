@@ -15,7 +15,7 @@ class SelectApiRest extends Phaser.Scene {
 
     create(data) {
         this.connectionLost = false;
-        this.add.graphics({ x: 0, y: 0 }).fillStyle('0xFFFFFF', 1).fillRect(10, 115, 780, 115);
+        this.add.graphics({ x: 0, y: 0 }).fillStyle('0xFFFFFF', 1).fillRect(300, 115, 450, 115);
         this.sceneChanged = false;
         inputChat.style.display = 'block';
         this.enemigo = {
@@ -112,18 +112,25 @@ class SelectApiRest extends Phaser.Scene {
         this.text = this.add.text(400, 290, 'Press to select character', { fontFamily: 'Berlin Sans FB, "Goudy Bookletter 1911", Times, serif', fontSize: '42px', fill: '#fff' });
         this.text.setOrigin(0.5);
         this.text.setColor('#FFFFFF');
-        this.chatText = this.add.text(350, 70, 'Chat', { fontFamily: 'Berlin Sans FB, "Goudy Bookletter 1911", Times, serif', fontSize: '38px', fill: '#fff' });
+        this.chatText = this.add.text(480, 70, 'Chat', { fontFamily: 'Berlin Sans FB, "Goudy Bookletter 1911", Times, serif', fontSize: '38px', fill: '#fff' });
+
+        this.sendButton = this.add.sprite(148, 205, 'redButton01').setInteractive();
+        this.sendText = this.add.text(0, 0, 'SEND', { fontFamily: 'Berlin Sans FB, "Goudy Bookletter 1911", Times, serif', fontSize: '32px', fill: '#fff' });
+        this.centerButtonText(this.sendText, this.sendButton);
+
+        this.sendButton.on('pointerover', () => this.sendButton.setTexture('redButton02'));
+        this.sendButton.on('pointerout', () => this.sendButton.setTexture('redButton01'));
 
         this.p1 = this.add.image(200, 375, 'pepe').setInteractive()
-            .on('pointerover', () => this.p1.setScale(1.2))
+            .on('pointerover', () => this.p1.setScale(1.5))
             .on('pointerout', () => this.p1.setScale(1));
 
         this.p2 = this.add.image(400, 375, 'trollface').setInteractive()
-            .on('pointerover', () => this.p2.setScale(1.2))
+            .on('pointerover', () => this.p2.setScale(1.5))
             .on('pointerout', () => this.p2.setScale(1));
 
         this.p3 = this.add.image(600, 375, 'coffindancer').setInteractive()
-            .on('pointerover', () => this.p3.setScale(1.2))
+            .on('pointerover', () => this.p3.setScale(1.5))
             .on('pointerout', () => this.p3.setScale(1));
 
         this.eleccion1;
@@ -135,7 +142,7 @@ class SelectApiRest extends Phaser.Scene {
 
         this.cameras.main.fadeIn(200);
 
-        this.chat = this.add.text(10, 115, '', {
+        this.chat = this.add.text(300, 115, '', {
             lineSpacing: 5,
             backgroundColor: '#FFFFFF',
             color: '#000000',
