@@ -120,8 +120,8 @@ class GameSceneApi extends Phaser.Scene {
             this.playerEnemyName.depth = 9;
         }.bind(this))
 
-        this.estadoJugadores = this.add.text(500, 10, '').setScrollFactor(0, 0);
-        this.estadoJugadores2 = this.add.text(500, 30, '').setScrollFactor(0, 0);
+        this.estadoJugadores = this.add.text(50, 10, '').setScrollFactor(0, 0);
+        this.estadoJugadores2 = this.add.text(500, 10, '').setScrollFactor(0, 0);
         this.estadoServidor = this.add.text(300, 10, '').setScrollFactor(0, 0);
 
         this.metodoGetJugadores();
@@ -1018,7 +1018,7 @@ class GameSceneApi extends Phaser.Scene {
                 return;
             }
             if (data[0] == null) {
-                this.estadoJugadores.setText('Jugador 1: Desconectado');
+                this.estadoJugadores.setText('Player 1: Disconnected');
                 this.timer2.paused = true;
                 if(!this.sceneChanged){
                 this.sceneChanged = true;
@@ -1031,10 +1031,10 @@ class GameSceneApi extends Phaser.Scene {
                 if(data[0].nombre == this.jugador.nombre){
                     this.badConect = false;
                 }
-                this.estadoJugadores.setText(data[0].nombre + ': Conectado');
+                this.estadoJugadores.setText('[P1] '+data[0].nombre + ': Online');
             }
             if (data[1] == null) {
-                this.estadoJugadores2.setText('Jugador 2: Desconectado');
+                this.estadoJugadores2.setText('Player 2: Disconnected');
                 this.timer2.paused = true;
                 if(!this.sceneChanged){
                 this.sceneChanged = true;
@@ -1047,7 +1047,7 @@ class GameSceneApi extends Phaser.Scene {
                 if(data[1].nombre == this.jugador.nombre){
                     this.badConect = false;
                 }
-                this.estadoJugadores2.setText(data[1].nombre + ': Conectado');
+                this.estadoJugadores2.setText('[P2] '+data[1].nombre + ': Online');
             }
             if(this.badConect){
                 if(!this.sceneChanged){
@@ -1095,10 +1095,10 @@ class GameSceneApi extends Phaser.Scene {
             if (!this.scene.isActive('GameSceneApi')) {
                 return;
             }
-            this.estadoServidor.setText('Servidor: Conectado')
+            //this.estadoServidor.setText('Servidor: Conectado')
         }.bind(this)).fail(function (data) {
             if(this.scene.isActive('GameSceneApi')){                
-              this.estadoServidor.setText('Servidor: No disponible');                
+              //this.estadoServidor.setText('Servidor: No disponible');                
             }
             this.connectionLost = true;
             this.timer2.paused = true;            

@@ -3,7 +3,9 @@ class SelectName extends Phaser.Scene {
     {
         super({ key: 'SelectName', active: false });
     }
-    create(){
+    create(){        
+        this.estadoServidor = this.add.text(325, 10, 'Checking...');
+        //this.connectionLost = false;
         inputName.style.display='block';
         this.nombreCreado=false;
         this.huecoSala = true;
@@ -19,15 +21,40 @@ class SelectName extends Phaser.Scene {
         this.fullServerText.setVisible(false);
         this.emptyNameText = this.add.text(200, 250, 'Empty name is not allowed', { fontFamily: 'Berlin Sans FB, "Goudy Bookletter 1911", Times, serif', fontSize: '32px', fill: '#fff' });
         this.emptyNameText.setVisible(false);
-        this.serverOffText = this.add.text(300, 250, 'Sever is closed', { fontFamily: 'Berlin Sans FB, "Goudy Bookletter 1911", Times, serif', fontSize: '32px', fill: '#fff' });
+        this.serverOffText = this.add.text(300, 250, 'Server is closed', { fontFamily: 'Berlin Sans FB, "Goudy Bookletter 1911", Times, serif', fontSize: '32px', fill: '#fff' });
         this.serverOffText.setVisible(false);
 
-        this.sendButton = this.add.sprite(402, 400, 'redButton01').setInteractive();
+        this.sendButton = this.add.sprite(387, 450, 'redButton01').setInteractive();
         this.sendText = this.add.text(0, 0, 'SEND', { fontFamily: 'Berlin Sans FB, "Goudy Bookletter 1911", Times, serif', fontSize: '32px', fill: '#fff' });
         this.centerButtonText(this.sendText, this.sendButton);
 
         this.sendButton.on('pointerover', () => this.sendButton.setTexture('redButton02'));
         this.sendButton.on('pointerout', () => this.sendButton.setTexture('redButton01'));
+
+        this.sendButton.on('pointerdown', function (pointer) {
+            if(!$('#nameInput').val().trim()){
+                this.sameNameText.setVisible(false);
+                this.fullServerText.setVisible(false);
+                this.serverOffText.setVisible(false);
+                this.emptyNameText.setVisible(true);
+            }else{
+
+                this.nombreJug= $('#nameInput').val();
+                this.jugador={
+                    nombre: this.nombreJug,
+                    sprite: -1
+                 }
+
+            this.metodoGetJugadores();
+            }
+            /*
+            this.cameras.main.fadeOut(500);
+            this.cameras.main.once('camerafadeoutcomplete', function (camera) {  
+                $('#nameInput').val('');              
+                inputName.style.display='none';
+                this.scene.start('Menu');
+            }, this);*/
+        }.bind(this));
 
         this.exitButton = this.add.sprite(750, 50, 'smallButton01').setInteractive();
         this.backText = this.add.text(0, 0, 'X', { fontFamily: 'Berlin Sans FB, "Goudy Bookletter 1911", Times, serif', fontSize: '32px', fill: '#fff' });
@@ -51,6 +78,7 @@ class SelectName extends Phaser.Scene {
                 if(!$('#nameInput').val().trim()){
                     this.sameNameText.setVisible(false);
                     this.fullServerText.setVisible(false);
+                    this.serverOffText.setVisible(false);
                     this.emptyNameText.setVisible(true);
                 }else{
 
@@ -64,8 +92,28 @@ class SelectName extends Phaser.Scene {
                 }
             }
         }.bind(this))
+        
+        this.checkServerStatus();
+        this.timer = this.time.addEvent({ delay: 2000, callback: this.checkServerStatus, callbackScope: this, loop: true });
     }
+    checkServerStatus(){
+        $.ajax({
+            url: direccionWeb + 'chat'
+        }).done(function (data) {
 
+            if (!this.scene.isActive('SelectName')) {
+                return;
+            }
+            this.estadoServidor.setText('Server: Online')
+        }.bind(this)).fail(function (data) {
+            if(this.scene.isActive('SelectName')){
+              this.estadoServidor.setText('Server: Offline');                
+            }
+            console.log('Server currently closed');
+            //this.connectionLost = true;
+            //this.timer.paused = true;            
+        }.bind(this))
+    }
     update(){
         if(this.nombreCreado==true && this.cambioScene == true){
             this.cambioScene = false;
@@ -102,10 +150,14 @@ class SelectName extends Phaser.Scene {
                 this.nombreCreado =false;
                 this.huecoSala = false;
             }
-            if(!this.nombreCreado && !this.huecoSala){                
+            if(!this.nombreCreado && !this.huecoSala){    
+                this.emptyNameText.setVisible(false);
+                this.serverOffText.setVisible(false);             
                 this.sameNameText.setVisible(false);
                 this.fullServerText.setVisible(true);
             }else if(!this.nombreCreado && this.huecoSala){
+                this.emptyNameText.setVisible(false);
+                this.serverOffText.setVisible(false); 
                 this.fullServerText.setVisible(false);
                 this.sameNameText.setVisible(true);
             }

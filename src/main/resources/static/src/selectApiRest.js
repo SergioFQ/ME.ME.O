@@ -113,13 +113,42 @@ class SelectApiRest extends Phaser.Scene {
         this.text.setOrigin(0.5);
         this.text.setColor('#FFFFFF');
         this.chatText = this.add.text(480, 70, 'Chat', { fontFamily: 'Berlin Sans FB, "Goudy Bookletter 1911", Times, serif', fontSize: '38px', fill: '#fff' });
-
-        this.sendButton = this.add.sprite(148, 205, 'redButton01').setInteractive();
+        this.playerNameText = this.add.text(60, 100, 'Name: '+this.jugador.nombre, { fontFamily: 'Berlin Sans FB, "Goudy Bookletter 1911", Times, serif', fontSize: '22px', fill: '#fff' });
+        this.sendButton = this.add.sprite(150, 205, 'redButton01').setInteractive();
         this.sendText = this.add.text(0, 0, 'SEND', { fontFamily: 'Berlin Sans FB, "Goudy Bookletter 1911", Times, serif', fontSize: '32px', fill: '#fff' });
         this.centerButtonText(this.sendText, this.sendButton);
 
         this.sendButton.on('pointerover', () => this.sendButton.setTexture('redButton02'));
         this.sendButton.on('pointerout', () => this.sendButton.setTexture('redButton01'));
+
+        this.sendButton.on('pointerdown', function (pointer) {
+            this.frase = $('#input').val();
+            
+                if(this.frase.trim()){ 
+                this.fecha=new Date();
+                new Date().getHours() 
+                this.frasess = {
+                    id: nom_jug,
+                    frase: this.frase,
+                    fecha: this.fecha.getHours()+':'+ this.fecha.getMinutes() 
+                }                
+                this.metodoPost(this.frasess);
+            }
+                $('#input').val('');
+            /*if(!this.sceneChanged){
+            this.sceneChanged = true;
+            this.metodoDeleteJugador();
+            //this.i.style.display = "none";
+            inputChat.style.display = 'none';
+            this.cameras.main.fadeOut(500);
+            this.cameras.main.once('camerafadeoutcomplete', function (camera) {
+                this.selectAudio.stop();
+                $('#input').val('');
+                inputChat.style.display = 'none';
+                this.scene.start('Menu');
+            }, this);
+        }*/
+        }.bind(this));
 
         this.p1 = this.add.image(200, 375, 'pepe').setInteractive()
             .on('pointerover', () => this.p1.setScale(1.5))
@@ -172,8 +201,8 @@ class SelectApiRest extends Phaser.Scene {
         timer = this.time.addEvent({ delay: 2500, callback: this.metodoGet, callbackScope: this, loop: true });//CONTADOR
         this.estadoServidor = this.add.text(250, 10, '');
 
-        this.estadoJugadores = this.add.text(500, 10, '');
-        this.estadoJugadores2 = this.add.text(500, 30, '');
+        this.estadoJugadores = this.add.text(50, 10, '');
+        this.estadoJugadores2 = this.add.text(500, 10, '');
         this.metodoGetJugadores();
         this.timer2=this.time.addEvent({ delay: 3000, callback: this.metodoGetJugadores, callbackScope: this, loop: true });//CONTADOR
         this.metodoEstadoJug();
@@ -259,22 +288,22 @@ class SelectApiRest extends Phaser.Scene {
                 return;
             }
             if (data[0] == null) {
-                this.estadoJugadores.setText("Jugador 1: Desconectado");
+                this.estadoJugadores.setText('Player 1: Disconnected');
             }
             else {
                 if(data[0].nombre == this.jugador.nombre){
                     this.badConect = false;
                 }
-                this.estadoJugadores.setText(data[0].nombre + ": Conectado");
+                this.estadoJugadores.setText('[P1] '+data[0].nombre + ': Online');
             }
             if (data[1] == null) {
-                this.estadoJugadores2.setText("Jugador 2: Desconectado");
+                this.estadoJugadores2.setText('Player 2: Disconnected');
             }
             else {
                 if(data[1].nombre == this.jugador.nombre){
                     this.badConect = false;
                 }
-                this.estadoJugadores2.setText(data[1].nombre + ": Conectado");
+                this.estadoJugadores2.setText('[P2] '+data[1].nombre + ': Online');
             }
 
             if(this.badConect){
@@ -326,10 +355,10 @@ class SelectApiRest extends Phaser.Scene {
                 }
             }
             this.chat.setText(textoAmeter);
-            this.estadoServidor.setText('Servidor: Conectado')
+            //this.estadoServidor.setText('Servidor: Conectado')
         }.bind(this)).fail(function (data) {
             if(this.scene.isActive('SelectApiRest')){                
-            this.estadoServidor.setText('Servidor: No disponible');                
+            //this.estadoServidor.setText('Servidor: No disponible');                
             }
             this.connectionLost = true;
             console.log('falle');
