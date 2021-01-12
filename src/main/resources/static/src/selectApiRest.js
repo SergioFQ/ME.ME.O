@@ -62,7 +62,6 @@ class SelectApiRest extends Phaser.Scene {
                                     this.metodoEstadoJug();
                                 }
                             }.bind(this)).fail(function(){
-                                console.log('toma merienda');
                                 this.connectionLost = true;
                                 timer.paused = false;
                                 this.timer2.paused = true;
@@ -361,7 +360,6 @@ class SelectApiRest extends Phaser.Scene {
             //this.estadoServidor.setText('Servidor: No disponible');                
             }
             this.connectionLost = true;
-            console.log('falle');
             timer.paused=true;
             //this.selectAudio.stop();
             $('#input').val('');

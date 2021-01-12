@@ -29,7 +29,7 @@ class Preload extends Phaser.Scene {
         this.load.spritesheet('pepeS', '../resources/img/SpriteSheets/Pepe the Frog SpriteSheet.png',
             { frameWidth: 64.44, frameHeight: 100 });
 
-        this.load.spritesheet('trollfaceS', '../resources/img/SpriteSheets/Trollface SpriteSheet.png',
+        this.load.spritesheet('trollfaceS', '../resources/img/SpriteSheets/FaceSpriteSheet.png',
             { frameWidth: 64.44, frameHeight: 100 });
 
         this.load.spritesheet('coffindancerS', '../resources/img/SpriteSheets/Coffin Dancer SpriteSheet.png',

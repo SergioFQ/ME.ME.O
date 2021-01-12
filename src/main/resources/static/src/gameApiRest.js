@@ -163,7 +163,6 @@ class GameSceneApi extends Phaser.Scene {
                                     this.metodoEstadoJug();
                                 }
                             }.bind(this)).fail(function(){
-                                console.log('toma merienda');
                                 this.connectionLost = true;
                                 this.timer2.paused = false;
                                 this.timer1.paused = true;
@@ -211,8 +210,8 @@ class GameSceneApi extends Phaser.Scene {
         /*this.colP1Plat = this.physics.add.collider(this.player1, this.platforms, this.allowJump1, null, this);
         this.colP2Plat = this.physics.add.collider(this.player2, this.platforms, this.allowJump2, null, this);
 
-        this.player1Controls = this.input.keyboard.addKeys('W,A,D');
-        this.player2Controls = this.input.keyboard.addKeys('UP,LEFT,RIGHT');
+        this.player1Controls = this.input.keyboard.addKeys('W,A,D', false);
+        this.player2Controls = this.input.keyboard.addKeys('UP,LEFT,RIGHT', false);
 
         this.canJump1 = true;
         this.canJump2 = true;
@@ -263,13 +262,13 @@ class GameSceneApi extends Phaser.Scene {
         //Emoticonos
         this.jugador1_a_emoteado = 0;
         this.jugador1_quitar_emote = 0;
-        this.player1_emotes = this.input.keyboard.addKeys('T,U');
+        this.player1_emotes = this.input.keyboard.addKeys('T,U', false);
         this.emote_jug1;
         this.i = 0;
 
         this.jugador2_a_emoteado = 0;
         this.jugador2_quitar_emote = 0;
-        this.player2_emotes = this.input.keyboard.addKeys('B,M');
+        this.player2_emotes = this.input.keyboard.addKeys('B,M', false);
         this.emote_jug2;
         this.i2 = 0;
 
