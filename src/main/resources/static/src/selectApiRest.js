@@ -112,9 +112,10 @@ class SelectApiRest extends Phaser.Scene {
         this.text.setOrigin(0.5);
         this.text.setColor('#FFFFFF');
         this.chatText = this.add.text(480, 70, 'Chat', { fontFamily: 'Berlin Sans FB, "Goudy Bookletter 1911", Times, serif', fontSize: '38px', fill: '#fff' });
-        this.playerNameText = this.add.text(60, 100, 'Name: '+this.jugador.nombre, { fontFamily: 'Berlin Sans FB, "Goudy Bookletter 1911", Times, serif', fontSize: '22px', fill: '#fff' });
-        this.sendButton = this.add.sprite(150, 205, 'redButton01').setInteractive();
-        this.sendText = this.add.text(0, 0, 'SEND', { fontFamily: 'Berlin Sans FB, "Goudy Bookletter 1911", Times, serif', fontSize: '32px', fill: '#fff' });
+        this.playerNameText = this.add.text(55, 110, 'Name: '+this.jugador.nombre, { fontFamily: 'Berlin Sans FB, "Goudy Bookletter 1911", Times, serif', fontSize: '22px', fill: '#fff' });
+        this.sendButton = this.add.sprite(150, 212, 'redButton01').setInteractive();
+        this.sendButton.scaleY = 0.75;
+        this.sendText = this.add.text(0, 0, 'SEND', { fontFamily: 'Berlin Sans FB, "Goudy Bookletter 1911", Times, serif', fontSize: '28px', fill: '#fff' });
         this.centerButtonText(this.sendText, this.sendButton);
 
         this.sendButton.on('pointerover', () => this.sendButton.setTexture('redButton02'));
@@ -306,7 +307,13 @@ class SelectApiRest extends Phaser.Scene {
             }
 
             if(this.badConect){
-                if(!this.sceneChanged){
+                if(this.connectionLost){
+                    this.sceneChanged = true;
+                    this.selectAudio.stop();
+                    $('#input').val('');
+                    inputChat.style.display = 'none';
+                    this.scene.start('Notificaciones',{ valor: 1});
+                }else if(!this.sceneChanged){
                     this.sceneChanged = true;
                     this.selectAudio.stop();
                     $('#input').val('');

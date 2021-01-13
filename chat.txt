@@ -1,0 +1,39 @@
+test:hello there!-1:18
+test:oh-1:18
+test:i am alone-1:18
+test:so sad-1:18
+test:hope someone play with me...-1:18
+newTest:hi-20:41
+test:hi-21:5
+test:soy-21:5
+test:texto-21:5
+test:de-21:5
+test:relleno-21:5
+test:para -21:5
+test:tener-21:6
+test:cosas-21:6
+test:en-21:6
+test:el-21:6
+test:chat-21:6
+test:la fase 3 ha estado bien-21:6
+test:esperemos que la 4-21:7
+test:salga bien tambien-21:7
+test:y la 5 a ver que pasa-21:7
+test:pues eso, soy un test escribiendo-21:7
+testAmigo:hola!!!-21:7
+test:ojo-21:7
+test:no estoy solo-21:8
+testAmigo:siempre estaré para ti-21:8
+test:de locos-21:8
+testAmigo:que tal la nevada?-21:9
+test:pues normal, en casa todo el dia-21:9
+testAmigo:mucho trabajo?-21:9
+test:si, a ver si acabo-21:9
+test:queda poquito-21:10
+test:oye-21:10
+test:te gusta star wars?-21:10
+testAmigo:me se todos los dialogos-21:10
+test:los comics tambien?-21:11
+testAmigo:no-21:11
+test:nah-21:11
+test:siempre hay un pez mas grande-21:11

@@ -25,7 +25,7 @@ class SelectName extends Phaser.Scene {
         this.serverOffText.setVisible(false);
 
         this.sendButton = this.add.sprite(387, 450, 'redButton01').setInteractive();
-        this.sendText = this.add.text(0, 0, 'SEND', { fontFamily: 'Berlin Sans FB, "Goudy Bookletter 1911", Times, serif', fontSize: '32px', fill: '#fff' });
+        this.sendText = this.add.text(0, 0, 'DONE', { fontFamily: 'Berlin Sans FB, "Goudy Bookletter 1911", Times, serif', fontSize: '32px', fill: '#fff' });
         this.centerButtonText(this.sendText, this.sendButton);
 
         this.sendButton.on('pointerover', () => this.sendButton.setTexture('redButton02'));

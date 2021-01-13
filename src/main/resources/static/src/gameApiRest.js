@@ -1049,7 +1049,12 @@ class GameSceneApi extends Phaser.Scene {
                 this.estadoJugadores2.setText('[P2] '+data[1].nombre + ': Online');
             }
             if(this.badConect){
-                if(!this.sceneChanged){
+                if(this.connectionLost){
+                    this.sceneChanged = true;
+                    this.trololoAudio.stop();
+                    this.coffinAudio.stop();
+                    this.scene.start('Notificaciones',{ valor: 1});
+                }else if(!this.sceneChanged){
                     this.sceneChanged = true;
                     this.trololoAudio.stop();
                     this.coffinAudio.stop();
