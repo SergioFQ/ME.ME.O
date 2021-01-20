@@ -23,7 +23,7 @@ test:pues eso, soy un test escribiendo-21:7
 testAmigo:hola!!!-21:7
 test:ojo-21:7
 test:no estoy solo-21:8
-testAmigo:siempre estaré para ti-21:8
+testAmigo:siempre estare para ti-21:8
 test:de locos-21:8
 testAmigo:que tal la nevada?-21:9
 test:pues normal, en casa todo el dia-21:9
@@ -37,3 +37,4 @@ test:los comics tambien?-21:11
 testAmigo:no-21:11
 test:nah-21:11
 test:siempre hay un pez mas grande-21:11
+prueba:hola-13:21
