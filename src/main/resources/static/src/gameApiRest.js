@@ -7,6 +7,7 @@ class GameSceneApi extends Phaser.Scene {
     init(data) {
         this.jugador = data.jugador;
         this.jugadorEnemigo = data.enemigo;
+        console.log(this.jugadorEnemigo.sprite);
         //this.eleccionJ2 = data.eleccion2;
 
         this.spriteP1;
@@ -73,6 +74,8 @@ class GameSceneApi extends Phaser.Scene {
         this.connectionLost = false;
         this.fadeEnd = false;
         this.grupo_balas = this.add.group();
+        this.grupoPlataformasQueRebotan = this.add.group();//Grupo donde meto todas las plataformas que rebotan
+        this.grupoplataformaCae = this.add.group();
         this.golpeado = false;
         this.saberPorQueLadoLeHanGolpeado = 0;// 0 izq y 1 derecha
         this.tiempo = 0;
@@ -129,7 +132,48 @@ class GameSceneApi extends Phaser.Scene {
             this.playerEnemyName.depth = 9;
             this.colBalaLocal = this.physics.add.overlap(this.grupo_balas, this.playerLocal, this.chocarTrue, null, this);
             this.colBalaLocal = this.physics.add.overlap(this.grupo_balas, this.playerEnemy, this.chocarTrue2, null, this);
-            this.cargado = true;
+
+       
+            this.colll = this.physics.add.collider(this.grupoPlataformasQueRebotan, this.playerLocal, function (grupo, player) {// Variable donde guardo las colisiones de las plataformas
+            // que rebotan con el jugador1
+            this.allowJump();
+            player.body.velocity.x = 0;
+            //grupo.body.setFrictionX(2);
+            grupo.body.setFrictionX(2);
+             }, null, this);
+             this.coll = this.physics.add.collider(this.grupoPlataformasQueRebotan, this.playerEnemy, function (grupo, player) {// Variable donde guardo las colisiones de las plataformas
+            // que rebotan con el jugador2 
+            this.allowJump();
+            player.body.velocity.x = 0;
+           // grupo.body.setFrictionX(2);
+           grupo.body.setFrictionX(1);
+             }, null, this);
+
+            this.colPlats_QueseMueven_Y_QueSeCaen = this.physics.add.collider(this.grupoPlataformasQueRebotan, this.grupoplataformaCae, function (plat1, plat2) {
+                plat1.body.velocity.x = plat1.body.velocity.x * (-1);
+                plat2.body.velocity.x = plat2.body.velocity.x * (-1);
+            });// Variable donde guardo las colisiones de las plataformas
+            this.colPlats_QueseMueven_Y_QueSeMueven = this.physics.add.collider(this.grupoPlataformasQueRebotan, this.grupoPlataformasQueRebotan, function (plat1, plat2) {
+                plat1.body.velocity.x = plat1.body.velocity.x * (-1);
+            });
+    
+            this.colPlats_QueseMueven_Y_QueNoSeMueven = this.physics.add.collider(this.grupoPlataformasQueRebotan, this.platforms, function (plat1, plat2) {
+                plat1.body.velocity.x = plat1.body.velocity.x * (-1);
+    
+            });
+    
+            this.colPlats_QueSeCaen_Y_QueSeCaen = this.physics.add.collider(this.grupoplataformaCae, this.grupoplataformaCae, function (plat1, plat2) {
+                plat1.body.velocity.x = plat1.body.velocity.x * (-1);
+            });
+            this.colPlats_QueseMueven_Y_QueNoSeMueven = this.physics.add.collider(this.grupoplataformaCae, this.platforms, function (plat1, plat2) {
+                plat1.body.velocity.x = plat1.body.velocity.x * (-1);
+            });
+    
+    
+            this.colP1PlatqueSeMueve = this.physics.add.collider(this.grupoplataformaCae, this.playerLocal, this.tirarPlat, null, this);
+           
+
+            this.cargado = true; 
         }.bind(this))
 
         this.estadoJugadores = this.add.text(50, 10, '').setScrollFactor(0, 0);
@@ -207,6 +251,8 @@ class GameSceneApi extends Phaser.Scene {
         this.emote_jugEnemy;
         this.idEmojiEnemy = -1;
         this.i2 = 0;
+
+        this.metodoGenerarUnMapa();// Generar un mapa aleatorio
         
         this.canJumpLocal = true;
         
@@ -260,6 +306,9 @@ class GameSceneApi extends Phaser.Scene {
                  //}
                     break;
                 case "EMOJI":
+                if(!this.scene.isActive('GameSceneApi')){
+                        return;
+                    }
                 this.idEmojiEnemy = this.mensaje.idEmoji;
                     break;
             }
@@ -332,14 +381,14 @@ class GameSceneApi extends Phaser.Scene {
 
         this.grupoPlataformasQueRebotan = this.add.group();//Grupo donde meto todas las plataformas que rebotan
 
-        this.colll = this.physics.add.collider(this.grupoPlataformasQueRebotan, this.player1, function (grupo, player) {// Variable donde guardo las colisiones de las plataformas
+        this.colll = this.physics.add.collider(this.grupoPlataformasQueRebotan, this.playerLocal, function (grupo, player) {// Variable donde guardo las colisiones de las plataformas
             // que rebotan con el jugador1
             this.allowJump1();
             player.body.velocity.x = 0;
             grupo.body.setFrictionX(2);
         }, null, this);
 
-        this.coll = this.physics.add.collider(this.grupoPlataformasQueRebotan, this.player2, function (grupo, player) {// Variable donde guardo las colisiones de las plataformas
+        this.coll = this.physics.add.collider(this.grupoPlataformasQueRebotan, this.playerEnemy, function (grupo, player) {// Variable donde guardo las colisiones de las plataformas
             // que rebotan con el jugador2 
             this.allowJump2();
             player.body.velocity.x = 0;
@@ -445,6 +494,8 @@ class GameSceneApi extends Phaser.Scene {
         this.canJump1 = true;
         this.canJump2 = true;
         */
+       this.meta = this.physics.add.staticGroup();
+        this.meta.create(400, -800, 'meta');
 
         this.trololoAudio = this.sound.add('trololo', { loop: true });
         this.trololoAudio.setVolume(0.02);
@@ -529,10 +580,10 @@ class GameSceneApi extends Phaser.Scene {
     }
 
     tirarPlat(plat, jug) {
-        if (jug.id == 0) {
-            this.allowJump1();
+        if (jug.numberPlayer == 0) {
+            this.allowJump();
         } else {
-            this.allowJump2();
+            this.allowJump();
         }
         if (plat.body.velocity.x != 0) {// SIGNIFICA QUE SOLO ENTRO EN CASO DE QUE SEA LA PRIMERA VEZ QUE SE PISA
             plat.setVelocity(0, 0);
@@ -540,6 +591,7 @@ class GameSceneApi extends Phaser.Scene {
             this.time.delayedCall(2000, this.auxiliar, [plat], this);
         }
     }
+    
     auxiliar(pla) {
         pla.setVelocity(0, 300);
         pla.body.setImmovable(false);
@@ -664,14 +716,14 @@ class GameSceneApi extends Phaser.Scene {
             this.colP1Plat.active = true;
             //msg.movement.y = 0;
             //connection.send(JSON.stringify(msg));
-            //this.colll.active = true;
-            //this.colP1PlatqueSeMueve.active = true;
+            this.colll.active = true;
+            this.colP1PlatqueSeMueve.active = true;
 
         } else//saltando
         {
             this.colP1Plat.active = false;
-            //this.colll.active = false;
-            //this.colP1PlatqueSeMueve.active = false;
+            this.colll.active = false;
+            this.colP1PlatqueSeMueve.active = false;
 
         }
         //if(this.timeToSend>100){
@@ -765,8 +817,8 @@ class GameSceneApi extends Phaser.Scene {
                 this.i2 = 0;
             }
         }
-
-
+        
+        
         //Player1 control
         /*if (this.golpeado == true) {
 
@@ -866,17 +918,17 @@ class GameSceneApi extends Phaser.Scene {
         this.player1Name.y = this.player1.body.y - 25;
         this.player2Name.x = this.player2.body.x - 15;
         this.player2Name.y = this.player2.body.y - 25;
-
+*/
         if (this.camera.scrollY > -1000)//ponemos un tope cualquiera al scroll de la camara // CON ESTO SE MUEVO
         {
-            this.platformCaida.setVelocity(0, -60 * (delta / 15));
-            this.platformGeneradora.setVelocity(0, -60 * (delta / 15));
-            this.camera.scrollY -= 1 * (delta / 15);
+        //   this.platformCaida.setVelocity(0, -60 * (delta / 15));
+        //    this.platformGeneradora.setVelocity(0, -60 * (delta / 15));
+    //        this.camera.scrollY -= 1 * (delta / 15);
         } else {
-            this.platformCaida.setVelocity(0, 0);// PLATAFORMA QUE MATA
-            this.platformGeneradora.setVelocity(0, 0);
+         //   this.platformCaida.setVelocity(0, 0);// PLATAFORMA QUE MATA
+         //   this.platformGeneradora.setVelocity(0, 0);
         }
-
+/*
 
         this.managePlatforms();
 
@@ -1140,15 +1192,16 @@ class GameSceneApi extends Phaser.Scene {
         this.canJumpLocal = true;
     }
     allowJump1() {
-        if (this.overlapP1Win.active == false) {
+     /*   if (this.overlapP1Win.active == false) {
             this.overlapP1Win.active = true;
-        }
+        }*/
+        console.log("Puedes saltar");
         this.canJump1 = true;
     }
     allowJump2() {
-        if (this.overlapP2Win.active == false) {
+        /*if (this.overlapP2Win.active == false) {
             this.overlapP2Win.active = true;
-        }
+        }*/
         this.canJump2 = true;
     }
 
@@ -1371,5 +1424,182 @@ class GameSceneApi extends Phaser.Scene {
             this.connectionLost = true;
             this.timer2.paused = true;            
         }.bind(this))
+    }
+
+    metodoGenerarUnMapa(){
+    this.gen=3;
+
+    switch(this.gen){
+        // 2350
+        // this.generarPlataformasQueRebotan(Phaser.Math.Between(150, 300), this.altura, 200);
+        // this.generarPlataformasQueRebotanYcaen(Phaser.Math.Between(450, 650), this.altura, 200);
+        // this.platforms.create(300, 2350, 'platform');
+        case 0:
+            this.generarPlataformasQueRebotan(150,2650,200);
+            this.generarPlataformasQueRebotanYcaen(150,2550, 200);
+
+            this.generarPlataformasQueRebotan(500,2250,200);
+            this.generarPlataformasQueRebotan(350,2150,200);
+            this.generarPlataformasQueRebotanYcaen(450, 2050, 200);
+            this.platforms.create(300, 1950, 'platform');
+            this.generarPlataformasQueRebotan(650,1950,200);
+            this.platforms.create(400, 1850, 'platform');
+            this.generarPlataformasQueRebotanYcaen(150,1750, 200);
+            this.generarPlataformasQueRebotan(600,1750,200);
+            this.platforms.create(200, 1650, 'platform');
+            this.generarPlataformasQueRebotan(600,1550,200);
+            this.platforms.create(150, 1450, 'platform');
+            this.platforms.create(450, 1450, 'platform');
+            this.generarPlataformasQueRebotanYcaen(200, 1350, 200);
+            this.generarPlataformasQueRebotanYcaen(450, 1350, 200);
+            this.generarPlataformasQueRebotan(200,1250,200);
+            this.platforms.create(450, 1150, 'platform');
+            this.generarPlataformasQueRebotanYcaen(500, 1050, 200);
+            this.generarPlataformasQueRebotan(150,1050,200);
+            this.generarPlataformasQueRebotan(300,950,200);
+            this.generarPlataformasQueRebotan(500,950,200);
+            this.generarPlataformasQueRebotan(200,850,200);
+            this.platforms.create(250, 750, 'platform');
+            this.generarPlataformasQueRebotanYcaen(500, 750, 200);
+            this.platforms.create(150, 650, 'platform');
+            this.platforms.create(500, 650, 'platform');
+            this.generarPlataformasQueRebotan(200,550,200);
+            this.generarPlataformasQueRebotan(550,550,200);
+            this.generarPlataformasQueRebotanYcaen(200, 450, 200);
+            this.generarPlataformasQueRebotanYcaen(500, 450, 200);
+            this.generarPlataformasQueRebotanYcaen(180, 350, 200);
+            this.platforms.create(470, 350, 'platform');
+            this.generarPlataformasQueRebotan(300,250,300);
+            this.generarPlataformasQueRebotan(150,150,200);
+            this.platforms.create(500, 150, 'platform');
+            this.generarPlataformasQueRebotanYcaen(200, 50, 200);
+            this.platforms.create(550, 50, 'platform');
+            this.generarPlataformasQueRebotan(200,-50,200);
+            this.generarPlataformasQueRebotan(470,-50,300);
+            this.platforms.create(470, -150, 'platform');
+            this.platforms.create(170, -150, 'platform');
+            this.generarPlataformasQueRebotan(200,-250,300);
+            this.platforms.create(190, -350, 'platform');
+            this.generarPlataformasQueRebotan(500,-350,200);
+            this.generarPlataformasQueRebotanYcaen(200, -450, 200);
+            this.platforms.create(490, -450, 'platform');
+            this.generarPlataformasQueRebotan(500,-550,200);
+            this.platforms.create(359, -650, 'platform');
+            break;
+            
+            case 1:
+                this.generarPlataformasQueRebotan(500,2250,200);
+                this.generarPlataformasQueRebotanYcaen(200, 2250, 200);
+                this.generarPlataformasQueRebotan(300,2150,300);
+                this.platforms.create(280, 2050, 'platform');
+                this.generarPlataformasQueRebotanYcaen(500, 2050, 200);
+                this.generarPlataformasQueRebotan(180,1950,200);
+                this.generarPlataformasQueRebotan(470,1950,200);                
+                this.generarPlataformasQueRebotanYcaen(230, 1850, 200);
+                this.generarPlataformasQueRebotanYcaen(500, 1850, 200);
+                this.generarPlataformasQueRebotan(359,1750,300);
+                this.generarPlataformasQueRebotan(230,1650,200);
+                this.platforms.create(450, 1650, 'platform');
+                this.platforms.create(170, 1550, 'platform');
+                this.platforms.create(460, 1550, 'platform');
+                this.generarPlataformasQueRebotan(170,1450,300);
+                this.generarPlataformasQueRebotanYcaen(500, 1450, 200);
+                this.generarPlataformasQueRebotan(230,1350,300);
+                this.generarPlataformasQueRebotanYcaen(570, 1350, 200);
+                this.generarPlataformasQueRebotan(300,1250,300);
+                this.platforms.create(460, 1150, 'platform');
+                this.platforms.create(160, 1150, 'platform');
+                this.generarPlataformasQueRebotanYcaen(270, 1050, 200);
+                this.generarPlataformasQueRebotanYcaen(590, 1050, 200);
+                this.generarPlataformasQueRebotan(230,950,200);
+                this.generarPlataformasQueRebotan(540,950,200);
+                this.platforms.create(230, 850, 'platform');
+                this.generarPlataformasQueRebotanYcaen(550, 850, 200);
+                this.platforms.create(340, 750, 'platform');
+                this.generarPlataformasQueRebotan(490,650,200);
+                this.generarPlataformasQueRebotan(210,650,200);
+                this.generarPlataformasQueRebotan(200,550,200);
+                this.generarPlataformasQueRebotanYcaen(550, 550, 200);
+                this.generarPlataformasQueRebotan(200,450,300);
+                this.platforms.create(300, 350, 'platform');
+                this.generarPlataformasQueRebotan(500,350,300);
+                this.generarPlataformasQueRebotanYcaen(200, 250, 200);
+                this.platforms.create(470, 250, 'platform');
+                this.generarPlataformasQueRebotanYcaen(300, 150, 200);
+                this.generarPlataformasQueRebotanYcaen(470, 150, 200);
+                this.platforms.create(500, 50, 'platform');
+                this.generarPlataformasQueRebotan(200,50,200);
+                this.generarPlataformasQueRebotan(510,-50,200);
+                this.generarPlataformasQueRebotan(290,-50,200);
+                this.generarPlataformasQueRebotan(180,-150,200);
+                this.generarPlataformasQueRebotanYcaen(470, -150, 200);
+                this.platforms.create(500, -250, 'platform');
+                this.platforms.create(190, -250, 'platform');
+                this.generarPlataformasQueRebotan(290,-350,300);
+                this.generarPlataformasQueRebotan(210,-450,200);
+                this.generarPlataformasQueRebotan(490,-450,200);
+                this.platforms.create(200, -550, 'platform');
+                this.platforms.create(240, -650, 'platform');
+                break;
+                this.generarPlataformasQueRebotanYcaen(150,2550, 200);
+                this.platforms.create(240, -650, 'platform');
+                this.generarPlataformasQueRebotan(500,2250,200);
+                case 3:
+                    this.generarPlataformasQueRebotan(500,2250,200); 
+                    this.platforms.create(240, 2250, 'platform');
+                    this.generarPlataformasQueRebotanYcaen(150,2150, 200);
+                    this.platforms.create(470, 2150, 'platform');
+                    this.generarPlataformasQueRebotan(500,2050,200);
+                    this.generarPlataformasQueRebotan(230,2050,200);
+                    this.platforms.create(460, 1950, 'platform');
+                    this.generarPlataformasQueRebotan(490,1850,200);
+                    this.generarPlataformasQueRebotan(230,1850,200);
+                    this.generarPlataformasQueRebotanYcaen(250,1750, 200);
+                    this.generarPlataformasQueRebotanYcaen(450,1750, 200);
+                    this.generarPlataformasQueRebotan(490,1650,200);
+                    this.platforms.create(210,1650,'platform');
+                    this.generarPlataformasQueRebotan(500,1550,300);
+                    this.generarPlataformasQueRebotanYcaen(470,1450, 200);
+                    this.platforms.create(230, 1450, 'platform');
+                    this.generarPlataformasQueRebotan(500,1350,300);
+                    this.generarPlataformasQueRebotanYcaen(200,1350, 200);
+                    this.generarPlataformasQueRebotanYcaen(470,1250, 200);
+                    this.generarPlataformasQueRebotanYcaen(270,1250, 200);
+                    this.platforms.create(450, 1150, 'platform');
+                    this.platforms.create(290, 1050, 'platform');
+                    this.platforms.create(450, 1050, 'platform');
+                    this.generarPlataformasQueRebotan(500,950,300);
+                    this.generarPlataformasQueRebotan(500,850,200);
+                    this.generarPlataformasQueRebotan(180,850,200);
+                    this.generarPlataformasQueRebotan(500,750,200);
+                    this.platforms.create(220, 750, 'platform');
+                    this.generarPlataformasQueRebotan(270,650,200);
+                    this.generarPlataformasQueRebotanYcaen(490,650, 200);
+                    this.generarPlataformasQueRebotanYcaen(160,550, 200);
+                    this.platforms.create(490, 550, 'platform');
+                    this.generarPlataformasQueRebotan(300,450,200);
+                    this.generarPlataformasQueRebotan(490,450,200);
+                    this.platforms.create(490, 350, 'platform');
+                    this.generarPlataformasQueRebotan(300,250,200);
+                    this.generarPlataformasQueRebotan(450,250,200);
+                    this.generarPlataformasQueRebotan(450,150,200);
+                    this.platforms.create(170, 150, 'platform');
+                    this.generarPlataformasQueRebotanYcaen(200,50, 200);
+                    this.generarPlataformasQueRebotanYcaen(50,50, 200);
+                    this.generarPlataformasQueRebotan(450,-50,200);
+                    this.platforms.create(210, -50, 'platform');
+                    this.generarPlataformasQueRebotanYcaen(200,-150, 200);
+                    this.generarPlataformasQueRebotan(450,-150,200);
+                    this.generarPlataformasQueRebotan(350,-250,200);
+                    this.generarPlataformasQueRebotan(200,-250,200);
+                    this.generarPlataformasQueRebotan(300,-350,300);
+                    this.platforms.create(200, -450, 'platform');
+                    this.platforms.create(400, -450, 'platform');
+                    this.platforms.create(330, -550, 'platform');
+                    this.platforms.create(310, -650, 'platform');
+
+                    break;
+    }
+
     }
 }
