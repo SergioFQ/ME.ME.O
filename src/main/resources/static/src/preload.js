@@ -182,3 +182,4 @@ var musicOn;
 var direccionWeb = window.location.href;
 var cerrarVentana;
 var visibility;
+var connection;

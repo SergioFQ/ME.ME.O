@@ -65,10 +65,18 @@ class GameSceneApi extends Phaser.Scene {
     }
 
     create() {
-
+        this.timeToCorrection = 0;
+        this.timeToSend = 0;
+        this.EnemyMoved = false;  
+        this.cargado = false;        
         this.sceneChanged = false;
         this.connectionLost = false;
         this.fadeEnd = false;
+        this.grupo_balas = this.add.group();
+        this.golpeado = false;
+        this.saberPorQueLadoLeHanGolpeado = 0;// 0 izq y 1 derecha
+        this.tiempo = 0;
+        this.fin = 0;
 
         this.metodoEstadoJug();
         this.timer1 = this.time.addEvent({ delay: 2000, callback: this.metodoEstadoJug, callbackScope: this, loop: true });
@@ -105,10 +113,11 @@ class GameSceneApi extends Phaser.Scene {
                 this.playerLocal = this.physics.add.sprite(600, 2900, this.spriteP1).setScale(0.5);
                 this.playerEnemy = this.physics.add.sprite(250, 2900, this.spriteP2).setScale(0.5);
             }
-
+            this.playerLocal.setBounce(0);
             this.playerLocal.setCollideWorldBounds(true);
             this.playerLocal.depth = 10;
-            this.colP1Plat = this.physics.add.collider(this.playerLocal, this.platforms);
+            this.colP1Plat = this.physics.add.collider(this.playerLocal, this.platforms, this.allowJump, null, this);//si eso cambiar el nombre a local
+            //this.colP1Plat = this.physics.add.collider(this.player1, this.platforms, this.allowJump1, null, this);
 
             this.playerEnemy.setCollideWorldBounds(true);
             this.playerEnemy.depth = 10;
@@ -118,6 +127,9 @@ class GameSceneApi extends Phaser.Scene {
             this.playerLocalName.depth = 9;
             this.playerEnemyName = this.add.text(this.playerEnemy.body.x, this.playerEnemy.body.y - 25, this.jugadorEnemigo.nombre, { fontFamily: 'Berlin Sans FB, "Goudy Bookletter 1911", Times, serif', fontSize: '20px', fill: ' #ffF' });
             this.playerEnemyName.depth = 9;
+            this.colBalaLocal = this.physics.add.overlap(this.grupo_balas, this.playerLocal, this.chocarTrue, null, this);
+            this.colBalaLocal = this.physics.add.overlap(this.grupo_balas, this.playerEnemy, this.chocarTrue2, null, this);
+            this.cargado = true;
         }.bind(this))
 
         this.estadoJugadores = this.add.text(50, 10, '').setScrollFactor(0, 0);
@@ -154,6 +166,7 @@ class GameSceneApi extends Phaser.Scene {
                                     this.sceneChanged = true;
                                     this.trololoAudio.stop();
                                     this.coffinAudio.stop();
+                                    connection.close();                                    
                                     this.scene.start('Notificaciones', { valor: 0 });
                                     }
                                 } else {
@@ -179,7 +192,81 @@ class GameSceneApi extends Phaser.Scene {
                 }
             }
 
-        }, this)
+        }, this);
+        
+        
+        this.playerControls = this.input.keyboard.addKeys('W,A,D', false);
+        this.playerLocal_emotes = this.input.keyboard.addKeys('T,U', false);
+        this.jugadorLocal_a_emoteado = 0;
+        this.jugadorLoacal_quitar_emote = 0;
+        this.emote_jugLocal;
+        this.i = 0;//para solo hacer una vez el emoji
+        
+        this.jugadorEnemy_a_emoteado = 0;
+        this.jugadorEnemy_quitar_emote = 0;
+        this.emote_jugEnemy;
+        this.idEmojiEnemy = -1;
+        this.i2 = 0;
+        
+        this.canJumpLocal = true;
+        
+        //this.colBalaP2 = this.physics.add.overlap(this.grupo_balas, this.playerEnemy, this.chocarTrue2, null, this);
+        this.timedEvent = this.time.addEvent({ delay: 2000, callback: this.generarBalasEnUnSitio, args: [40, 2900, 300], callbackScope: this, loop: true });
+        connection.onmessage = function(message){
+            //console.log('loco');
+            if(this.cargado){
+            //console.log('mensaje recibido');  
+            //console.log(message.data);          
+            this.mensaje = JSON.parse(message.data);
+            //console.log(this.mensaje);
+            switch(this.mensaje.event){
+                case 'UPDATE MOVEMENT':
+                if(!this.scene.isActive('GameSceneApi')){
+                    return;
+                }
+                /*if(this.EnemyMoved){
+                    if(this.mensaje.x>-2 || this.mensaje.x<2){
+                        console.log('Recolocacion x: '+this.mensaje.posX+' y: '+this.mensaje.posY);
+                        this.EnemyMoved = false;
+                        this.playerEnemy.body.position.x = this.mensaje.posX;                        
+                        this.playerEnemy.body.position.y = this.mensaje.posY;
+                    }
+                }else if(this.mensaje.x<-5 || this.mensaje.x>5 || this.mensaje.y<-10){
+                    this.EnemyMoved = true;
+                }
+                
+                this.playerEnemy.setVelocityX(this.mensaje.x);
+                //console.log('deberia actualizar el valor');
+                
+                if(this.playerEnemy.body.touching.down && this.mensaje.y<-10){                    
+                   this.playerEnemy.setVelocityY(this.mensaje.y);
+                }*/
+                if(this.cargado){
+                    if(this.playerEnemy.x - this.mensaje.posX < -2){
+                        this.playerEnemy.anims.play(this.keyP2 + 'right2', true);
+                    }else if(this.playerEnemy.x - this.mensaje.posX > 2){
+                        this.playerEnemy.anims.play(this.keyP2 + 'left2', true);
+                    }else{
+                        this.playerEnemy.anims.play(this.keyP2 + 'iddle2', true);
+                    }
+                }
+                this.playerEnemy.x = this.mensaje.posX;
+                if(!Math.abs(this.playerEnemy.y - (this.mensaje.posY))<=10){
+                    this.playerEnemy.y = this.mensaje.posY;
+                }
+                
+                //if(this.playerEnemy.body.touching.down && this.mensaje.y<-10){                    
+                  //  this.playerEnemy.setVelocityY(this.mensaje.y);
+                 //}
+                    break;
+                case "EMOJI":
+                this.idEmojiEnemy = this.mensaje.idEmoji;
+                    break;
+            }
+            //console.log('message: '+message);
+            //console.log('mensaje: '+this.mensaje);
+            }
+        }.bind(this);
 
         /*if(this.numberPlayer==0){
          this.playerLocal = this.physics.add.sprite(250, 2900, this.spriteP1).setScale(0.5);//cambiar lo de los sprites estos(switch del init)
@@ -379,6 +466,7 @@ class GameSceneApi extends Phaser.Scene {
             this.cameras.main.once('camerafadeoutcomplete', function (camera) {
                 this.trololoAudio.stop();
                 this.coffinAudio.stop();
+                connection.close();
                 this.scene.start('Menu');
             }, this);
         }
@@ -501,19 +589,184 @@ class GameSceneApi extends Phaser.Scene {
     }
 
     update(time, delta) {
+        let msg = new Object();
+        msg.event = 'UPDATE MOVEMENT';
+        msg.movement={
+            x:0,
+            y:0,
+            posX:0,
+            posY:0
+        }
+        msg.idEmoji=-1;
         /*if (!this.fadeEnd) {
             return;
         }*/
+        if(!this.cargado){
+            return;
+        }
         if(this.connectionLost){
             if(!this.sceneChanged){
                 this.sceneChanged = true;    
                 this.trololoAudio.stop();
                 this.coffinAudio.stop();
+                connection.close();
                 this.scene.start('Notificaciones',{ valor: 1});
             }
            
         }
-       
+        this.playerLocalName.x  = this.playerLocal.body.x;
+        this.playerLocalName.y  = this.playerLocal.body.y - 25;
+        this.playerEnemyName.x  = this.playerEnemy.body.x;
+        this.playerEnemyName.y  = this.playerEnemy.body.y - 25;
+        if (this.golpeado == true) {
+
+            this.tiempo = time;
+            this.fin = this.tiempo + 30;
+            this.golpeado = false;
+        }
+        if (this.tiempo != this.fin) {
+            this.tiempo = this.tiempo + 1;
+            if (this.saberPorQueLadoLeHanGolpeado == 1) {// ME HAN PEGADO POR LA DERECHA
+                this.playerLocal.setVelocityX(-250);
+            }
+            else {// ME HAN PEGADO POR LA IZQUIERDA            
+                this.playerLocal.setVelocityX(250);
+            }
+        }
+        else if (this.playerControls.A.isDown) {
+            this.playerLocal.setVelocityX(-160);
+            //msg.movement.x = -160;
+            //connection.send(JSON.stringify(msg));            
+            this.playerLocal.anims.play(this.keyP1 + 'left', true);
+        }
+        else if (this.playerControls.D.isDown) {
+            this.playerLocal.setVelocityX(160);
+            //msg.movement.x = 160;
+            //connection.send(JSON.stringify(msg));
+            this.playerLocal.anims.play(this.keyP1 + 'right', true);
+        }
+        else {
+            this.playerLocal.setVelocityX(0);
+            //msg.movement.x = 0;
+            //connection.send(JSON.stringify(msg));
+            this.playerLocal.anims.play(this.keyP1 + 'iddle');
+        }
+
+        if (this.playerControls.W.isDown && (this.canJumpLocal && this.playerLocal.body.touching.down)) {
+            this.canJumpLocal = false;
+            this.playerLocal.setVelocityY(-400);  
+            //msg.movement.y = -400;
+            //connection.send(JSON.stringify(msg));
+        }
+
+        if (this.playerLocal.body.velocity.y > 1)//cayendo
+        {
+            this.colP1Plat.active = true;
+            //msg.movement.y = 0;
+            //connection.send(JSON.stringify(msg));
+            //this.colll.active = true;
+            //this.colP1PlatqueSeMueve.active = true;
+
+        } else//saltando
+        {
+            this.colP1Plat.active = false;
+            //this.colll.active = false;
+            //this.colP1PlatqueSeMueve.active = false;
+
+        }
+        //if(this.timeToSend>100){
+            msg.movement.x = this.playerLocal.body.velocity.x;
+            msg.movement.y = this.playerLocal.body.velocity.y;
+            msg.movement.posX = this.playerLocal.x;
+            msg.movement.posY = this.playerLocal.y;
+            connection.send(JSON.stringify(msg));
+            //this.timeToSend = 0;
+        //}else{
+          //  this.timeToSend+=delta;
+        //}
+
+        /*if(this.timeToCorrection>1500){
+            this.timeToCorrection = 0;
+        }else{
+            this.timeToCorrection += delta;
+        }*/
+        if(this.playerEnemy.body.velocity.y>1){
+            this.colP2Plat.active = true;
+        }else{
+            this.colP2Plat.active = false;
+        }
+
+        if (this.playerLocal_emotes.T.isUp == false && this.i == 0) {            
+            this.jugadorLocal_a_emoteado = time;
+            this.jugadorLoacal_quitar_emote = time + 200;
+            this.emote_jugLocal = this.add.sprite(this.playerLocal.x - 5, this.playerLocal.y - 50, this.keyGifP1 + 'Happy').setScale(0.5);
+            this.emote_jugLocal.anims.play(this.keyGifP1 + 'HappyGif');
+            this.emote_jugLocal.depth = 10;
+            this.i = 1;
+            msg.idEmoji=0;            
+        }
+        else if (this.playerLocal_emotes.U.isUp == false && this.i == 0) {            
+            this.jugadorLocal_a_emoteado = time;
+            this.jugadorLoacal_quitar_emote = time + 200;
+            this.emote_jugLocal = this.add.sprite(this.playerLocal.x - 5, this.playerLocal.y - 50, this.keyGifP1 + 'Sad').setScale(0.5);
+            this.emote_jugLocal.anims.play(this.keyGifP1 + 'SadGif');
+            this.emote_jugLocal.depth = 10;
+            this.i = 1;
+            msg.idEmoji=1;
+        }
+        if (this.jugadorLocal_a_emoteado != this.jugadorLoacal_quitar_emote) {
+            this.jugadorLocal_a_emoteado = this.jugadorLocal_a_emoteado + 1;
+            this.emote_jugLocal.x = this.playerLocal.x - 5;
+            this.emote_jugLocal.y = this.playerLocal.y - 50;
+            if (this.jugadorLocal_a_emoteado == this.jugadorLoacal_quitar_emote) {
+                this.emote_jugLocal.destroy();
+                this.i = 0;                
+            }
+
+        }
+        if(msg.idEmoji!=-1){            
+            msg.event='EMOJI';
+            connection.send(JSON.stringify(msg));
+            msg.idEmoji=-1;    
+        }
+
+        //Emojis player enemy
+        /*
+        this.jugadorEnemy_a_emoteado = 0;
+        this.jugadorEnemy_quitar_emote = 0;
+        this.emote_jugEnemy;
+        this.idEmojiEnemy = -1;
+        this.i2 = 0;
+        */
+        if (this.idEmojiEnemy==0 && this.i2 == 0) {
+            this.jugadorEnemy_a_emoteado = time;
+            this.jugadorEnemy_quitar_emote = time + 200;
+            this.emote_jugEnemy = this.add.sprite(this.playerEnemy.x - 5, this.playerEnemy.y - 50, this.keyGifP2 + 'Happy').setScale(0.5);
+            this.emote_jugEnemy.anims.play(this.keyGifP2 + 'HappyGif');
+            this.emote_jugEnemy.depth = 10;
+            this.i2 = 1;
+        }
+        else if (this.idEmojiEnemy==1 && this.i2 == 0) {
+            this.jugadorEnemy_a_emoteado = time;
+            this.jugadorEnemy_quitar_emote = time + 200;
+            this.emote_jugEnemy = this.add.sprite(this.playerEnemy.x - 5, this.playerEnemy.y - 50, this.keyGifP2 + 'Sad').setScale(0.5);
+            this.emote_jugEnemy.anims.play(this.keyGifP2 + 'SadGif');
+            this.emote_jugEnemy.depth = 10;
+            this.i2 = 1;
+        }
+
+        if (this.jugadorEnemy_a_emoteado != this.jugadorEnemy_quitar_emote) {
+            this.jugadorEnemy_a_emoteado = this.jugadorEnemy_a_emoteado + 1;
+            this.emote_jugEnemy.x = this.playerEnemy.x - 5;
+            this.emote_jugEnemy.y = this.playerEnemy.y - 50;
+            if (this.jugadorEnemy_a_emoteado == this.jugadorEnemy_quitar_emote) {
+                this.emote_jugEnemy.destroy();
+                this.idEmojiEnemy=-1;
+                this.i2 = 0;
+            }
+        }
+
+
         //Player1 control
         /*if (this.golpeado == true) {
 
@@ -721,7 +974,7 @@ class GameSceneApi extends Phaser.Scene {
         gpp.destroy();
     }
     chocarTrue2(gpp, jug) {
-        this.s = gpp.body.x;
+        /*this.s = gpp.body.x;
         this.golpeado2 = true;
 
         if (this.s < jug.x) {
@@ -729,7 +982,7 @@ class GameSceneApi extends Phaser.Scene {
         }
         else {
             this.saberPorQueLadoLeHanGolpeado2 = 1;
-        }
+        }*/
         gpp.destroy();
     }
     createAnimations(player1sprite, player2sprite, k1, k2) {
@@ -880,6 +1133,12 @@ class GameSceneApi extends Phaser.Scene {
         }
 
     }
+    allowJump() {
+        /*if (this.overlapP1Win.active == false) {
+            this.overlapP1Win.active = true;
+        }*/
+        this.canJumpLocal = true;
+    }
     allowJump1() {
         if (this.overlapP1Win.active == false) {
             this.overlapP1Win.active = true;
@@ -917,6 +1176,7 @@ class GameSceneApi extends Phaser.Scene {
             this.cameras.main.once('camerafadeoutcomplete', function (camera) {
                 this.trololoAudio.stop();
                 this.coffinAudio.stop();
+                connection.close();
                 this.scene.start('PlayerVictory', { keyVida: keyVida, player: id });
             }, this);
 
@@ -1023,6 +1283,7 @@ class GameSceneApi extends Phaser.Scene {
                 this.sceneChanged = true;
                 this.trololoAudio.stop();
                 this.coffinAudio.stop();
+                connection.close();
                 this.scene.start('Notificaciones', { valor: 2 });
                 }
             }
@@ -1039,6 +1300,7 @@ class GameSceneApi extends Phaser.Scene {
                 this.sceneChanged = true;
                 this.trololoAudio.stop();
                 this.coffinAudio.stop();
+                connection.close();
                 this.scene.start('Notificaciones', { valor: 2 });
                 }
             }
@@ -1053,11 +1315,13 @@ class GameSceneApi extends Phaser.Scene {
                     this.sceneChanged = true;
                     this.trololoAudio.stop();
                     this.coffinAudio.stop();
+                    connection.close();
                     this.scene.start('Notificaciones',{ valor: 1});
                 }else if(!this.sceneChanged){
                     this.sceneChanged = true;
                     this.trololoAudio.stop();
                     this.coffinAudio.stop();
+                    connection.close();
                     this.scene.start('Notificaciones',{ valor: 3});
                 }
             }
