@@ -102,7 +102,7 @@ class GameSceneApi extends Phaser.Scene {
         this.numberPlayer;
         this.numberEnemy;
         $.ajax({
-            url: direccionWeb + 'chat/jugador/pos/' + this.jugador.nombre
+            url: 'https'+urlOnline + 'chat/jugador/pos/' + this.jugador.nombre
         }).done(function (data) {
             if (!this.scene.isActive('GameSceneApi')) {
                 return;
@@ -132,7 +132,7 @@ class GameSceneApi extends Phaser.Scene {
             this.playerEnemyName = this.add.text(this.playerEnemy.body.x, this.playerEnemy.body.y - 25, this.jugadorEnemigo.nombre, { fontFamily: 'Berlin Sans FB, "Goudy Bookletter 1911", Times, serif', fontSize: '20px', fill: ' #ffF' });
             this.playerEnemyName.depth = 9;
             this.colBalaLocal = this.physics.add.overlap(this.grupo_balas, this.playerLocal, this.chocarTrue, null, this);
-            this.colBalaLocal = this.physics.add.overlap(this.grupo_balas, this.playerEnemy, this.chocarTrue2, null, this);
+            this.colBalaEnemy = this.physics.add.overlap(this.grupo_balas, this.playerEnemy, this.chocarTrue2, null, this);
 
        
             this.colll = this.physics.add.collider(this.grupoPlataformasQueRebotan, this.playerLocal, function (grupo, player) {// Variable donde guardo las colisiones de las plataformas
@@ -176,6 +176,7 @@ class GameSceneApi extends Phaser.Scene {
            
             this.platformCaida = this.physics.add.sprite(400, 3200, 'platformCaida').setScale(2).refreshBody().setVisible(false);//plataforma que irá debajo de la camara y matara a los jugadores        
             this.platformCaida.body.setAllowGravity(false);//quitamos la gravedad de la plataforma de caida
+            this.PlayerCaida = this.physics.add.overlap(this.playerLocal, this.platformCaida, this.muerteCaidaOnline, null, this);//la muerte por caida
             /*this.overlapPlatNormalCaida = this.physics.add.collider(this.platforms, this.platformCaida, function(plat1,plat2){
                 console.log('destruido locooooo');
                 plat2.destroy();
@@ -199,7 +200,8 @@ class GameSceneApi extends Phaser.Scene {
                     msg.event = 'VICTORY';
                     msg.victoryId = {
                     sprite: '',
-                    name: ''
+                    name: '',
+                    fallen:false
                     }
                 msg.victoryId.sprite = this.keyVidaP1;
                 msg.victoryId.name = this.jugador.nombre;
@@ -212,12 +214,56 @@ class GameSceneApi extends Phaser.Scene {
                 }
                 
             }, null, this);
+
+            this.pLocalLives = 3;
+            this.pEnemyLives = 3;
+            this.vidasPLocal = new Array();
+            this.vidasPEnemy = new Array();
+            if(this.numberPlayer == 0){
+                this.vidasPLocal[0] = this.add.image(100 - 35, 50, this.keyVidaP1).setScrollFactor(0, 0);//cuando los menus esten, poner key dependiendo del personajes y que seea la cara la que aparezca, hasta entonces, cuadrado morados
+                this.vidasPLocal[0].depth = 12;
+                this.vidasPLocal[1] = this.add.image(100, 50, this.keyVidaP1).setScrollFactor(0, 0);
+                this.vidasPLocal[1].depth = 12;
+                this.vidasPLocal[2] = this.add.image(100 + 35, 50, this.keyVidaP1).setScrollFactor(0, 0);
+                this.vidasPLocal[2].depth = 12;
+
+                this.vidasPEnemy[0] = this.add.image((config.width) - 100 - 35, 50, this.keyVidaP2).setScrollFactor(0, 0);//cuando los menus esten, poner key dependiendo del personajes y que seea la cara la que aparezca, hasta entonces, cuadrado morados
+                this.vidasPEnemy[0].depth = 12;
+                this.vidasPEnemy[1] = this.add.image((config.width) - 100, 50, this.keyVidaP2).setScrollFactor(0, 0);
+                this.vidasPEnemy[1].depth = 12;
+                this.vidasPEnemy[2] = this.add.image((config.width) - 100 + 35, 50, this.keyVidaP2).setScrollFactor(0, 0);
+                this.vidasPEnemy[2].depth = 12;
+            }else{
+                console.log('hey');
+                this.vidasPLocal[0] = this.add.image((config.width) - 100 - 35, 50, this.keyVidaP1).setScrollFactor(0, 0);//cuando los menus esten, poner key dependiendo del personajes y que seea la cara la que aparezca, hasta entonces, cuadrado morados
+                this.vidasPLocal[0].depth = 12;
+                this.vidasPLocal[1] = this.add.image((config.width) - 100, 50, this.keyVidaP1).setScrollFactor(0, 0);
+                this.vidasPLocal[1].depth = 12;
+                this.vidasPLocal[2] = this.add.image((config.width) - 100 + 35, 50, this.keyVidaP1).setScrollFactor(0, 0);
+                this.vidasPLocal[2].depth = 12;
+
+                this.vidasPEnemy[0] = this.add.image(100 - 35, 50, this.keyVidaP2).setScrollFactor(0, 0);//cuando los menus esten, poner key dependiendo del personajes y que seea la cara la que aparezca, hasta entonces, cuadrado morados
+                this.vidasPEnemy[0].depth = 12;
+                this.vidasPEnemy[1] = this.add.image(100, 50, this.keyVidaP2).setScrollFactor(0, 0);
+                this.vidasPEnemy[1].depth = 12;
+                this.vidasPEnemy[2] = this.add.image(100 + 35, 50, this.keyVidaP2).setScrollFactor(0, 0);
+                this.vidasPEnemy[2].depth = 12;                
+            }
+            
+            this.gameEnded = false;
+            this.platformGeneradora = this.physics.add.sprite(400, 2350, 'platformCaida').setScale(2).refreshBody().setVisible(false);//plataforma que irá encima de la camara para ir realizando 
+            this.platformGeneradora.body.setAllowGravity(false);
+            //
+            this.pLocalScroll = false; //bool usado para la reaparición
+            this.pLocalDeath = false;
             this.cargado = true; 
         }.bind(this))
 
-        this.estadoJugadores = this.add.text(50, 10, '').setScrollFactor(0, 0);
-        this.estadoJugadores2 = this.add.text(500, 10, '').setScrollFactor(0, 0);
-        this.estadoServidor = this.add.text(300, 10, '').setScrollFactor(0, 0);
+        this.estadoJugadores = this.add.text(200, 10, '').setScrollFactor(0, 0);
+        this.estadoJugadores2 = this.add.text(450, 10, '').setScrollFactor(0, 0);
+        this.estadoJugadores.depth = 12;
+        this.estadoJugadores2.depth = 12;
+        //this.estadoServidor = this.add.text(300, 10, '').setScrollFactor(0, 0);
 
         this.metodoGetJugadores();
         this.timer3 = this.time.addEvent({ delay: 3000, callback: this.metodoGetJugadores, callbackScope: this, loop: true });
@@ -238,7 +284,7 @@ class GameSceneApi extends Phaser.Scene {
                                 return;
                             }
                             $.ajax({
-                                url: direccionWeb + 'chat/jugador/regreso/' + this.jugador.nombre
+                                url: 'https'+urlOnline + 'chat/jugador/regreso/' + this.jugador.nombre
                             }, this).done(function (dat) {
 
                                 if (!this.scene.isActive('GameSceneApi')) {
@@ -343,10 +389,12 @@ class GameSceneApi extends Phaser.Scene {
                 //este if igual sobra, hay que probar
                 if(this.mensaje.y<-10){
                     this.colP2Plat.active = false;
-                    this.grupoplataformaCae.active = false;
+                    //this.grupoplataformaCae.active = false;
+                    this.colP2PlatqueSeMueve.active = false;
                 }else if(this.mensaje.y>=0){
                     this.colP2Plat.active = true;
-                    this.grupoplataformaCae.active = true;
+                    //this.grupoplataformaCae.active = true;                    
+                    this.colP2PlatqueSeMueve.active = true;
                 }
                 
                 //if(this.playerEnemy.body.touching.down && this.mensaje.y<-10){                    
@@ -380,10 +428,40 @@ class GameSceneApi extends Phaser.Scene {
                     if(!this.scene.isActive('GameSceneApi')){
                         return;
                     }
+                    console.log(this.mensaje.fallen);
+                    if(this.mensaje.fallen){
+                        this.vidasPEnemy[0].setVisible(false);
+                    }
                     /*console.log(this.mensaje.idSprite);
                     console.log(this.mensaje.nameVictory);*/
-                    this.goToVictoryOnline(this.mensaje.idSprite, this.mensaje.nameVictory);                    
+                    this.goToVictoryOnline(this.mensaje.idSprite, this.mensaje.nameVictory);
+                break;
 
+                case 'CAIDA ENEMIGO':
+                    if(!this.scene.isActive('GameSceneApi')){
+                        return;
+                    }
+                    this.pEnemyLives--;
+                    this.colP2Plat.active = false;
+                    this.coll.active = false;
+                    this.colP2PlatqueSeMueve.active = false;
+                    this.colBalaEnemy.active = false;
+                    this.vidasPEnemy[this.pEnemyLives].setVisible(false);
+                    this.playerEnemy.alpha = 0.5;
+                    this.playerEnemy.body.setAllowGravity(false);
+                    this.playerEnemy.body.setVelocityY(0);
+                break;
+                case 'REAPARICION':
+                    if(!this.scene.isActive('GameSceneApi')){
+                        return;
+                    }                    
+                    this.playerEnemy.alpha = 1;
+                    this.colP2Plat.active = true;
+                    this.coll.active = true;
+                    this.colP2PlatqueSeMueve.active = true;
+                    this.colBalaEnemy.active = true;
+                    this.playerEnemy.setImmovable(false);
+                    this.playerEnemy.body.setAllowGravity(true);                    
                 break;
             }
             //console.log('message: '+message);
@@ -632,7 +710,7 @@ class GameSceneApi extends Phaser.Scene {
         nom_jug = null;
         $.ajax({
             method: 'DELETE',
-            url: direccionWeb + 'chat/jugador/' + this.jugador.nombre
+            url: 'https'+urlOnline + 'chat/jugador/' + this.jugador.nombre
         }, this).done(function (data) {
             if(!this.scene.isActive('SelectApiRest')){
                 return;
@@ -652,20 +730,22 @@ class GameSceneApi extends Phaser.Scene {
     }
 
     tirarPlat(plat, jug) {
-        if (jug.numberPlayer == 0) {
-            this.allowJump();
-        } else {
-            this.allowJump();
+        if(jug.body.touching.down && jug.body.velocity.y>=0){
+            if (jug.numberPlayer == 0) {
+                this.allowJump();
+            } else {
+                this.allowJump();
+            }
+            //if (plat.body.velocity.x != 0) {// SIGNIFICA QUE SOLO ENTRO EN CASO DE QUE SEA LA PRIMERA VEZ QUE SE PISA
+                plat.setVelocity(0, 0);
+                plat.destruido1 = true;
+                this.time.delayedCall(2000, this.auxiliar, [plat], this);
+            //}
         }
-        //if (plat.body.velocity.x != 0) {// SIGNIFICA QUE SOLO ENTRO EN CASO DE QUE SEA LA PRIMERA VEZ QUE SE PISA
-            plat.setVelocity(0, 0);
-            plat.destruido1 = true;
-            this.time.delayedCall(2000, this.auxiliar, [plat], this);
-        //}
     }
 
     tirarPlatEnemy(plat, enemy){
-        if(enemy.body.touching.down){
+        if(enemy.body.touching.down && enemy.body.velocity.y>=0){
             if (enemy.numberPlayer == 0) {
                 this.allowJump();
             } else {
@@ -828,13 +908,15 @@ class GameSceneApi extends Phaser.Scene {
         }else{
             this.timeToCorrection += delta;
         }*/
-        if(this.playerEnemy.body.velocity.y>1){
+        /*if(this.playerEnemy.body.velocity.y>1){
             this.colP2Plat.active = true;
-            this.grupoplataformaCae.active = true;
+            //this.grupoplataformaCae.active = true;            
+            this.colP2PlatqueSeMueve.active = true;
         }else{
             this.colP2Plat.active = false;
-            this.grupoplataformaCae.active = false;
-        }
+            //this.grupoplataformaCae.active = false;            
+            this.colP2PlatqueSeMueve.active = false;
+        }*/
 
         if (this.playerLocal_emotes.T.isUp == false && this.i == 0) {            
             this.jugadorLocal_a_emoteado = time;
@@ -1007,15 +1089,28 @@ class GameSceneApi extends Phaser.Scene {
         this.player2Name.x = this.player2.body.x - 15;
         this.player2Name.y = this.player2.body.y - 25;
 */
- 
+            //REAPARICIONES
+            if (this.pLocalDeath) {
+                this.pLocalDeath = false;
+                this.cameraScrollLocal = this.camera.scrollY;
+                this.pLocalScroll = true;
+            }
+
+            if ((this.pLocalScroll) && ((this.camera.scrollY <= (this.cameraScrollLocal - 250) || this.camera.scrollY <= -1000))) {
+                this.reaparicionOnline(this.playerLocal);
+                //this.reaparicion(this.player1);
+                this.pLocalScroll = false;
+            }
+            //REAPARICIONES
+
             if (this.camera.scrollY > -1000)//ponemos un tope cualquiera al scroll de la camara // CON ESTO SE MUEVO
             {
-               this.platformCaida.setVelocity(0, -60 * (delta / 15));
-            //    this.platformGeneradora.setVelocity(0, -60 * (delta / 15));
+                this.platformCaida.setVelocity(0, -60 * (delta / 15));
+                this.platformGeneradora.setVelocity(0, -60 * (delta / 15));
                 this.camera.scrollY -= 1 * (delta / 15);
             } else {
                 this.platformCaida.setVelocity(0, 0);// PLATAFORMA QUE MATA
-             //   this.platformGeneradora.setVelocity(0, 0);
+                this.platformGeneradora.setVelocity(0, 0);
             }
 
         
@@ -1231,6 +1326,87 @@ class GameSceneApi extends Phaser.Scene {
         }
     }
 
+    reaparicionOnline(player) {
+        player.alpha = 1;
+        this.colP1Plat.active = true;
+        this.colll.active = true;
+        this.colP1PlatqueSeMueve.active = true;
+        this.colBalaLocal.active = true; 
+        /*if (player.id == 0) {
+            this.colP1Plat.active = true;
+            this.colll.active = true;
+            this.colP1PlatqueSeMueve.active = true;
+            this.colBalaP1.active = true;
+        } else {
+            this.colP2Plat.active = true;
+            this.coll.active = true;
+            this.colP2PlatqueSeMueve.active = true;
+            this.colBalaP2.active = true;
+        }*/
+        player.setImmovable(false);
+        player.body.setAllowGravity(true);
+        let msg = new Object();
+        msg.event = 'REAPARICION';
+        connection.send(JSON.stringify(msg));
+    }
+
+    muerteCaidaOnline() {
+        this.pLocalLives--;
+        this.colP1Plat.active = false;
+        this.colll.active = false;
+        this.colP1PlatqueSeMueve.active = false;
+        this.colBalaLocal.active = false;
+        this.canJumpLocal = false;
+        let msg = new Object();
+        if (this.pLocalLives > 0) {
+            //this.PlayerCaida.active = false;
+            this.overlapPLocalWin.active = false;
+            this.vidasPLocal[this.pLocalLives].setVisible(false);
+            this.playerLocal.alpha = 0.5;
+            this.playerLocal.body.setAllowGravity(false);
+            this.playerLocal.body.setVelocityY(0);
+            this.playerLocal.body.position.y = this.platformGeneradora.body.position.y - 64;
+            this.pLocalDeath = true;
+            msg.event = 'CAIDA';
+            connection.send(JSON.stringify(msg));
+            //mandar ws al enemigo para que me reste una vida y eso
+        }
+        else {
+            this.vidasPLocal[0].setVisible(false);
+            msg.event = 'VICTORY';
+            msg.victoryId = {
+                sprite: '',
+                name: '',
+                fallen:true
+                }
+            msg.victoryId.sprite = this.keyVidaP2;
+            msg.victoryId.name = this.jugadorEnemigo.nombre;
+            connection.send(JSON.stringify(msg));
+            //this.goToVictory(this.keyVidaP2, this.player2.id);
+            //ver si el victory online serviría o no
+        }
+
+        /*this.p1Lives--;
+        this.colP1Plat.active = false;
+        this.colll.active = false;
+        this.colP1PlatqueSeMueve.active = false;
+        this.colBalaP1.active = false;
+        this.canJump1 = false;
+        if (this.p1Lives > 0) {
+            this.overlapP1Win.active = false;
+            this.vidasP1[this.p1Lives].setVisible(false);
+            this.player1.alpha = 0.5;
+            this.player1.body.setAllowGravity(false);
+            this.player1.body.setVelocityY(0);
+            this.player1.body.position.y = this.platformGeneradora.body.position.y - 64;
+            this.p1Death = true;
+        }
+        else {
+            this.vidasP1[0].setVisible(false);
+            this.goToVictory(this.keyVidaP2, this.player2.id);
+        }*/
+    }
+
     muerteCaida1() {
         this.p1Lives--;
         this.colP1Plat.active = false;
@@ -1277,9 +1453,9 @@ class GameSceneApi extends Phaser.Scene {
 
     }
     allowJump() {
-        /*if (this.overlapP1Win.active == false) {
-            this.overlapP1Win.active = true;
-        }*/
+        if (this.overlapPLocalWin.active == false) {
+            this.overlapPLocalWin.active = true;
+        }
         this.canJumpLocal = true;
     }
     allowJump1() {
@@ -1460,7 +1636,7 @@ class GameSceneApi extends Phaser.Scene {
             return;
         }
         $.ajax({
-            url: direccionWeb + 'chat/jugador'
+            url: 'https'+urlOnline + 'chat/jugador'
 
         }).done(function (data) {
             this.badConect=true;
@@ -1529,7 +1705,7 @@ class GameSceneApi extends Phaser.Scene {
         }
         $.ajax({
             method: 'POST',
-            url: direccionWeb + 'chat/jugador/estado',
+            url: 'https'+urlOnline + 'chat/jugador/estado',
             data: JSON.stringify(this.jugador),
             processData: false,
             headers: {
@@ -1548,7 +1724,7 @@ class GameSceneApi extends Phaser.Scene {
     }
     metodoGet() {
         $.ajax({
-            url: direccionWeb + 'chat'
+            url: 'https'+urlOnline + 'chat'
         }).done(function (data) {
 
             if (!this.scene.isActive('GameSceneApi')) {

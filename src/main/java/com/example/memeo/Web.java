@@ -29,6 +29,8 @@ public class Web extends TextWebSocketHandler {
 	private ObjectNode nodeTimer;
 	private ObjectNode nodeTimer1;
 	private boolean started = false;
+	private boolean emptyGame = true;
+	private boolean victory = false;
 	Random r = new Random();
 	
 	Timer timerJug0 = new Timer(2000, new ActionListener(){
@@ -38,7 +40,11 @@ public class Web extends TextWebSocketHandler {
         	nodeTimer.put("event", "BALA");
         	for(WebSocketSession participant : clientes.values()) {
 					try {
-						participant.sendMessage(new TextMessage(nodeTimer.toString()));
+						synchronized (participant.getId()) {
+							if(participant.isOpen()) {
+								participant.sendMessage(new TextMessage(nodeTimer.toString()));
+							}
+						}
 					} catch (IOException e1) {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
@@ -73,25 +79,30 @@ public class Web extends TextWebSocketHandler {
     });*/
 	
 	public void generateMap() throws Exception{
-		System.out.println("plataforma loca: ");
+		System.out.println("Plataformas a crear: ");
 		int randomNum = (int)r.nextInt(3);
     	nodeTimer1 = lectorJson.createObjectNode();
     	nodeTimer1.put("event", "PLATAFORMAS");
     	nodeTimer1.put("randNumberPlat", randomNum);
-    	for(WebSocketSession participant : clientes.values()) {				
-					participant.sendMessage(new TextMessage(nodeTimer1.toString()));			
+    	for(WebSocketSession participant : clientes.values()) {
+    		synchronized (participant.getId()) {
+    			if(participant.isOpen()) {
+    				participant.sendMessage(new TextMessage(nodeTimer1.toString()));
+    			}
+			}								
 		}
 	}
 	@Override
 	public synchronized void afterConnectionEstablished(WebSocketSession session) throws Exception {
 		if(clientes.size()<2) {
+			emptyGame = false;
 			System.out.println("New user: " + session.getId());			
 			clientes.put(session.getId(), session);	
 		}	
 	}
 		
 	@Override
-	protected synchronized void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
+	protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
 		
 		//System.out.println("Message received: " + message.getPayload());
 		JsonNode node = lectorJson.readTree(message.getPayload());
@@ -99,7 +110,7 @@ public class Web extends TextWebSocketHandler {
 		sendMessage(session, node);
 	}
 	
-	private synchronized void sendMessage(WebSocketSession session, JsonNode node) throws Exception {
+	private void sendMessage(WebSocketSession session, JsonNode node) throws Exception {
 
 		//System.out.println("Message sent: " + node.toString());
 		//System.out.println("Ready players: " + readyPlayers);
@@ -113,10 +124,14 @@ public class Web extends TextWebSocketHandler {
 			newNode.put("posY", node.get("movement").get("posY").asDouble());
 			for(WebSocketSession participant : clientes.values()) {
 				if(!participant.getId().equals(session.getId())) {
-					participant.sendMessage(new TextMessage(newNode.toString()));
+					synchronized (participant.getId()) {
+						if(participant.isOpen()) {
+							participant.sendMessage(new TextMessage(newNode.toString()));
+						}					
+					}
 				}
 			}
-			if(!started && jugadoresListos.get(1)!=null) {
+			if(!started && !emptyGame) {
 				started = true;
 				generateMap();
 			}
@@ -127,7 +142,11 @@ public class Web extends TextWebSocketHandler {
 				newNode.put("idEmoji", node.get("idEmoji").asInt());
 				for(WebSocketSession participant : clientes.values()) {
 					if(!participant.getId().equals(session.getId())) {
-						participant.sendMessage(new TextMessage(newNode.toString()));
+						synchronized (participant.getId()) {
+							if(participant.isOpen()) {
+								participant.sendMessage(new TextMessage(newNode.toString()));
+							}
+						}
 					}
 				}
 				break;
@@ -141,7 +160,11 @@ public class Web extends TextWebSocketHandler {
 					newNode.put("startGame",true);
 					for(WebSocketSession participant : clientes.values()) {
 						//if(!participant.getId().equals(session.getId())) {
-							participant.sendMessage(new TextMessage(newNode.toString()));
+						synchronized (participant.getId()) {
+							if(participant.isOpen()) {
+								participant.sendMessage(new TextMessage(newNode.toString()));
+							}
+						}
 						//}
 					}
 					timerJug0.start();
@@ -149,16 +172,53 @@ public class Web extends TextWebSocketHandler {
 				
 				break;
 			case "VICTORY":
+				synchronized (this) {
+					if(victory) {
+						break;
+					}else {
+						victory = true;
+					}
+				}
 				newNode.put("event", "VICTORY");
 				newNode.put("idSprite", node.get("victoryId").get("sprite").asText());
 				newNode.put("nameVictory", node.get("victoryId").get("name").asText());
+				newNode.put("fallen", node.get("victoryId").get("fallen").asBoolean());
 
-				System.out.println("idSprite: "+node.get("victoryId").get("sprite").asText());
-				System.out.println("nameVictory: "+node.get("victoryId").get("name").asText());
+				/*System.out.println("idSprite: "+node.get("victoryId").get("sprite").asText());
+				System.out.println("nameVictory: "+node.get("victoryId").get("name").asText());*/
 				for(WebSocketSession participant : clientes.values()) {
 					//if(!participant.getId().equals(session.getId())) {
-						participant.sendMessage(new TextMessage(newNode.toString()));
+					synchronized (participant.getId()) {
+						if(participant.isOpen()) {
+							participant.sendMessage(new TextMessage(newNode.toString()));
+						}
+					}
 					//}
+				}
+				break;
+			case "CAIDA":
+				newNode.put("event", "CAIDA ENEMIGO");
+				for(WebSocketSession participant : clientes.values()) {
+					if(!participant.getId().equals(session.getId())) {
+						synchronized (participant.getId()) {
+							if(participant.isOpen()) {
+								participant.sendMessage(new TextMessage(newNode.toString()));
+							}
+						}
+					}
+				}
+				break;
+				
+			case "REAPARICION":
+				newNode.put("event", "REAPARICION");
+				for(WebSocketSession participant : clientes.values()) {
+					if(!participant.getId().equals(session.getId())) {
+						synchronized (participant.getId()) {
+							if(participant.isOpen()) {
+								participant.sendMessage(new TextMessage(newNode.toString()));
+							}
+						}
+					}
 				}
 				break;
 		}
@@ -177,6 +237,7 @@ public class Web extends TextWebSocketHandler {
 		//game.removePlayer(player);
 		System.out.println("User removed: " + session.getId());
 		started = false;
+		victory = false;
 		if(readyPlayers!=0) {
 			if(jugadoresListos.get(0).getId().equals(session.getId())) {
 				readyPlayers--;
@@ -185,6 +246,8 @@ public class Web extends TextWebSocketHandler {
 				readyPlayers--;
 				jugadoresListos.remove(1);
 			}
+		}else {
+			emptyGame = true;
 		}
 		ObjectNode msg = lectorJson.createObjectNode();
 		//msg.put("event", "REMOVE PLAYER");
