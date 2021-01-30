@@ -7,7 +7,7 @@ class GameSceneApi extends Phaser.Scene {
     init(data) {
         this.jugador = data.jugador;
         this.jugadorEnemigo = data.enemigo;
-        console.log(this.jugadorEnemigo.sprite);
+        //console.log(this.jugadorEnemigo.sprite);
         //this.eleccionJ2 = data.eleccion2;
 
         this.spriteP1;
@@ -67,8 +67,9 @@ class GameSceneApi extends Phaser.Scene {
 
     create() {
         this.timeToCorrection = 0;
+        this.metaCol = false;
         this.timeToSend = 0;
-        this.EnemyMoved = false;  
+        this.EnemyMoved = false;
         this.cargado = false;        
         this.sceneChanged = false;
         this.connectionLost = false;
@@ -80,7 +81,7 @@ class GameSceneApi extends Phaser.Scene {
         this.saberPorQueLadoLeHanGolpeado = 0;// 0 izq y 1 derecha
         this.tiempo = 0;
         this.fin = 0;
-
+        this.contadorMapa = 0;
         this.metodoEstadoJug();
         this.timer1 = this.time.addEvent({ delay: 2000, callback: this.metodoEstadoJug, callbackScope: this, loop: true });
 
@@ -171,8 +172,46 @@ class GameSceneApi extends Phaser.Scene {
     
     
             this.colP1PlatqueSeMueve = this.physics.add.collider(this.grupoplataformaCae, this.playerLocal, this.tirarPlat, null, this);
+            this.colP2PlatqueSeMueve = this.physics.add.collider(this.grupoplataformaCae, this.playerEnemy, this.tirarPlatEnemy, null, this);
            
-
+            this.platformCaida = this.physics.add.sprite(400, 3200, 'platformCaida').setScale(2).refreshBody().setVisible(false);//plataforma que irá debajo de la camara y matara a los jugadores        
+            this.platformCaida.body.setAllowGravity(false);//quitamos la gravedad de la plataforma de caida
+            /*this.overlapPlatNormalCaida = this.physics.add.collider(this.platforms, this.platformCaida, function(plat1,plat2){
+                console.log('destruido locooooo');
+                plat2.destroy();
+            });*/
+            /*this.overlapPlatMovibleCaida = this.physics.add.collider(this.grupoPlataformasQueRebotan, this.platformCaida, function(plat1,plat2){
+                console.log('destruido locooooo');
+                plat2.destroy();
+            });*/
+            /*this.overlapPlatCaeCaida = this.physics.add.collider(this.grupoplataformaCae, this.platformCaida, function(plat1,plat2){
+                console.log('destruido locooooo');
+                plat2.destroy();
+            });*/
+            //this.overlapP1Caida = this.physics.add.overlap(this.player1, this.platformCaida, this.muerteCaida1, null, this);//la muerte por caida
+            //this.overlapP2Caida = this.physics.add.overlap(this.player2, this.platformCaida, this.muerteCaida2, null, this);//la muerte por caida
+            this.meta = this.physics.add.staticGroup();
+            this.meta.create(400, -800, 'meta');
+            this.overlapPLocalWin = this.physics.add.overlap(this.playerLocal, this.meta, function () {
+                if(!this.metaCol){
+                    this.metaCol = true;
+                    let msg = new Object();
+                    msg.event = 'VICTORY';
+                    msg.victoryId = {
+                    sprite: '',
+                    name: ''
+                    }
+                msg.victoryId.sprite = this.keyVidaP1;
+                msg.victoryId.name = this.jugador.nombre;
+                /*console.log(this.keyVidaP1);
+                console.log(this.playerLocalName);
+                console.log(msg.victoryId.sprite);
+                console.log(msg.victoryId.name);*/
+                connection.send(JSON.stringify(msg));
+                //this.goToVictory(this.keyVidaP1, this.player1.id);
+                }
+                
+            }, null, this);
             this.cargado = true; 
         }.bind(this))
 
@@ -252,12 +291,12 @@ class GameSceneApi extends Phaser.Scene {
         this.idEmojiEnemy = -1;
         this.i2 = 0;
 
-        this.metodoGenerarUnMapa();// Generar un mapa aleatorio
+        //this.metodoGenerarUnMapa();// Generar un mapa aleatorio
         
         this.canJumpLocal = true;
         
         //this.colBalaP2 = this.physics.add.overlap(this.grupo_balas, this.playerEnemy, this.chocarTrue2, null, this);
-        this.timedEvent = this.time.addEvent({ delay: 2000, callback: this.generarBalasEnUnSitio, args: [40, 2900, 300], callbackScope: this, loop: true });
+        //this.timedEvent = this.time.addEvent({ delay: 2000, callback: this.generarBalasEnUnSitio, args: [40, 2900, 300], callbackScope: this, loop: true });
         connection.onmessage = function(message){
             //console.log('loco');
             if(this.cargado){
@@ -288,9 +327,9 @@ class GameSceneApi extends Phaser.Scene {
                    this.playerEnemy.setVelocityY(this.mensaje.y);
                 }*/
                 if(this.cargado){
-                    if(this.playerEnemy.x - this.mensaje.posX < -2){
+                    if(/*this.playerEnemy.x - this.mensaje.posX < -2 && */this.mensaje.x>5){
                         this.playerEnemy.anims.play(this.keyP2 + 'right2', true);
-                    }else if(this.playerEnemy.x - this.mensaje.posX > 2){
+                    }else if(/*this.playerEnemy.x - this.mensaje.posX > 2 && */this.mensaje.x<-5){
                         this.playerEnemy.anims.play(this.keyP2 + 'left2', true);
                     }else{
                         this.playerEnemy.anims.play(this.keyP2 + 'iddle2', true);
@@ -299,18 +338,53 @@ class GameSceneApi extends Phaser.Scene {
                 this.playerEnemy.x = this.mensaje.posX;
                 if(!Math.abs(this.playerEnemy.y - (this.mensaje.posY))<=10){
                     this.playerEnemy.y = this.mensaje.posY;
+                    this.colP2Plat.active = false;
+                }
+                //este if igual sobra, hay que probar
+                if(this.mensaje.y<-10){
+                    this.colP2Plat.active = false;
+                    this.grupoplataformaCae.active = false;
+                }else if(this.mensaje.y>=0){
+                    this.colP2Plat.active = true;
+                    this.grupoplataformaCae.active = true;
                 }
                 
                 //if(this.playerEnemy.body.touching.down && this.mensaje.y<-10){                    
                   //  this.playerEnemy.setVelocityY(this.mensaje.y);
                  //}
                     break;
-                case "EMOJI":
+                case 'EMOJI':
                 if(!this.scene.isActive('GameSceneApi')){
                         return;
                     }
                 this.idEmojiEnemy = this.mensaje.idEmoji;
                     break;
+
+                case 'BALA':
+                    if(!this.scene.isActive('GameSceneApi')){
+                        return;
+                    }
+                    //console.log('bala');
+                    this.generarBalasEnUnSitio(40, 2900, 300);
+                    break;
+                case 'PLATAFORMAS':
+                    if(!this.scene.isActive('GameSceneApi')){
+                        return;
+                    }
+                    //console.log('plataformas a generar');         
+                    this.metodoGenerarUnMapa(this.mensaje.randNumberPlat);// Generar un mapa aleatorio
+                    //console.log('bala');
+
+                break;
+                case 'VICTORY':
+                    if(!this.scene.isActive('GameSceneApi')){
+                        return;
+                    }
+                    /*console.log(this.mensaje.idSprite);
+                    console.log(this.mensaje.nameVictory);*/
+                    this.goToVictoryOnline(this.mensaje.idSprite, this.mensaje.nameVictory);                    
+
+                break;
             }
             //console.log('message: '+message);
             //console.log('mensaje: '+this.mensaje);
@@ -493,9 +567,7 @@ class GameSceneApi extends Phaser.Scene {
 
         this.canJump1 = true;
         this.canJump2 = true;
-        */
-       this.meta = this.physics.add.staticGroup();
-        this.meta.create(400, -800, 'meta');
+        */       
 
         this.trololoAudio = this.sound.add('trololo', { loop: true });
         this.trololoAudio.setVolume(0.02);
@@ -585,11 +657,24 @@ class GameSceneApi extends Phaser.Scene {
         } else {
             this.allowJump();
         }
-        if (plat.body.velocity.x != 0) {// SIGNIFICA QUE SOLO ENTRO EN CASO DE QUE SEA LA PRIMERA VEZ QUE SE PISA
+        //if (plat.body.velocity.x != 0) {// SIGNIFICA QUE SOLO ENTRO EN CASO DE QUE SEA LA PRIMERA VEZ QUE SE PISA
             plat.setVelocity(0, 0);
             plat.destruido1 = true;
             this.time.delayedCall(2000, this.auxiliar, [plat], this);
-        }
+        //}
+    }
+
+    tirarPlatEnemy(plat, enemy){
+        if(enemy.body.touching.down){
+            if (enemy.numberPlayer == 0) {
+                this.allowJump();
+            } else {
+                this.allowJump();
+            }
+                plat.setVelocity(0, 0);
+                plat.destruido1 = true;
+                this.time.delayedCall(2000, this.auxiliar, [plat], this);
+        }        
     }
     
     auxiliar(pla) {
@@ -613,7 +698,7 @@ class GameSceneApi extends Phaser.Scene {
     generarPlataformasQueRebotanYcaen(possX, possY, velocidad) {
         this.plataforma11 = this.physics.add.sprite(possX, possY, 'platformDislike');
         this.plataforma11.body.setAllowGravity(false);
-        this.plataforma11.setVelocity(velocidad, 0);
+        //this.plataforma11.setVelocity(velocidad, 0);
         this.plataforma11.setCollideWorldBounds(10, true, false);
         this.plataforma11.setBounce(1);
         this.grupoplataformaCae.add(this.plataforma11);
@@ -626,7 +711,7 @@ class GameSceneApi extends Phaser.Scene {
         this.plataforma1 = this.physics.add.sprite(possX, possY, 'platform');
         this.plataforma1.body.setAllowGravity(false);
         this.plataforma1.body.setImmovable(true);
-        this.plataforma1.setVelocity(velocidad, 0);
+        //this.plataforma1.setVelocity(velocidad, 0);
         this.plataforma1.setCollideWorldBounds(true);
         this.plataforma1.setBounce(1);
         this.grupoPlataformasQueRebotan.add(this.plataforma1);
@@ -666,6 +751,7 @@ class GameSceneApi extends Phaser.Scene {
             }
            
         }
+        this.destroyPlatforms();
         this.playerLocalName.x  = this.playerLocal.body.x;
         this.playerLocalName.y  = this.playerLocal.body.y - 25;
         this.playerEnemyName.x  = this.playerEnemy.body.x;
@@ -744,8 +830,10 @@ class GameSceneApi extends Phaser.Scene {
         }*/
         if(this.playerEnemy.body.velocity.y>1){
             this.colP2Plat.active = true;
+            this.grupoplataformaCae.active = true;
         }else{
             this.colP2Plat.active = false;
+            this.grupoplataformaCae.active = false;
         }
 
         if (this.playerLocal_emotes.T.isUp == false && this.i == 0) {            
@@ -919,15 +1007,18 @@ class GameSceneApi extends Phaser.Scene {
         this.player2Name.x = this.player2.body.x - 15;
         this.player2Name.y = this.player2.body.y - 25;
 */
-        if (this.camera.scrollY > -1000)//ponemos un tope cualquiera al scroll de la camara // CON ESTO SE MUEVO
-        {
-        //   this.platformCaida.setVelocity(0, -60 * (delta / 15));
-        //    this.platformGeneradora.setVelocity(0, -60 * (delta / 15));
-    //        this.camera.scrollY -= 1 * (delta / 15);
-        } else {
-         //   this.platformCaida.setVelocity(0, 0);// PLATAFORMA QUE MATA
-         //   this.platformGeneradora.setVelocity(0, 0);
-        }
+ 
+            if (this.camera.scrollY > -1000)//ponemos un tope cualquiera al scroll de la camara // CON ESTO SE MUEVO
+            {
+               this.platformCaida.setVelocity(0, -60 * (delta / 15));
+            //    this.platformGeneradora.setVelocity(0, -60 * (delta / 15));
+                this.camera.scrollY -= 1 * (delta / 15);
+            } else {
+                this.platformCaida.setVelocity(0, 0);// PLATAFORMA QUE MATA
+             //   this.platformGeneradora.setVelocity(0, 0);
+            }
+
+        
 /*
 
         this.managePlatforms();
@@ -1195,7 +1286,7 @@ class GameSceneApi extends Phaser.Scene {
      /*   if (this.overlapP1Win.active == false) {
             this.overlapP1Win.active = true;
         }*/
-        console.log("Puedes saltar");
+        //console.log("Puedes saltar");
         this.canJump1 = true;
     }
     allowJump2() {
@@ -1234,6 +1325,53 @@ class GameSceneApi extends Phaser.Scene {
             }, this);
 
         }
+    }
+    goToVictoryOnline(keyVida, id) {
+        if (!this.gameEnded) {
+            this.gameEnded = true;
+            this.cameras.main.fadeOut(500);
+            this.cameras.main.once('camerafadeoutcomplete', function (camera) {
+                this.trololoAudio.stop();
+                this.coffinAudio.stop();
+                connection.close();
+                this.scene.start('PlayerVictoryOnline', { keyVida: keyVida, player: id });
+            }, this);
+
+        }
+    }
+    destroyPlatforms(){
+        this.grupoPlataformasQueRebotan.children.each(function (elem) {            
+            this.platformYMin = Math.min(this.platformYMin, elem.y);
+            if (elem.y > this.platformCaida.y) {
+                this.destruido = true;
+                this.altura = elem.body.y - 700;
+                elem.destroy();
+                //console.log('destruida rebotan');
+            }
+        }, this);
+
+        this.grupoplataformaCae.children.each(function (elem) {
+            this.platformYMin2 = Math.min(this.platformYMin2, elem.y);
+            if (elem.y > this.platformCaida.y && !elem.destruido1) {
+                this.destruido = true;
+                this.altura = elem.body.y - 700;
+                if (!elem.destruido1) {
+                    this.contadorPlataformasQueCaen = this.contadorPlataformasQueCaen - 1;
+                    elem.destroy();
+                    //console.log('destruida caen');
+                }
+            }
+        }, this);
+
+        this.platforms.children.each(function (elem) {
+            this.platformYMin3 = Math.min(this.platformYMin3, elem.y);
+            if (elem.y > this.platformCaida.y) {
+                this.altura = elem.body.y - 700;
+                this.destruido = true;
+                elem.destroy();
+                //console.log('destruida normal');
+            }
+        }, this);
     }
 
     managePlatforms() {
@@ -1426,65 +1564,227 @@ class GameSceneApi extends Phaser.Scene {
         }.bind(this))
     }
 
-    metodoGenerarUnMapa(){
-    this.gen=3;
+    metodoGenerarUnMapa(randNumber){
 
-    switch(this.gen){
+    switch(randNumber){
         // 2350
         // this.generarPlataformasQueRebotan(Phaser.Math.Between(150, 300), this.altura, 200);
         // this.generarPlataformasQueRebotanYcaen(Phaser.Math.Between(450, 650), this.altura, 200);
         // this.platforms.create(300, 2350, 'platform');
         case 0:
-            this.generarPlataformasQueRebotan(150,2650,200);
-            this.generarPlataformasQueRebotanYcaen(150,2550, 200);
+                this.generarPlataformasQueRebotan(500,2250,200);
+                this.generarPlataformasQueRebotan(350,2150,200);
+                this.generarPlataformasQueRebotanYcaen(450, 2050, 200);
+                this.platforms.create(300, 1950, 'platform');
+                this.generarPlataformasQueRebotan(650,1950,200);
+                this.platforms.create(400, 1850, 'platform');
+                this.generarPlataformasQueRebotanYcaen(150,1750, 200);
+                this.generarPlataformasQueRebotan(600,1750,200);
+                this.platforms.create(200, 1650, 'platform');
+                this.generarPlataformasQueRebotan(600,1550,200);
+                this.platforms.create(150, 1450, 'platform');
+                this.platforms.create(450, 1450, 'platform');
+                this.generarPlataformasQueRebotanYcaen(200, 1350, 200);
+                this.generarPlataformasQueRebotanYcaen(450, 1350, 200);
+                this.generarPlataformasQueRebotan(200,1250,200);
+                this.platforms.create(450, 1150, 'platform');
+                this.generarPlataformasQueRebotanYcaen(500, 1050, 200);
+                this.generarPlataformasQueRebotan(150,1050,200);
+                this.generarPlataformasQueRebotan(300,950,200);
+                this.generarPlataformasQueRebotan(500,950,200);
+                this.generarPlataformasQueRebotan(200,850,200);
+                this.platforms.create(250, 750, 'platform');
+                this.generarPlataformasQueRebotanYcaen(500, 750, 200);
+                this.platforms.create(150, 650, 'platform');
+                this.platforms.create(500, 650, 'platform');
+                this.generarPlataformasQueRebotan(200,550,200);
+                this.generarPlataformasQueRebotan(550,550,200);
+                this.generarPlataformasQueRebotanYcaen(200, 450, 200);
+                this.generarPlataformasQueRebotanYcaen(500, 450, 200);
+                this.generarPlataformasQueRebotanYcaen(180, 350, 200);
+                this.platforms.create(470, 350, 'platform');
+                this.generarPlataformasQueRebotan(300,250,200);
+                this.generarPlataformasQueRebotan(150,150,200);
+                this.platforms.create(500, 150, 'platform');
+                this.generarPlataformasQueRebotanYcaen(200, 50, 200);
+                this.platforms.create(550, 50, 'platform');
+                this.generarPlataformasQueRebotan(200,-50,200);
+                this.generarPlataformasQueRebotan(470,-50,200);
+                this.platforms.create(470, -150, 'platform');
+                this.platforms.create(170, -150, 'platform');
+                this.generarPlataformasQueRebotan(200,-250,200);
+                this.platforms.create(190, -350, 'platform');
+                this.generarPlataformasQueRebotan(500,-350,200);
+                this.generarPlataformasQueRebotanYcaen(200, -450, 200);
+                this.platforms.create(490, -450, 'platform');
+                this.generarPlataformasQueRebotan(500,-550,200);
+                this.platforms.create(359, -650, 'platform');
+            /*switch(this.contadorMapa){
+                case 0:
+                    break;
+                    case 1:
+                        this.generarPlataformasQueRebotan(500,2250,200);
+                    break;
+                    case 2:
+                        this.generarPlataformasQueRebotan(350,2150,200);
+                    break;
+                    case 3:
+                        this.generarPlataformasQueRebotanYcaen(450, 2050, 200);
+                    break;
+                    case 4:
+                        this.platforms.create(300, 1950, 'platform');
+                        this.generarPlataformasQueRebotan(650,1950,200);
+                    break;
+                    case 5:
+                        this.platforms.create(400, 1850, 'platform');
+                    break;
+                    case 6:
+                        this.generarPlataformasQueRebotanYcaen(150,1750, 200);
+                        this.generarPlataformasQueRebotan(600,1750,200);
+                    break;
+                    case 7:
+                        this.platforms.create(200, 1650, 'platform');
+                    break;
+                    case 8:
+                        this.generarPlataformasQueRebotan(600,1550,200);
+                    break;
+                    case 9:
+                        this.platforms.create(150, 1450, 'platform');
+                        this.platforms.create(450, 1450, 'platform');
+                    break;
+                    case 10:
+                        this.generarPlataformasQueRebotanYcaen(200, 1350, 200);
+                        this.generarPlataformasQueRebotanYcaen(450, 1350, 200);
+                    break;
+                    case 11:
+                        this.generarPlataformasQueRebotan(200,1250,200);
+                    break;
+                    case 12:
+                        this.platforms.create(450, 1150, 'platform');
+                    break;
+                    case 13:
+                        this.generarPlataformasQueRebotanYcaen(500, 1050, 200);
+                        this.generarPlataformasQueRebotan(150,1050,200);
+                    break;
+                    case 14:
+                        this.generarPlataformasQueRebotan(300,950,200);
+                        this.generarPlataformasQueRebotan(500,950,200);
+                    break;
+                    case 15:
+                        this.generarPlataformasQueRebotan(200,850,200);
+                    break;
+                    case 16:
+                        this.platforms.create(250, 750, 'platform');
+                        this.generarPlataformasQueRebotanYcaen(500, 750, 200);
+                    break;
+                    case 17:
+                        this.platforms.create(150, 650, 'platform');
+                        this.platforms.create(500, 650, 'platform');
+                    break;
+                    case 18:
+                        this.generarPlataformasQueRebotan(200,550,200);
+                        this.generarPlataformasQueRebotan(550,550,200);
+                    break;
+                    case 19:                                        
+                this.generarPlataformasQueRebotanYcaen(200, 450, 200);
+                this.generarPlataformasQueRebotanYcaen(500, 450, 200);
+                    break;
+                    case 20:
+                        this.generarPlataformasQueRebotanYcaen(180, 350, 200);
+                    this.platforms.create(470, 350, 'platform');
+                    break;
+                    case 21:
+                        this.generarPlataformasQueRebotan(300,250,200);
+                    break;
+                    case 22:
+                        this.generarPlataformasQueRebotan(150,150,200);
+                        this.platforms.create(500, 150, 'platform');
+                    break;
+                    case 23:
+                        this.generarPlataformasQueRebotanYcaen(200, 50, 200);
+                this.platforms.create(550, 50, 'platform');
+                    break;
+                    case 24:
+                        this.generarPlataformasQueRebotan(200,-50,200);
+                        this.generarPlataformasQueRebotan(470,-50,200);
+                    break;
+                    case 25:
+                        this.platforms.create(470, -150, 'platform');
+                        this.platforms.create(170, -150, 'platform');
+                    break;
+                    case 26:
+                        this.generarPlataformasQueRebotan(200,-250,200);
+                    break;
+                    case 27:
+                        this.platforms.create(190, -350, 'platform');
+                        this.generarPlataformasQueRebotan(500,-350,200);
+                    break;
+                    case 28:
+                        this.generarPlataformasQueRebotanYcaen(200, -450, 200);
+                        this.platforms.create(490, -450, 'platform');
+                    break;
+                    case 29:
+                        this.generarPlataformasQueRebotan(500,-550,200);
+                    break;
+                    case 30:                        
+                this.platforms.create(359, -650, 'platform');
+                    break;
 
-            this.generarPlataformasQueRebotan(500,2250,200);
-            this.generarPlataformasQueRebotan(350,2150,200);
-            this.generarPlataformasQueRebotanYcaen(450, 2050, 200);
-            this.platforms.create(300, 1950, 'platform');
-            this.generarPlataformasQueRebotan(650,1950,200);
-            this.platforms.create(400, 1850, 'platform');
-            this.generarPlataformasQueRebotanYcaen(150,1750, 200);
-            this.generarPlataformasQueRebotan(600,1750,200);
-            this.platforms.create(200, 1650, 'platform');
-            this.generarPlataformasQueRebotan(600,1550,200);
-            this.platforms.create(150, 1450, 'platform');
-            this.platforms.create(450, 1450, 'platform');
-            this.generarPlataformasQueRebotanYcaen(200, 1350, 200);
-            this.generarPlataformasQueRebotanYcaen(450, 1350, 200);
-            this.generarPlataformasQueRebotan(200,1250,200);
-            this.platforms.create(450, 1150, 'platform');
-            this.generarPlataformasQueRebotanYcaen(500, 1050, 200);
-            this.generarPlataformasQueRebotan(150,1050,200);
-            this.generarPlataformasQueRebotan(300,950,200);
-            this.generarPlataformasQueRebotan(500,950,200);
-            this.generarPlataformasQueRebotan(200,850,200);
-            this.platforms.create(250, 750, 'platform');
-            this.generarPlataformasQueRebotanYcaen(500, 750, 200);
-            this.platforms.create(150, 650, 'platform');
-            this.platforms.create(500, 650, 'platform');
-            this.generarPlataformasQueRebotan(200,550,200);
-            this.generarPlataformasQueRebotan(550,550,200);
-            this.generarPlataformasQueRebotanYcaen(200, 450, 200);
-            this.generarPlataformasQueRebotanYcaen(500, 450, 200);
-            this.generarPlataformasQueRebotanYcaen(180, 350, 200);
-            this.platforms.create(470, 350, 'platform');
-            this.generarPlataformasQueRebotan(300,250,300);
-            this.generarPlataformasQueRebotan(150,150,200);
-            this.platforms.create(500, 150, 'platform');
-            this.generarPlataformasQueRebotanYcaen(200, 50, 200);
-            this.platforms.create(550, 50, 'platform');
-            this.generarPlataformasQueRebotan(200,-50,200);
-            this.generarPlataformasQueRebotan(470,-50,300);
-            this.platforms.create(470, -150, 'platform');
-            this.platforms.create(170, -150, 'platform');
-            this.generarPlataformasQueRebotan(200,-250,300);
-            this.platforms.create(190, -350, 'platform');
-            this.generarPlataformasQueRebotan(500,-350,200);
-            this.generarPlataformasQueRebotanYcaen(200, -450, 200);
-            this.platforms.create(490, -450, 'platform');
-            this.generarPlataformasQueRebotan(500,-550,200);
-            this.platforms.create(359, -650, 'platform');
+            }
+            this.contadorMapa++;*/
+            /*if(this.contadorMapa==0){                
+                this.generarPlataformasQueRebotan(500,2250,200);
+                this.generarPlataformasQueRebotan(350,2150,200);
+                this.generarPlataformasQueRebotanYcaen(450, 2050, 200);
+                this.platforms.create(300, 1950, 'platform');
+                this.generarPlataformasQueRebotan(650,1950,200);
+                this.platforms.create(400, 1850, 'platform');
+                this.generarPlataformasQueRebotanYcaen(150,1750, 200);
+                this.generarPlataformasQueRebotan(600,1750,200);
+                this.platforms.create(200, 1650, 'platform');
+                this.generarPlataformasQueRebotan(600,1550,200);
+                this.platforms.create(150, 1450, 'platform');
+                this.platforms.create(450, 1450, 'platform');
+                this.generarPlataformasQueRebotanYcaen(200, 1350, 200);
+                this.generarPlataformasQueRebotanYcaen(450, 1350, 200);
+                this.generarPlataformasQueRebotan(200,1250,200);
+                this.contadorMapa++;
+            }else if(this.contadorMapa==1){
+                this.platforms.create(450, 1150, 'platform');
+                this.generarPlataformasQueRebotanYcaen(500, 1050, 200);
+                this.generarPlataformasQueRebotan(150,1050,200);
+                this.generarPlataformasQueRebotan(300,950,200);
+                this.generarPlataformasQueRebotan(500,950,200);
+                this.generarPlataformasQueRebotan(200,850,200);
+                this.platforms.create(250, 750, 'platform');
+                this.generarPlataformasQueRebotanYcaen(500, 750, 200);
+                this.platforms.create(150, 650, 'platform');
+                this.platforms.create(500, 650, 'platform');
+                this.generarPlataformasQueRebotan(200,550,200);
+                this.generarPlataformasQueRebotan(550,550,200);
+                this.generarPlataformasQueRebotanYcaen(200, 450, 200);
+                this.generarPlataformasQueRebotanYcaen(500, 450, 200);
+                this.generarPlataformasQueRebotanYcaen(180, 350, 200);
+                this.platforms.create(470, 350, 'platform');
+                this.generarPlataformasQueRebotan(300,250,200);
+                this.contadorMapa++;
+            }else if(this.contadorMapa==2){
+                this.generarPlataformasQueRebotan(150,150,200);
+                this.platforms.create(500, 150, 'platform');
+                this.generarPlataformasQueRebotanYcaen(200, 50, 200);
+                this.platforms.create(550, 50, 'platform');
+                this.generarPlataformasQueRebotan(200,-50,200);
+                this.generarPlataformasQueRebotan(470,-50,200);
+                this.platforms.create(470, -150, 'platform');
+                this.platforms.create(170, -150, 'platform');
+                this.generarPlataformasQueRebotan(200,-250,200);
+                this.platforms.create(190, -350, 'platform');
+                this.generarPlataformasQueRebotan(500,-350,200);
+                this.generarPlataformasQueRebotanYcaen(200, -450, 200);
+                this.platforms.create(490, -450, 'platform');
+                this.generarPlataformasQueRebotan(500,-550,200);
+                this.platforms.create(359, -650, 'platform');
+            } */
             break;
             
             case 1:
@@ -1540,11 +1840,8 @@ class GameSceneApi extends Phaser.Scene {
                 this.generarPlataformasQueRebotan(490,-450,200);
                 this.platforms.create(200, -550, 'platform');
                 this.platforms.create(240, -650, 'platform');
-                break;
-                this.generarPlataformasQueRebotanYcaen(150,2550, 200);
-                this.platforms.create(240, -650, 'platform');
-                this.generarPlataformasQueRebotan(500,2250,200);
-                case 3:
+                break;                
+            case 2://ESTÁ BUG ALGUNAS
                     this.generarPlataformasQueRebotan(500,2250,200); 
                     this.platforms.create(240, 2250, 'platform');
                     this.generarPlataformasQueRebotanYcaen(150,2150, 200);
@@ -1597,9 +1894,7 @@ class GameSceneApi extends Phaser.Scene {
                     this.platforms.create(400, -450, 'platform');
                     this.platforms.create(330, -550, 'platform');
                     this.platforms.create(310, -650, 'platform');
-
                     break;
     }
-
     }
 }
