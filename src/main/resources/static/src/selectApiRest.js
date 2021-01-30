@@ -19,7 +19,7 @@ class SelectApiRest extends Phaser.Scene {
         
         $(document).ready(function() {
         //connection = new WebSocket('ws://127.0.0.1:8080/socket');
-        connection = new WebSocket('ws'+urlOnline+'socket');
+        connection = new WebSocket('wss'+urlOnline+'socket');
         //console.log(direccionWeb);
     });
     //
