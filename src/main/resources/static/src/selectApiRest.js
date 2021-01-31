@@ -18,7 +18,7 @@ class SelectApiRest extends Phaser.Scene {
         this.testControl = this.input.keyboard.addKeys('B');
         
         $(document).ready(function() {
-        //connection = new WebSocket('ws://127.0.0.1:8080/socket');
+        //connection = new WebSocket('wss://127.0.0.1:8080/socket');
         connection = new WebSocket('wss'+urlOnline+'socket');
         //console.log(direccionWeb);
     });
@@ -219,7 +219,7 @@ class SelectApiRest extends Phaser.Scene {
         this.timer3=this.time.addEvent({ delay: 2000, callback: this.metodoEstadoJug, callbackScope: this, loop: true });//CONTADOR
 
         connection.onmessage = function(message){
-            //if(this.cargado){        
+            //if(this.cargado){
             this.mensaje = JSON.parse(message.data);
                 switch(this.mensaje.event){
                 case 'READY':
@@ -237,7 +237,7 @@ class SelectApiRest extends Phaser.Scene {
                             inputChat.style.display = 'none';
                             this.scene.start('GameSceneApi', { jugador: this.jugador, enemigo: this.enemigo });
                         }, this);
-                    }
+                        }
                     }
                 
                       break;
@@ -252,7 +252,7 @@ class SelectApiRest extends Phaser.Scene {
         }
         $.ajax({
             method: 'POST',
-            url: 'https'+urlOnline +  'chat/jugador/estado',
+            url: 'https'+urlOnline+  'chat/jugador/estado',
             data: JSON.stringify(this.jugador),
             processData: false,
             headers: {

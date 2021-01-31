@@ -67,6 +67,7 @@ class GameSceneApi extends Phaser.Scene {
 
     create() {
         this.timeToCorrection = 0;
+        this.startScroll = false;
         this.metaCol = false;
         this.timeToSend = 0;
         this.EnemyMoved = false;
@@ -174,7 +175,7 @@ class GameSceneApi extends Phaser.Scene {
             this.colP1PlatqueSeMueve = this.physics.add.collider(this.grupoplataformaCae, this.playerLocal, this.tirarPlat, null, this);
             this.colP2PlatqueSeMueve = this.physics.add.collider(this.grupoplataformaCae, this.playerEnemy, this.tirarPlatEnemy, null, this);
            
-            this.platformCaida = this.physics.add.sprite(400, 3200, 'platformCaida').setScale(2).refreshBody().setVisible(false);//plataforma que irá debajo de la camara y matara a los jugadores        
+            this.platformCaida = this.physics.add.sprite(400, 3100, 'platformCaida').setScale(2).refreshBody().setVisible(false);//plataforma que irá debajo de la camara y matara a los jugadores        
             this.platformCaida.body.setAllowGravity(false);//quitamos la gravedad de la plataforma de caida
             this.PlayerCaida = this.physics.add.overlap(this.playerLocal, this.platformCaida, this.muerteCaidaOnline, null, this);//la muerte por caida
             /*this.overlapPlatNormalCaida = this.physics.add.collider(this.platforms, this.platformCaida, function(plat1,plat2){
@@ -256,7 +257,11 @@ class GameSceneApi extends Phaser.Scene {
             //
             this.pLocalScroll = false; //bool usado para la reaparición
             this.pLocalDeath = false;
-            this.cargado = true; 
+            //mandar mensaje de que he cargado completamente
+            let msg = new Object();
+            msg.event = 'LOADED';
+            connection.send(JSON.stringify(msg));
+            this.cargado = true;
         }.bind(this))
 
         this.estadoJugadores = this.add.text(200, 10, '').setScrollFactor(0, 0);
@@ -284,7 +289,7 @@ class GameSceneApi extends Phaser.Scene {
                                 return;
                             }
                             $.ajax({
-                                url: 'https'+urlOnline + 'chat/jugador/regreso/' + this.jugador.nombre
+                                url: 'https'+urlOnline+ 'chat/jugador/regreso/' + this.jugador.nombre
                             }, this).done(function (dat) {
 
                                 if (!this.scene.isActive('GameSceneApi')) {
@@ -413,7 +418,16 @@ class GameSceneApi extends Phaser.Scene {
                         return;
                     }
                     //console.log('bala');
-                    this.generarBalasEnUnSitio(40, 2900, 300);
+                    this.generarBalasEnUnSitio(40, 2200, 300);
+                    this.generarBalasEnUnSitio(40, 1900, 300);
+                    this.generarBalasEnUnSitio(760, 1500, -300);
+                    this.generarBalasEnUnSitio(40, 1100, 300);
+                    this.generarBalasEnUnSitio(760, 700, -300);
+                    this.generarBalasEnUnSitio(760, 300, -300);
+                    this.generarBalasEnUnSitio(40, -100, 300);
+                    this.generarBalasEnUnSitio(760, 1300, -300);
+                    this.generarBalasEnUnSitio(40, 100, 300);
+                    this.generarBalasEnUnSitio(40, -600, 300);
                     break;
                 case 'PLATAFORMAS':
                     if(!this.scene.isActive('GameSceneApi')){
@@ -703,7 +717,7 @@ class GameSceneApi extends Phaser.Scene {
 
         this.input.on('pointerover', () => this.menuButton.setTexture('redButton02'));
 
-        this.input.on('pointerout', () => this.menuButton.setTexture('redButton01'));*/
+        this.input.on('pointerout', () => this.menuButton.setTexture('redButton01'));*/        
     }
 
     metodoDeleteJugador() {
@@ -1103,7 +1117,7 @@ class GameSceneApi extends Phaser.Scene {
             }
             //REAPARICIONES
 
-            if (this.camera.scrollY > -1000)//ponemos un tope cualquiera al scroll de la camara // CON ESTO SE MUEVO
+            if ((this.camera.scrollY > -1000) && this.startScroll)//ponemos un tope cualquiera al scroll de la camara // CON ESTO SE MUEVO
             {
                 this.platformCaida.setVelocity(0, -60 * (delta / 15));
                 this.platformGeneradora.setVelocity(0, -60 * (delta / 15));
@@ -1112,7 +1126,7 @@ class GameSceneApi extends Phaser.Scene {
                 this.platformCaida.setVelocity(0, 0);// PLATAFORMA QUE MATA
                 this.platformGeneradora.setVelocity(0, 0);
             }
-
+            this.destruirBalasFueraDelMapa(this.grupo_balas);
         
 /*
 
@@ -1741,7 +1755,6 @@ class GameSceneApi extends Phaser.Scene {
     }
 
     metodoGenerarUnMapa(randNumber){
-
     switch(randNumber){
         // 2350
         // this.generarPlataformasQueRebotan(Phaser.Math.Between(150, 300), this.altura, 200);
@@ -1756,7 +1769,7 @@ class GameSceneApi extends Phaser.Scene {
                 this.platforms.create(400, 1850, 'platform');
                 this.generarPlataformasQueRebotanYcaen(150,1750, 200);
                 this.generarPlataformasQueRebotan(600,1750,200);
-                this.platforms.create(200, 1650, 'platform');
+                this.platforms.create(350, 1650, 'platform');
                 this.generarPlataformasQueRebotan(600,1550,200);
                 this.platforms.create(150, 1450, 'platform');
                 this.platforms.create(450, 1450, 'platform');
@@ -1777,7 +1790,7 @@ class GameSceneApi extends Phaser.Scene {
                 this.generarPlataformasQueRebotan(550,550,200);
                 this.generarPlataformasQueRebotanYcaen(200, 450, 200);
                 this.generarPlataformasQueRebotanYcaen(500, 450, 200);
-                this.generarPlataformasQueRebotanYcaen(180, 350, 200);
+                //this.generarPlataformasQueRebotanYcaen(180, 350, 200);
                 this.platforms.create(470, 350, 'platform');
                 this.generarPlataformasQueRebotan(300,250,200);
                 this.generarPlataformasQueRebotan(150,150,200);
@@ -1794,173 +1807,7 @@ class GameSceneApi extends Phaser.Scene {
                 this.generarPlataformasQueRebotanYcaen(200, -450, 200);
                 this.platforms.create(490, -450, 'platform');
                 this.generarPlataformasQueRebotan(500,-550,200);
-                this.platforms.create(359, -650, 'platform');
-            /*switch(this.contadorMapa){
-                case 0:
-                    break;
-                    case 1:
-                        this.generarPlataformasQueRebotan(500,2250,200);
-                    break;
-                    case 2:
-                        this.generarPlataformasQueRebotan(350,2150,200);
-                    break;
-                    case 3:
-                        this.generarPlataformasQueRebotanYcaen(450, 2050, 200);
-                    break;
-                    case 4:
-                        this.platforms.create(300, 1950, 'platform');
-                        this.generarPlataformasQueRebotan(650,1950,200);
-                    break;
-                    case 5:
-                        this.platforms.create(400, 1850, 'platform');
-                    break;
-                    case 6:
-                        this.generarPlataformasQueRebotanYcaen(150,1750, 200);
-                        this.generarPlataformasQueRebotan(600,1750,200);
-                    break;
-                    case 7:
-                        this.platforms.create(200, 1650, 'platform');
-                    break;
-                    case 8:
-                        this.generarPlataformasQueRebotan(600,1550,200);
-                    break;
-                    case 9:
-                        this.platforms.create(150, 1450, 'platform');
-                        this.platforms.create(450, 1450, 'platform');
-                    break;
-                    case 10:
-                        this.generarPlataformasQueRebotanYcaen(200, 1350, 200);
-                        this.generarPlataformasQueRebotanYcaen(450, 1350, 200);
-                    break;
-                    case 11:
-                        this.generarPlataformasQueRebotan(200,1250,200);
-                    break;
-                    case 12:
-                        this.platforms.create(450, 1150, 'platform');
-                    break;
-                    case 13:
-                        this.generarPlataformasQueRebotanYcaen(500, 1050, 200);
-                        this.generarPlataformasQueRebotan(150,1050,200);
-                    break;
-                    case 14:
-                        this.generarPlataformasQueRebotan(300,950,200);
-                        this.generarPlataformasQueRebotan(500,950,200);
-                    break;
-                    case 15:
-                        this.generarPlataformasQueRebotan(200,850,200);
-                    break;
-                    case 16:
-                        this.platforms.create(250, 750, 'platform');
-                        this.generarPlataformasQueRebotanYcaen(500, 750, 200);
-                    break;
-                    case 17:
-                        this.platforms.create(150, 650, 'platform');
-                        this.platforms.create(500, 650, 'platform');
-                    break;
-                    case 18:
-                        this.generarPlataformasQueRebotan(200,550,200);
-                        this.generarPlataformasQueRebotan(550,550,200);
-                    break;
-                    case 19:                                        
-                this.generarPlataformasQueRebotanYcaen(200, 450, 200);
-                this.generarPlataformasQueRebotanYcaen(500, 450, 200);
-                    break;
-                    case 20:
-                        this.generarPlataformasQueRebotanYcaen(180, 350, 200);
-                    this.platforms.create(470, 350, 'platform');
-                    break;
-                    case 21:
-                        this.generarPlataformasQueRebotan(300,250,200);
-                    break;
-                    case 22:
-                        this.generarPlataformasQueRebotan(150,150,200);
-                        this.platforms.create(500, 150, 'platform');
-                    break;
-                    case 23:
-                        this.generarPlataformasQueRebotanYcaen(200, 50, 200);
-                this.platforms.create(550, 50, 'platform');
-                    break;
-                    case 24:
-                        this.generarPlataformasQueRebotan(200,-50,200);
-                        this.generarPlataformasQueRebotan(470,-50,200);
-                    break;
-                    case 25:
-                        this.platforms.create(470, -150, 'platform');
-                        this.platforms.create(170, -150, 'platform');
-                    break;
-                    case 26:
-                        this.generarPlataformasQueRebotan(200,-250,200);
-                    break;
-                    case 27:
-                        this.platforms.create(190, -350, 'platform');
-                        this.generarPlataformasQueRebotan(500,-350,200);
-                    break;
-                    case 28:
-                        this.generarPlataformasQueRebotanYcaen(200, -450, 200);
-                        this.platforms.create(490, -450, 'platform');
-                    break;
-                    case 29:
-                        this.generarPlataformasQueRebotan(500,-550,200);
-                    break;
-                    case 30:                        
-                this.platforms.create(359, -650, 'platform');
-                    break;
-
-            }
-            this.contadorMapa++;*/
-            /*if(this.contadorMapa==0){                
-                this.generarPlataformasQueRebotan(500,2250,200);
-                this.generarPlataformasQueRebotan(350,2150,200);
-                this.generarPlataformasQueRebotanYcaen(450, 2050, 200);
-                this.platforms.create(300, 1950, 'platform');
-                this.generarPlataformasQueRebotan(650,1950,200);
-                this.platforms.create(400, 1850, 'platform');
-                this.generarPlataformasQueRebotanYcaen(150,1750, 200);
-                this.generarPlataformasQueRebotan(600,1750,200);
-                this.platforms.create(200, 1650, 'platform');
-                this.generarPlataformasQueRebotan(600,1550,200);
-                this.platforms.create(150, 1450, 'platform');
-                this.platforms.create(450, 1450, 'platform');
-                this.generarPlataformasQueRebotanYcaen(200, 1350, 200);
-                this.generarPlataformasQueRebotanYcaen(450, 1350, 200);
-                this.generarPlataformasQueRebotan(200,1250,200);
-                this.contadorMapa++;
-            }else if(this.contadorMapa==1){
-                this.platforms.create(450, 1150, 'platform');
-                this.generarPlataformasQueRebotanYcaen(500, 1050, 200);
-                this.generarPlataformasQueRebotan(150,1050,200);
-                this.generarPlataformasQueRebotan(300,950,200);
-                this.generarPlataformasQueRebotan(500,950,200);
-                this.generarPlataformasQueRebotan(200,850,200);
-                this.platforms.create(250, 750, 'platform');
-                this.generarPlataformasQueRebotanYcaen(500, 750, 200);
-                this.platforms.create(150, 650, 'platform');
-                this.platforms.create(500, 650, 'platform');
-                this.generarPlataformasQueRebotan(200,550,200);
-                this.generarPlataformasQueRebotan(550,550,200);
-                this.generarPlataformasQueRebotanYcaen(200, 450, 200);
-                this.generarPlataformasQueRebotanYcaen(500, 450, 200);
-                this.generarPlataformasQueRebotanYcaen(180, 350, 200);
-                this.platforms.create(470, 350, 'platform');
-                this.generarPlataformasQueRebotan(300,250,200);
-                this.contadorMapa++;
-            }else if(this.contadorMapa==2){
-                this.generarPlataformasQueRebotan(150,150,200);
-                this.platforms.create(500, 150, 'platform');
-                this.generarPlataformasQueRebotanYcaen(200, 50, 200);
-                this.platforms.create(550, 50, 'platform');
-                this.generarPlataformasQueRebotan(200,-50,200);
-                this.generarPlataformasQueRebotan(470,-50,200);
-                this.platforms.create(470, -150, 'platform');
-                this.platforms.create(170, -150, 'platform');
-                this.generarPlataformasQueRebotan(200,-250,200);
-                this.platforms.create(190, -350, 'platform');
-                this.generarPlataformasQueRebotan(500,-350,200);
-                this.generarPlataformasQueRebotanYcaen(200, -450, 200);
-                this.platforms.create(490, -450, 'platform');
-                this.generarPlataformasQueRebotan(500,-550,200);
-                this.platforms.create(359, -650, 'platform');
-            } */
+                this.platforms.create(359, -650, 'platform');            
             break;
             
             case 1:
@@ -2017,7 +1864,7 @@ class GameSceneApi extends Phaser.Scene {
                 this.platforms.create(200, -550, 'platform');
                 this.platforms.create(240, -650, 'platform');
                 break;                
-            case 2://ESTÁ BUG ALGUNAS
+            case 2:
                     this.generarPlataformasQueRebotan(500,2250,200); 
                     this.platforms.create(240, 2250, 'platform');
                     this.generarPlataformasQueRebotanYcaen(150,2150, 200);
@@ -2036,11 +1883,11 @@ class GameSceneApi extends Phaser.Scene {
                     this.platforms.create(230, 1450, 'platform');
                     this.generarPlataformasQueRebotan(500,1350,300);
                     this.generarPlataformasQueRebotanYcaen(200,1350, 200);
-                    this.generarPlataformasQueRebotanYcaen(470,1250, 200);
+                    this.generarPlataformasQueRebotanYcaen(500,1250, 200);
                     this.generarPlataformasQueRebotanYcaen(270,1250, 200);
                     this.platforms.create(450, 1150, 'platform');
                     this.platforms.create(290, 1050, 'platform');
-                    this.platforms.create(450, 1050, 'platform');
+                    this.platforms.create(600, 1050, 'platform');
                     this.generarPlataformasQueRebotan(500,950,300);
                     this.generarPlataformasQueRebotan(500,850,200);
                     this.generarPlataformasQueRebotan(180,850,200);
@@ -2053,18 +1900,18 @@ class GameSceneApi extends Phaser.Scene {
                     this.generarPlataformasQueRebotan(300,450,200);
                     this.generarPlataformasQueRebotan(490,450,200);
                     this.platforms.create(490, 350, 'platform');
-                    this.generarPlataformasQueRebotan(300,250,200);
-                    this.generarPlataformasQueRebotan(450,250,200);
+                    this.generarPlataformasQueRebotan(250,250,200);
+                    this.generarPlataformasQueRebotan(570,250,200);
                     this.generarPlataformasQueRebotan(450,150,200);
                     this.platforms.create(170, 150, 'platform');
-                    this.generarPlataformasQueRebotanYcaen(200,50, 200);
-                    this.generarPlataformasQueRebotanYcaen(50,50, 200);
+                    this.generarPlataformasQueRebotanYcaen(370,50, 200);
+                    this.generarPlataformasQueRebotanYcaen(100,50, 200);
                     this.generarPlataformasQueRebotan(450,-50,200);
                     this.platforms.create(210, -50, 'platform');
                     this.generarPlataformasQueRebotanYcaen(200,-150, 200);
                     this.generarPlataformasQueRebotan(450,-150,200);
-                    this.generarPlataformasQueRebotan(350,-250,200);
-                    this.generarPlataformasQueRebotan(200,-250,200);
+                    this.generarPlataformasQueRebotan(450,-250,200);
+                    this.generarPlataformasQueRebotan(150,-250,200);
                     this.generarPlataformasQueRebotan(300,-350,300);
                     this.platforms.create(200, -450, 'platform');
                     this.platforms.create(400, -450, 'platform');
@@ -2072,5 +1919,6 @@ class GameSceneApi extends Phaser.Scene {
                     this.platforms.create(310, -650, 'platform');
                     break;
     }
+    this.startScroll = true;
     }
 }

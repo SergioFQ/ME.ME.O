@@ -26,6 +26,7 @@ public class Web extends TextWebSocketHandler {
 	private Map<String, WebSocketSession> clientes = new ConcurrentHashMap<>();
 	private List<WebSocketSession> jugadoresListos = new ArrayList<>();
 	private int readyPlayers = 0;
+	private int loadedPlayers = 0;
 	private ObjectNode nodeTimer;
 	private ObjectNode nodeTimer1;
 	private boolean started = false;
@@ -131,10 +132,10 @@ public class Web extends TextWebSocketHandler {
 					}
 				}
 			}
-			if(!started && !emptyGame) {
+			/*if(!started && !emptyGame) {
 				started = true;
 				generateMap();
-			}
+			}*/
 			break;
 			
 			case "EMOJI":
@@ -220,6 +221,25 @@ public class Web extends TextWebSocketHandler {
 						}
 					}
 				}
+				break;
+			case "LOADED":
+				synchronized (this) {
+					loadedPlayers++;
+					if(loadedPlayers>=2) {
+						loadedPlayers = 0;
+						//newNode.put("event", "LOADED");
+						generateMap();
+						/*for(WebSocketSession participant : clientes.values()) {
+								synchronized (participant.getId()) {
+									if(participant.isOpen()) {
+										participant.sendMessage(new TextMessage(newNode.toString()));
+									}
+								}					
+						}*/
+					}
+				}				
+				
+				
 				break;
 		}
 		
