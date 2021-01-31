@@ -118,6 +118,7 @@ class GameSceneApi extends Phaser.Scene {
                 this.playerLocal = this.physics.add.sprite(600, 2900, this.spriteP1).setScale(0.5);
                 this.playerEnemy = this.physics.add.sprite(250, 2900, this.spriteP2).setScale(0.5);
             }
+            this.playerEnemy.body.setAllowGravity(false);
             this.playerLocal.setBounce(0);
             this.playerLocal.setCollideWorldBounds(true);
             this.playerLocal.depth = 10;
