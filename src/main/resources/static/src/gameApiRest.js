@@ -145,7 +145,7 @@ class GameSceneApi extends Phaser.Scene {
              }, null, this);
              this.coll = this.physics.add.collider(this.grupoPlataformasQueRebotan, this.playerEnemy, function (grupo, player) {// Variable donde guardo las colisiones de las plataformas
             // que rebotan con el jugador2 
-            this.allowJump();
+            //this.allowJump();
             player.body.velocity.x = 0;
            // grupo.body.setFrictionX(2);
            grupo.body.setFrictionX(1);
@@ -387,10 +387,11 @@ class GameSceneApi extends Phaser.Scene {
                     }
                 }
                 this.playerEnemy.x = this.mensaje.posX;
-                if(!Math.abs(this.playerEnemy.y - (this.mensaje.posY))<=10){
+                /*if(!Math.abs(this.playerEnemy.y - (this.mensaje.posY))<=10){
                     this.playerEnemy.y = this.mensaje.posY;
                     this.colP2Plat.active = false;
-                }
+                }*/
+                this.playerEnemy.y = this.mensaje.posY;
                 //este if igual sobra, hay que probar
                 if(this.mensaje.y<-10){
                     this.colP2Plat.active = false;
@@ -760,11 +761,11 @@ class GameSceneApi extends Phaser.Scene {
 
     tirarPlatEnemy(plat, enemy){
         if(enemy.body.touching.down && enemy.body.velocity.y>=0){
-            if (enemy.numberPlayer == 0) {
+            /*if (enemy.numberPlayer == 0) {
                 this.allowJump();
             } else {
                 this.allowJump();
-            }
+            }*/
                 plat.setVelocity(0, 0);
                 plat.destruido1 = true;
                 this.time.delayedCall(2000, this.auxiliar, [plat], this);

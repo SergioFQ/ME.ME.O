@@ -7,7 +7,7 @@ var config = {
         default: 'arcade',
         arcade: {
             gravity : { y: 700 },
-            debug: true,
+            debug: false,
             checkCollision: {up:false, down: false, left: true, right: true}
         }
     },
