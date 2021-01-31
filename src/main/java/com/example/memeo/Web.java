@@ -54,33 +54,9 @@ public class Web extends TextWebSocketHandler {
         	timerJug0.stop();
 			timerJug0.restart();
         }
-    });
-	
-	/*Timer timerJug1 = new Timer(1000, new ActionListener(){
-        @Override
-        public void actionPerformed(ActionEvent e) { 
-			System.out.println("plataforma loca: ");       	
-        	nodeTimer1 = lectorJson.createObjectNode();
-        	nodeTimer1.put("event", "PLATAFORMAS");
-        	for(WebSocketSession participant : clientes.values()) {
-					try {
-						participant.sendMessage(new TextMessage(nodeTimer1.toString()));
-					} catch (IOException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
-					}				
-			}
-        	//timerJug1.restart();
-
-        	if(started>30) {
-            	timerJug1.stop();        		
-        	}
-        	started++;
-        }
-    });*/
+    });	
 	
 	public void generateMap() throws Exception{
-		System.out.println("Plataformas a crear: ");
 		int randomNum = (int)r.nextInt(3);
     	nodeTimer1 = lectorJson.createObjectNode();
     	nodeTimer1.put("event", "PLATAFORMAS");
@@ -253,8 +229,6 @@ public class Web extends TextWebSocketHandler {
 	
 	@Override
 	public synchronized void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
-		//Player player = (Player) session.getAttributes().get(PLAYER_ATTRIBUTE);
-		//game.removePlayer(player);
 		System.out.println("User removed: " + session.getId());
 		started = false;
 		victory = false;
@@ -269,10 +243,6 @@ public class Web extends TextWebSocketHandler {
 		}else {
 			emptyGame = true;
 		}
-		ObjectNode msg = lectorJson.createObjectNode();
-		//msg.put("event", "REMOVE PLAYER");
-		//msg.put("id", player.getPlayerId());
-		//game.broadcast(msg.toString());
 		clientes.remove(session.getId(), session);
 	}
 	

@@ -14,8 +14,6 @@ class PlayerVictoryOnline extends Phaser.Scene {
     }
 
     create() {
-        console.log(this.caras);
-        console.log(this.name);
         this.victoryAudio = this.sound.add('victory', { loop: false });
         this.victoryAudio.setVolume(0.01);
         this.updateAudio();

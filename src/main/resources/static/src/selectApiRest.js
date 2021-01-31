@@ -18,11 +18,9 @@ class SelectApiRest extends Phaser.Scene {
         this.testControl = this.input.keyboard.addKeys('B');
         
         $(document).ready(function() {
-        //connection = new WebSocket('wss://127.0.0.1:8080/socket');
-        connection = new WebSocket('wss'+urlOnline+'socket');
+        connection = new WebSocket('ws://127.0.0.1:8080/socket');
         //console.log(direccionWeb);
     });
-    //
         this.connectionLost = false;
         this.add.graphics({ x: 0, y: 0 }).fillStyle('0xFFFFFF', 1).fillRect(300, 115, 450, 115);
         this.sceneChanged = false;
@@ -51,7 +49,7 @@ class SelectApiRest extends Phaser.Scene {
                                 return;
                             }                        
                             $.ajax({
-                                url: 'https'+urlOnline + 'chat/jugador/regreso/' + this.jugador.nombre
+                                url: direccionWeb + 'chat/jugador/regreso/' + this.jugador.nombre
                             }, this).done(function (dat) {
                                 if(!this.scene.isActive('SelectApiRest')){
                                     return;
@@ -226,7 +224,6 @@ class SelectApiRest extends Phaser.Scene {
                     if(!this.scene.isActive('SelectApiRest')){
                         return;
                     }
-                    //console.log(this.mensaje.startGame);
                     if(this.mensaje.startGame){
                         this.cameras.main.fadeOut(500);
                         if(!this.sceneChanged){
@@ -252,7 +249,7 @@ class SelectApiRest extends Phaser.Scene {
         }
         $.ajax({
             method: 'POST',
-            url: 'https'+urlOnline+  'chat/jugador/estado',
+            url: direccionWeb+  'chat/jugador/estado',
             data: JSON.stringify(this.jugador),
             processData: false,
             headers: {
@@ -294,7 +291,7 @@ class SelectApiRest extends Phaser.Scene {
         
         $.ajax({
             method: 'POST',
-            url: 'https'+urlOnline + '/chat',
+            url: direccionWeb + '/chat',
             data: JSON.stringify(frase),
             processData: false,
             headers: {
@@ -307,7 +304,7 @@ class SelectApiRest extends Phaser.Scene {
         
         $.ajax({
             method: 'POST',
-            url: 'https'+urlOnline + 'chat/jugador',
+            url: direccionWeb + 'chat/jugador',
             data: JSON.stringify(jugad),
             processData: false,
             headers: {
@@ -320,7 +317,7 @@ class SelectApiRest extends Phaser.Scene {
             return;
         }
         $.ajax({
-            url: 'https'+urlOnline + 'chat/jugador'
+            url: direccionWeb + 'chat/jugador'
 
         }).done(function (data) {
             this.badConect = true;
@@ -376,7 +373,7 @@ class SelectApiRest extends Phaser.Scene {
         nom_jug = null;
         $.ajax({
             method: 'DELETE',
-            url: 'https'+urlOnline + 'chat/jugador/' + this.jugador.nombre
+            url: direccionWeb + 'chat/jugador/' + this.jugador.nombre
         }, this).done(function (data) {
             if(!this.scene.isActive('SelectApiRest')){
                 return;
@@ -385,7 +382,7 @@ class SelectApiRest extends Phaser.Scene {
     }
     metodoGet() {        
         $.ajax({
-            url: 'https'+urlOnline + 'chat'
+            url: direccionWeb + 'chat'
         }).done(function (data) {
             if(!this.scene.isActive('SelectApiRest')){
                 return;
@@ -471,7 +468,7 @@ class SelectApiRest extends Phaser.Scene {
                 
                 $.ajax({
                     method: 'POST',
-                    url: 'https'+urlOnline + 'chat/jugador/ready',
+                    url: direccionWeb + 'chat/jugador/ready',
                     data: JSON.stringify(this.jugador),
                     processData: false,
                     headers: {
@@ -492,7 +489,7 @@ class SelectApiRest extends Phaser.Scene {
 
     getReady() {        
         $.ajax({
-            url: 'https'+urlOnline + 'chat/jugador/ready'
+            url: direccionWeb + 'chat/jugador/ready'
         }).done(function (data) {
             if(!this.scene.isActive('SelectApiRest')){
                 return;
@@ -501,7 +498,7 @@ class SelectApiRest extends Phaser.Scene {
                 this.startGameTimer.paused = true;
 
                 $.ajax({
-                    url: 'https'+urlOnline + 'chat/jugador/pos/' + this.jugador.nombre
+                    url: direccionWeb + 'chat/jugador/pos/' + this.jugador.nombre
                 }).done(function (data) {
                     if(!this.scene.isActive('SelectApiRest')){
                         return;
@@ -513,7 +510,7 @@ class SelectApiRest extends Phaser.Scene {
                         this.numberEnemy = 0;
                     }
                     $.ajax({
-                        url: 'https'+urlOnline + 'chat/jugador'
+                        url: direccionWeb + 'chat/jugador'
                     }).done(function (data) {
                         if(!this.scene.isActive('SelectApiRest')){
                             return;
