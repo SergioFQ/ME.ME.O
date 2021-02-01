@@ -13,7 +13,8 @@ class Controls extends Phaser.Scene {
     }
 
     create() {
-        this.controlsAudio = this.sound.add('controls', { loop: true });
+        this.controlsAudio = this.sound.add('controls');
+        this.controlsAudio.once('comlete', function(music) {music.setSeek(0); this.updateAudio(); this.controlsAudio.setLoop(true)}.bind(this));
         this.controlsAudio.setVolume(0.03);
         this.updateAudio();
 

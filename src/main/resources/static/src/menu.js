@@ -26,7 +26,8 @@ class Menu extends Phaser.Scene {
 
         this.add.graphics({ x: 0, y: 0 }).fillStyle('0x000000', 1).fillRect(250, 150, 300, 400);
 
-        this.lalaAudio = this.sound.add('lala', { loop: true });
+        this.lalaAudio = this.sound.add('lala');
+        this.lalaAudio.on('complete', function(music){ music.setSeek(0); this.updateAudio();}.bind(this))
         this.lalaAudio.setVolume(0.02);
         this.updateAudio();
 
