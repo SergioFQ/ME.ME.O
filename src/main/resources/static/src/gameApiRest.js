@@ -472,7 +472,7 @@ class GameSceneApi extends Phaser.Scene {
                         return;
                     }                    
                     this.playerEnemy.alpha = 1;
-                    this.enemyAlive = true;
+                    //this.enemyAlive = true;
                     this.colP2Plat.active = true;
                     this.coll.active = true;
                     this.time.addEvent({ delay: 750, callback: this.activeColEnemy, callbackScope: this, loop: false });
@@ -1223,6 +1223,7 @@ class GameSceneApi extends Phaser.Scene {
     }
     activeColEnemy(){
         this.colP2PlatqueSeMueve.active = true;
+        this.enemyAlive = true;
     }
 
     chocarTrue(gpp, jug) {
