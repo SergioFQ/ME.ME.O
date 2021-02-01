@@ -391,15 +391,18 @@ class GameSceneApi extends Phaser.Scene {
                 this.playerEnemy.y = this.mensaje.posY;
                 this.playerEnemy.velocidadY = this.mensaje.y;
                 //este if igual sobra, hay que probar
-                if(this.mensaje.y<-10){
-                    this.colP2Plat.active = false;
-                    //this.grupoplataformaCae.active = false;
-                    this.colP2PlatqueSeMueve.active = false;
-                }else if(this.mensaje.y>=0){
-                    this.colP2Plat.active = true;
-                    //this.grupoplataformaCae.active = true;                    
-                    this.colP2PlatqueSeMueve.active = true;
+                if(this.enemyAlive){
+                    if(this.mensaje.y<-10){
+                        this.colP2Plat.active = false;
+                        //this.grupoplataformaCae.active = false;
+                        this.colP2PlatqueSeMueve.active = false;
+                    }else if(this.mensaje.y>=0){
+                        this.colP2Plat.active = true;
+                        //this.grupoplataformaCae.active = true;                    
+                        this.colP2PlatqueSeMueve.active = true;
+                    }
                 }
+                
                 
                 //if(this.playerEnemy.body.touching.down && this.mensaje.y<-10){                    
                   //  this.playerEnemy.setVelocityY(this.mensaje.y);
@@ -469,6 +472,7 @@ class GameSceneApi extends Phaser.Scene {
                         return;
                     }                    
                     this.playerEnemy.alpha = 1;
+                    this.enemyAlive = true;
                     this.colP2Plat.active = true;
                     this.coll.active = true;
                     this.time.addEvent({ delay: 200, callback: this.activeColEnemy, callbackScope: this, loop: false });
