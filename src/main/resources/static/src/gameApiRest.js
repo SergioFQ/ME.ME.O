@@ -1832,7 +1832,7 @@ class GameSceneApi extends Phaser.Scene {
                     this.generarPlataformasQueRebotanYcaen(200, -450, 200);
                     this.platforms.create(490, -450, 'platform');
                     this.generarPlataformasQueRebotan(500,-550,200);
-                    this.platforms.create(359, -650, 'platform');            
+                    //this.platforms.create(359, -650, 'platform');            
                 break;
                 
                 case 1:
@@ -1887,7 +1887,7 @@ class GameSceneApi extends Phaser.Scene {
                     this.generarPlataformasQueRebotan(210,-450,200);
                     this.generarPlataformasQueRebotan(490,-450,200);
                     this.platforms.create(200, -550, 'platform');
-                    this.platforms.create(240, -650, 'platform');
+                    //this.platforms.create(240, -650, 'platform');
                     break;                
                 case 2:
                         this.generarPlataformasQueRebotan(500,2250,200); 
@@ -1941,7 +1941,7 @@ class GameSceneApi extends Phaser.Scene {
                         this.platforms.create(200, -450, 'platform');
                         this.platforms.create(400, -450, 'platform');
                         this.platforms.create(330, -550, 'platform');
-                        this.platforms.create(310, -650, 'platform');
+                        //this.platforms.create(310, -650, 'platform');
                         break;
         }
     this.startScroll = true;
