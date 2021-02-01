@@ -15,13 +15,9 @@ class PlayerVictory extends Phaser.Scene {
 
     create() {
 
-        this.victoryAudio = this.sound.add('victory');
-        this.victoryloopAudio = this.sound.add('victoryloop');
-        this.victoryAudio.once('complete', function(music){ this.updateAudio(true);}.bind(this));
-        this.victoryloopAudio.once('complete',function(music){ music.setSeek(0); this.updateAudio(true); this.victoryloopAudio.setLoop(true);}.bind(this));
+        this.victoryAudio = this.sound.add('victory', { loop: false });
         this.victoryAudio.setVolume(0.01);
-        this.victoryloopAudio.setVolume(0.01);
-        this.updateAudio(false);
+        this.updateAudio();
 
         this.createBackground();
         this.iter = 0;
@@ -60,7 +56,6 @@ class PlayerVictory extends Phaser.Scene {
             this.cameras.main.fadeOut(500);
             this.cameras.main.once('camerafadeoutcomplete', function (camera) {                
             this.victoryAudio.stop();
-            this.victoryloopAudio.stop();
             this.scene.start('Menu');
             }, this);
         }.bind(this));
@@ -98,21 +93,13 @@ class PlayerVictory extends Phaser.Scene {
 
     }
 
-    updateAudio(loop) {
+    updateAudio() {
         if (musicOn === false) {
-            if(!loop){
-                this.victoryAudio.stop();
-            }else{
-                this.victoryloopAudio.stop();
-            }
-            
+
+            this.victoryAudio.stop();
         }
         else {
-            if(!loop){
-                this.victoryAudio.play();
-            }else{
-                this.victoryloopAudio.play();
-            }
+            this.victoryAudio.play();
         }
     }
 
