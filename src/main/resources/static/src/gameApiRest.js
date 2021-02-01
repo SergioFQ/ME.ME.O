@@ -388,6 +388,7 @@ class GameSceneApi extends Phaser.Scene {
                     this.colP2Plat.active = false;
                 }*/
                 this.playerEnemy.y = this.mensaje.posY;
+                this.playerEnemy.velocidadY = this.mensaje.y;
                 //este if igual sobra, hay que probar
                 if(this.mensaje.y<-10){
                     this.colP2Plat.active = false;
@@ -755,7 +756,7 @@ class GameSceneApi extends Phaser.Scene {
     }
 
     tirarPlatEnemy(plat, enemy){
-        if(enemy.body.touching.down /*&& enemy.body.velocity.y>=0*/){
+        if(this.playerEnemy.velocidadY>=2/*enemy.body.touching.down && enemy.body.velocity.y>=0*/){
             /*if (enemy.numberPlayer == 0) {
                 this.allowJump();
             } else {
