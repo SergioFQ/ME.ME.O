@@ -15,7 +15,6 @@ class SelectApiRest extends Phaser.Scene {
 
     create(data) {
         this.gotEnemySprite = false;
-        this.testControl = this.input.keyboard.addKeys('B');
         
         $(document).ready(function() {
         connection = new WebSocket('ws://127.0.0.1:8080/socket');
@@ -277,9 +276,6 @@ class SelectApiRest extends Phaser.Scene {
                 this.scene.start('Notificaciones',{ valor: 1});
             }
         }
-        /*if (this.testControl.B.isDown) {            
-            connection.send(JSON.stringify(msg));   
-        }*/
         if (this.next == 1 && !this.buttonCreated) {
             this.buttonCreated = true;
             this.createButton();
