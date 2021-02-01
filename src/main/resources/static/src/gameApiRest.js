@@ -66,6 +66,7 @@ class GameSceneApi extends Phaser.Scene {
     }
 
     create() {
+        this.enemyAlive = true;
         this.timeToCorrection = 0;
         this.startScroll = false;
         this.metaCol = false;
@@ -459,6 +460,7 @@ class GameSceneApi extends Phaser.Scene {
                     this.colBalaEnemy.active = false;
                     this.vidasPEnemy[this.pEnemyLives].setVisible(false);
                     this.playerEnemy.alpha = 0.5;
+                    this.enemyAlive = false;
                     this.playerEnemy.body.setAllowGravity(false);
                     this.playerEnemy.body.setVelocityY(0);
                 break;
@@ -469,7 +471,8 @@ class GameSceneApi extends Phaser.Scene {
                     this.playerEnemy.alpha = 1;
                     this.colP2Plat.active = true;
                     this.coll.active = true;
-                    this.colP2PlatqueSeMueve.active = true;
+                    this.time.addEvent({ delay: 200, callback: this.activeColEnemy, callbackScope: this, loop: false });
+                    //this.colP2PlatqueSeMueve.active = true;
                     this.colBalaEnemy.active = true;
                     this.playerEnemy.setImmovable(false);
                     this.playerEnemy.body.setAllowGravity(true);                    
@@ -756,12 +759,12 @@ class GameSceneApi extends Phaser.Scene {
     }
 
     tirarPlatEnemy(plat, enemy){
-        if(this.playerEnemy.alpha==1){
+        //if(this.playerEnemy.alpha==1){
 
             plat.setVelocity(0, 0);
             plat.destruido1 = true;
             this.time.delayedCall(2000, this.auxiliar, [plat], this);
-        }
+        //}
         //if(this.playerEnemy.velocidadY>=2/*enemy.body.touching.down && enemy.body.velocity.y>=0*/){
             /*if (enemy.numberPlayer == 0) {
                 this.allowJump();
@@ -1213,6 +1216,9 @@ class GameSceneApi extends Phaser.Scene {
             this.reaparicion(this.player2);
             this.p2Scroll = false;
         }*/
+    }
+    activeColEnemy(){
+        this.colP2PlatqueSeMueve.active = true;
     }
 
     chocarTrue(gpp, jug) {
