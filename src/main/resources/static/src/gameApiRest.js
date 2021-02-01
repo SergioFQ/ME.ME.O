@@ -100,6 +100,8 @@ class GameSceneApi extends Phaser.Scene {
         this.camera = this.cameras.main;//camara de la escena
         this.camera.setScroll(0, 2400);//posición inicial de la cámara (podría cambiar)
         
+        this.platformsPinchos = this.physics.add.staticGroup();
+
         this.numberPlayer;
         this.numberEnemy;
         $.ajax({
@@ -251,6 +253,7 @@ class GameSceneApi extends Phaser.Scene {
             this.pLocalScroll = false; //bool usado para la reaparición
             this.pLocalDeath = false;
             //mandar mensaje de que he cargado completamente
+            this.colPinchosPlayer = this.physics.add.collider(this.playerLocal, this.platformsPinchos, this.muerteCaidaOnline, null, this);
             let msg = new Object();
             msg.event = 'LOADED';
             connection.send(JSON.stringify(msg));
@@ -436,7 +439,7 @@ class GameSceneApi extends Phaser.Scene {
                     if(!this.scene.isActive('GameSceneApi')){
                         return;
                     }
-                    if(this.mensaje.fallen){
+                    if(this.mensaje.fallen && this.pLocalLives>0){
                         this.vidasPEnemy[0].setVisible(false);
                     }
                     /*console.log(this.mensaje.idSprite);
@@ -752,7 +755,7 @@ class GameSceneApi extends Phaser.Scene {
     }
 
     tirarPlatEnemy(plat, enemy){
-        if(enemy.body.touching.down && enemy.body.velocity.y>=0){
+        //if(enemy.body.touching.down && enemy.body.velocity.y>=0){
             /*if (enemy.numberPlayer == 0) {
                 this.allowJump();
             } else {
@@ -761,7 +764,7 @@ class GameSceneApi extends Phaser.Scene {
                 plat.setVelocity(0, 0);
                 plat.destruido1 = true;
                 this.time.delayedCall(2000, this.auxiliar, [plat], this);
-        }        
+        //}        
     }
     
     auxiliar(pla) {
@@ -887,6 +890,7 @@ class GameSceneApi extends Phaser.Scene {
         if (this.playerLocal.body.velocity.y > 1)//cayendo
         {
             this.colP1Plat.active = true;
+            this.colPinchosPlayer.active = true;
             //msg.movement.y = 0;
             //connection.send(JSON.stringify(msg));
             this.colll.active = true;
@@ -895,6 +899,7 @@ class GameSceneApi extends Phaser.Scene {
         } else//saltando
         {
             this.colP1Plat.active = false;
+            this.colPinchosPlayer.active = false;
             this.colll.active = false;
             this.colP1PlatqueSeMueve.active = false;
 
@@ -1336,6 +1341,7 @@ class GameSceneApi extends Phaser.Scene {
     reaparicionOnline(player) {
         player.alpha = 1;
         this.colP1Plat.active = true;
+        this.colPinchosPlayer.active = true;
         this.colll.active = true;
         this.colP1PlatqueSeMueve.active = true;
         this.colBalaLocal.active = true; 
@@ -1360,6 +1366,7 @@ class GameSceneApi extends Phaser.Scene {
     muerteCaidaOnline() {
         this.pLocalLives--;
         this.colP1Plat.active = false;
+        this.colPinchosPlayer.active = false;
         this.colll.active = false;
         this.colP1PlatqueSeMueve.active = false;
         this.colBalaLocal.active = false;
@@ -1748,6 +1755,7 @@ class GameSceneApi extends Phaser.Scene {
     }
 
     metodoGenerarUnMapa(randNumber){
+        randNumber = 0;
     switch(randNumber){
         // 2350
         // this.generarPlataformasQueRebotan(Phaser.Math.Between(150, 300), this.altura, 200);
@@ -1760,7 +1768,8 @@ class GameSceneApi extends Phaser.Scene {
                 this.platforms.create(300, 1950, 'platform');
                 this.generarPlataformasQueRebotan(650,1950,200);
                 this.platforms.create(400, 1850, 'platform');
-                this.generarPlataformasQueRebotanYcaen(150,1750, 200);
+                //this.generarPlataformasQueRebotanYcaen(150,1750, 200);
+                this.platformsPinchos.create(150, 1750, 'platformPinchos');
                 this.generarPlataformasQueRebotan(600,1750,200);
                 this.platforms.create(350, 1650, 'platform');
                 this.generarPlataformasQueRebotan(600,1550,200);
