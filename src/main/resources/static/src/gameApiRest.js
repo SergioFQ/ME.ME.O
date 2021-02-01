@@ -475,7 +475,7 @@ class GameSceneApi extends Phaser.Scene {
                     this.enemyAlive = true;
                     this.colP2Plat.active = true;
                     this.coll.active = true;
-                    this.time.addEvent({ delay: 200, callback: this.activeColEnemy, callbackScope: this, loop: false });
+                    this.time.addEvent({ delay: 750, callback: this.activeColEnemy, callbackScope: this, loop: false });
                     //this.colP2PlatqueSeMueve.active = true;
                     this.colBalaEnemy.active = true;
                     this.playerEnemy.setImmovable(false);
