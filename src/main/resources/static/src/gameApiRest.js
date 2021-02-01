@@ -755,7 +755,7 @@ class GameSceneApi extends Phaser.Scene {
     }
 
     tirarPlatEnemy(plat, enemy){
-        //if(enemy.body.touching.down && enemy.body.velocity.y>=0){
+        if(enemy.body.touching.down /*&& enemy.body.velocity.y>=0*/){
             /*if (enemy.numberPlayer == 0) {
                 this.allowJump();
             } else {
@@ -764,7 +764,7 @@ class GameSceneApi extends Phaser.Scene {
                 plat.setVelocity(0, 0);
                 plat.destruido1 = true;
                 this.time.delayedCall(2000, this.auxiliar, [plat], this);
-        //}        
+        }        
     }
     
     auxiliar(pla) {
