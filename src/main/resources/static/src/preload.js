@@ -23,7 +23,8 @@ class Preload extends Phaser.Scene {
         this.load.image('origen', '../resources/img/Plataformas/Plataforma Buena (800x64).png');
         this.load.image('platformDislike', '../resources/img/Plataformas/Plataforma Mala (150x32).png');
         this.load.image('platformCaida', '../resources/img/platformCaida.png');
-
+        this.load.image('platformPinchos','../resources/img/PinchosRojos.png');
+        
         this.load.image('bomb', '../resources/img/Balas.png');
 
         this.load.spritesheet('pepeS', '../resources/img/SpriteSheets/Pepe the Frog SpriteSheet.png',
@@ -92,6 +93,7 @@ class Preload extends Phaser.Scene {
     create() {
         musicOn = true;
         visibility = false;
+        urlOnline = '://me-me-o.herokuapp.com/';
     }
 
     createLoadingBar() {
@@ -180,6 +182,7 @@ class Preload extends Phaser.Scene {
 
 var musicOn;
 var direccionWeb = window.location.href;
+var urlOnline;
 var cerrarVentana;
 var visibility;
 var connection;

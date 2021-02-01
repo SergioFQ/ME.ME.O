@@ -98,7 +98,7 @@ class SelectName extends Phaser.Scene {
     }
     checkServerStatus(){
         $.ajax({
-            url: direccionWeb + 'chat'
+            url: 'https'+ urlOnline + 'chat'
         }).done(function (data) {
 
             if (!this.scene.isActive('SelectName')) {
@@ -125,7 +125,7 @@ class SelectName extends Phaser.Scene {
     }
     metodoGetJugadores(){
         $.ajax({
-             url: direccionWeb + 'chat/jugador',
+             url: 'https'+ urlOnline + 'chat/jugador',
              timeout: 2500
         }).done(function(data){
 
@@ -174,7 +174,7 @@ class SelectName extends Phaser.Scene {
       
         $.ajax({
             method: 'POST',
-            url: direccionWeb + 'chat/jugador',
+            url: 'https'+ urlOnline + 'chat/jugador',
             data: JSON.stringify(jugad),
             processData: false,
             headers: {
