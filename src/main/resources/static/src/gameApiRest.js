@@ -66,7 +66,6 @@ class GameSceneApi extends Phaser.Scene {
     }
 
     create() {
-        this.enemyAlive = true;
         this.timeToCorrection = 0;
         this.startScroll = false;
         this.metaCol = false;
@@ -101,12 +100,11 @@ class GameSceneApi extends Phaser.Scene {
         this.camera = this.cameras.main;//camara de la escena
         this.camera.setScroll(0, 2400);//posición inicial de la cámara (podría cambiar)
         
-        this.platformsPinchos = this.physics.add.staticGroup();
 
         this.numberPlayer;
         this.numberEnemy;
         $.ajax({
-            url: 'https'+ urlOnline + 'chat/jugador/pos/' + this.jugador.nombre
+            url: direccionWeb + 'chat/jugador/pos/' + this.jugador.nombre
         }).done(function (data) {
             if (!this.scene.isActive('GameSceneApi')) {
                 return;
@@ -253,8 +251,8 @@ class GameSceneApi extends Phaser.Scene {
             //
             this.pLocalScroll = false; //bool usado para la reaparición
             this.pLocalDeath = false;
+            this.enemyAlive = true;
             //mandar mensaje de que he cargado completamente
-            this.colPinchosPlayer = this.physics.add.collider(this.playerLocal, this.platformsPinchos, this.muerteCaidaOnline, null, this);
             let msg = new Object();
             msg.event = 'LOADED';
             connection.send(JSON.stringify(msg));
@@ -286,7 +284,7 @@ class GameSceneApi extends Phaser.Scene {
                                 return;
                             }
                             $.ajax({
-                                url: 'https'+ urlOnline + 'chat/jugador/regreso/' + this.jugador.nombre
+                                url: direccionWeb + 'chat/jugador/regreso/' + this.jugador.nombre
                             }, this).done(function (dat) {
 
                                 if (!this.scene.isActive('GameSceneApi')) {
@@ -392,11 +390,11 @@ class GameSceneApi extends Phaser.Scene {
                 this.playerEnemy.velocidadY = this.mensaje.y;
                 //este if igual sobra, hay que probar
                 if(this.enemyAlive){
-                    if(this.mensaje.y<-10){
+                    if(this.playerEnemy.velocidadY<-10){
                         this.colP2Plat.active = false;
                         //this.grupoplataformaCae.active = false;
                         this.colP2PlatqueSeMueve.active = false;
-                    }else if(this.mensaje.y>=0){
+                    }else if(this.playerEnemy.velocidadY>=0){
                         this.colP2Plat.active = true;
                         //this.grupoplataformaCae.active = true;                    
                         this.colP2PlatqueSeMueve.active = true;
@@ -447,6 +445,7 @@ class GameSceneApi extends Phaser.Scene {
                     if(this.mensaje.fallen && this.pLocalLives>0){
                         this.vidasPEnemy[0].setVisible(false);
                     }
+                    this.destruirBalasFinPartida(this.grupo_balas);
                     /*console.log(this.mensaje.idSprite);
                     console.log(this.mensaje.nameVictory);*/
                     this.goToVictoryOnline(this.mensaje.idSprite, this.mensaje.nameVictory);
@@ -728,7 +727,7 @@ class GameSceneApi extends Phaser.Scene {
         nom_jug = null;
         $.ajax({
             method: 'DELETE',
-            url: 'https'+ urlOnline + 'chat/jugador/' + this.jugador.nombre
+            url: direccionWeb + 'chat/jugador/' + this.jugador.nombre
         }, this).done(function (data) {
             if(!this.scene.isActive('SelectApiRest')){
                 return;
@@ -826,6 +825,12 @@ class GameSceneApi extends Phaser.Scene {
         }
     }
 
+    destruirBalasFinPartida(gb){
+        for (var j = 0; j < gb.getChildren().length; j++) {
+                gb.getChildren()[j].destroy();            
+        }
+    }
+
     update(time, delta) {
         let msg = new Object();
         msg.event = 'UPDATE MOVEMENT';
@@ -901,7 +906,6 @@ class GameSceneApi extends Phaser.Scene {
         if (this.playerLocal.body.velocity.y > 1)//cayendo
         {
             this.colP1Plat.active = true;
-            this.colPinchosPlayer.active = true;
             //msg.movement.y = 0;
             //connection.send(JSON.stringify(msg));
             this.colll.active = true;
@@ -910,7 +914,6 @@ class GameSceneApi extends Phaser.Scene {
         } else//saltando
         {
             this.colP1Plat.active = false;
-            this.colPinchosPlayer.active = false;
             this.colll.active = false;
             this.colP1PlatqueSeMueve.active = false;
 
@@ -1356,7 +1359,6 @@ class GameSceneApi extends Phaser.Scene {
     reaparicionOnline(player) {
         player.alpha = 1;
         this.colP1Plat.active = true;
-        this.colPinchosPlayer.active = true;
         this.colll.active = true;
         this.colP1PlatqueSeMueve.active = true;
         this.colBalaLocal.active = true; 
@@ -1381,7 +1383,6 @@ class GameSceneApi extends Phaser.Scene {
     muerteCaidaOnline() {
         this.pLocalLives--;
         this.colP1Plat.active = false;
-        this.colPinchosPlayer.active = false;
         this.colll.active = false;
         this.colP1PlatqueSeMueve.active = false;
         this.colBalaLocal.active = false;
@@ -1665,7 +1666,7 @@ class GameSceneApi extends Phaser.Scene {
             return;
         }
         $.ajax({
-            url: 'https'+ urlOnline + 'chat/jugador'
+            url: direccionWeb + 'chat/jugador'
 
         }).done(function (data) {
             this.badConect=true;
@@ -1734,7 +1735,7 @@ class GameSceneApi extends Phaser.Scene {
         }
         $.ajax({
             method: 'POST',
-            url: 'https'+ urlOnline + 'chat/jugador/estado',
+            url: direccionWeb + 'chat/jugador/estado',
             data: JSON.stringify(this.jugador),
             processData: false,
             headers: {
@@ -1753,7 +1754,7 @@ class GameSceneApi extends Phaser.Scene {
     }
     metodoGet() {
         $.ajax({
-            url: 'https'+ urlOnline + 'chat'
+            url: direccionWeb + 'chat'
         }).done(function (data) {
 
             if (!this.scene.isActive('GameSceneApi')) {
@@ -1770,7 +1771,6 @@ class GameSceneApi extends Phaser.Scene {
     }
 
     metodoGenerarUnMapa(randNumber){
-        randNumber = 0;
     switch(randNumber){
         // 2350
         // this.generarPlataformasQueRebotan(Phaser.Math.Between(150, 300), this.altura, 200);
@@ -1783,8 +1783,7 @@ class GameSceneApi extends Phaser.Scene {
                 this.platforms.create(300, 1950, 'platform');
                 this.generarPlataformasQueRebotan(650,1950,200);
                 this.platforms.create(400, 1850, 'platform');
-                //this.generarPlataformasQueRebotanYcaen(150,1750, 200);
-                this.platformsPinchos.create(150, 1750, 'platformPinchos');
+                this.generarPlataformasQueRebotanYcaen(150,1750, 200);
                 this.generarPlataformasQueRebotan(600,1750,200);
                 this.platforms.create(350, 1650, 'platform');
                 this.generarPlataformasQueRebotan(600,1550,200);

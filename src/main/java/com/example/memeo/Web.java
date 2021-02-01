@@ -156,6 +156,7 @@ public class Web extends TextWebSocketHandler {
 						victory = true;
 					}
 				}
+	        	timerJug0.stop();
 				newNode.put("event", "VICTORY");
 				newNode.put("idSprite", node.get("victoryId").get("sprite").asText());
 				newNode.put("nameVictory", node.get("victoryId").get("name").asText());
@@ -230,6 +231,7 @@ public class Web extends TextWebSocketHandler {
 	@Override
 	public synchronized void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
 		System.out.println("User removed: " + session.getId());
+    	timerJug0.stop();
 		started = false;
 		victory = false;
 		if(readyPlayers!=0) {
