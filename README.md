@@ -22,7 +22,18 @@ Integrantes:
 [![Alt text](https://img.youtube.com/vi/VhZ10VmOlA0/0.jpg)](https://www.youtube.com/watch?v=VhZ10VmOlA0&feature=youtu.be)
 
 # Cambios respecto a la fase anterior
-Respecto a la fase 3 del desarrollo del juego, hemos implementado Websockets para así poder tener el juego online completamente funcional. Esta implementación servirá que los clientes entren a la partida a la vez.
+Respecto a la fase 4 del desarrollo del juego, hemos conectado el juego con Heroku para así tener el juego siempre online accesible para quien quiera jugarlo. Además de eso, hemos mejorado la música, hemos añadido plataformas con pinchos que matan a los jugados y el juego ha sido publicado en 4 webs (Itch.io, Gamejolt, Newgrounds y Outpan).
+
+# Enlaces en los que poder jugar el juego
++ [Itch.io](https://quidi.itch.io/memeo)
++ [Gamejolt](https://gamejolt.com/games/ME-ME-O/582369)
++ [Newgrounds](https://www.newgrounds.com/portal/view/779643)
++ [Outpan](https://www.outpan.com/app/9e4cf55de3/memeo)
+
+# Mejoras finales de la fase 5 y mejoras sin realizar
++ Como ya se ha dicho anteriormente, la mejora más importante realizada en esta fase ha sido la integración del proyuecto con Heroku. Mediante esta implementación conseguimos que el juego sea siempre accesible sin necesidad de jugar en el mismo ordenador o sin tener que hacer port forwarding como haciamos anteriormente para probar. Junto con esta mejora, hemos añadido una nueva plataforma al mapa, esta plataforma quitará una vida al personaje que la toque, añadiendo así más variedad al juego y así también evitamos que los jugadores salten sin más pues ahora tendrán que tener cuidado con las plataformas que vienen. Por último, se ha arreglado la música consiguiendo que los loops sean más consistentes.
+
++ A pesar de la implementación de estas mejoras, algunas no han podido llevarse a cabo por falta de tiempo, como la inclusión de colisiones entre los personajes la cual podría hacer del juego algo más divertido e interesante, el movimiento de las plataformas online pues estas se desincronizaban mucho entre los clientes y cambiar la lógica que tramita estas plataformas hubiese supuesto mucho tiempo ya que tendríamos que haber encontrado la forma de gestionar todo desde el backend. Por último nos hubiese gustado poder haber desarrollado más minijuegos pero hemos preferido no hacerlo para poder tener el que ya existe más pulido.
 
 # High Concept
 ME.ME.O es un juego 2D competitivo de estilo cartoon donde los jugadores buscan ganar a su rival en una carrera de escalada.
