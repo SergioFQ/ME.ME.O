@@ -92,6 +92,7 @@ class Preload extends Phaser.Scene {
     create() {
         musicOn = true;
         visibility = false;
+        urlOnline = '://me-me-o.herokuapp.com/';
     }
 
     createLoadingBar() {
@@ -180,6 +181,7 @@ class Preload extends Phaser.Scene {
 
 var musicOn;
 var direccionWeb = window.location.href;
+var urlOnline;
 var cerrarVentana;
 var visibility;
 var connection;
