@@ -14,6 +14,12 @@ class SelectApiRest extends Phaser.Scene {
     }
 
     create(data) {
+        this.gotEnemySprite = false;
+        
+        $(document).ready(function() {
+        connection = new WebSocket('ws://127.0.0.1:8080/socket');
+        //console.log(direccionWeb);
+    });
         this.connectionLost = false;
         this.add.graphics({ x: 0, y: 0 }).fillStyle('0xFFFFFF', 1).fillRect(300, 115, 450, 115);
         this.sceneChanged = false;
@@ -99,6 +105,7 @@ class SelectApiRest extends Phaser.Scene {
                 this.selectAudio.stop();
                 $('#input').val('');
                 inputChat.style.display = 'none';
+                connection.close();
                 this.scene.start('Menu');
             }, this);
         }
@@ -208,6 +215,31 @@ class SelectApiRest extends Phaser.Scene {
         this.metodoEstadoJug();
         this.timer3=this.time.addEvent({ delay: 2000, callback: this.metodoEstadoJug, callbackScope: this, loop: true });//CONTADOR
 
+        connection.onmessage = function(message){
+            //if(this.cargado){
+            this.mensaje = JSON.parse(message.data);
+                switch(this.mensaje.event){
+                case 'READY':
+                    if(!this.scene.isActive('SelectApiRest')){
+                        return;
+                    }
+                    if(this.mensaje.startGame){
+                        this.cameras.main.fadeOut(500);
+                        if(!this.sceneChanged){
+                            this.sceneChanged = true;
+                        this.cameras.main.once('camerafadeoutcomplete', function (camera) {
+                            this.selectAudio.stop();
+                            $('#input').val('');
+                            inputChat.style.display = 'none';
+                            this.scene.start('GameSceneApi', { jugador: this.jugador, enemigo: this.enemigo });
+                        }, this);
+                        }
+                    }
+                
+                      break;
+                }
+            //}
+        }.bind(this);
     }
 
     metodoEstadoJug() {
@@ -216,7 +248,7 @@ class SelectApiRest extends Phaser.Scene {
         }
         $.ajax({
             method: 'POST',
-            url: direccionWeb + 'chat/jugador/estado',
+            url: direccionWeb+  'chat/jugador/estado',
             data: JSON.stringify(this.jugador),
             processData: false,
             headers: {
@@ -240,6 +272,7 @@ class SelectApiRest extends Phaser.Scene {
                 this.selectAudio.stop();
                 $('#input').val('');
                 inputChat.style.display = 'none';
+                connection.close();
                 this.scene.start('Notificaciones',{ valor: 1});
             }
         }
@@ -312,12 +345,14 @@ class SelectApiRest extends Phaser.Scene {
                     this.selectAudio.stop();
                     $('#input').val('');
                     inputChat.style.display = 'none';
+                    connection.close();
                     this.scene.start('Notificaciones',{ valor: 1});
                 }else if(!this.sceneChanged){
                     this.sceneChanged = true;
                     this.selectAudio.stop();
                     $('#input').val('');
                     inputChat.style.display = 'none';
+                    connection.close();
                     this.scene.start('Notificaciones',{ valor: 3});
                 }
             }
@@ -477,7 +512,15 @@ class SelectApiRest extends Phaser.Scene {
                             return;
                         }
                         this.enemigo = data[this.numberEnemy];
-                        this.cameras.main.fadeOut(500);
+                        if(this.enemigo.sprite!=-1 && !this.gotEnemySprite){
+                            this.gotEnemySprite = true;
+                            this.startGameTimer.paused = true;
+                            let msg = new Object();
+                            msg.event = 'READY';
+                            connection.send(JSON.stringify(msg));
+                        }
+                        
+                        /*this.cameras.main.fadeOut(500);
                         if(!this.sceneChanged){
                             this.sceneChanged = true;
                         this.cameras.main.once('camerafadeoutcomplete', function (camera) {
@@ -486,7 +529,7 @@ class SelectApiRest extends Phaser.Scene {
                             inputChat.style.display = 'none';
                             this.scene.start('GameSceneApi', { jugador: this.jugador, enemigo: this.enemigo });
                         }, this);
-                    }
+                    }*/
                     }.bind(this))
                 }.bind(this))
             }

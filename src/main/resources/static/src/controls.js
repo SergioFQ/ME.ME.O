@@ -19,10 +19,10 @@ class Controls extends Phaser.Scene {
 
         this.createBackground();
 
-        this.add.image(150, 155, 'wad').setScale(0.75);
-        this.add.image(650, 155, 'flechas').setScale(0.75);
-        this.add.image(325, 155, 'emotes1').setScale(0.75);
-        this.add.image(475, 155, 'emotes2').setScale(0.75);
+        this.add.image(135, 135, 'wad').setScale(0.75);
+        this.add.image(665, 135, 'flechas').setScale(0.75);
+        this.add.image(325, 135, 'emotes1').setScale(0.75);
+        this.add.image(475, 135, 'emotes2').setScale(0.75);
 
         this.add.image(250, 295, 'pb');
         this.add.image(560, 295, 'pm');
@@ -31,10 +31,10 @@ class Controls extends Phaser.Scene {
 
         this.controlsText = this.add.text(325, 30, 'Controls', { fontFamily: 'Berlin Sans FB, "Goudy Bookletter 1911", Times, serif', fontSize: '46px', fill: '#fff' });
 
-        this.emotesp1Text = this.add.text(270, 210, 'Emotes P1', { fontFamily: 'Berlin Sans FB, "Goudy Bookletter 1911", Times, serif', fontSize: '28px', fill: '#fff' });
-        this.emotesp2Text = this.add.text(415, 210, 'Emotes P2', { fontFamily: 'Berlin Sans FB, "Goudy Bookletter 1911", Times, serif', fontSize: '28px', fill: '#fff' });
-        this.movementp1Text = this.add.text(65, 235, 'Movement P1', { fontFamily: 'Berlin Sans FB, "Goudy Bookletter 1911", Times, serif', fontSize: '28px', fill: '#fff' });
-        this.movementp2Text = this.add.text(570, 235, 'Movement P2', { fontFamily: 'Berlin Sans FB, "Goudy Bookletter 1911", Times, serif', fontSize: '28px', fill: '#fff' });
+        this.emotesp1Text = this.add.text(270, 190, 'Emotes P1\nOnline Emotes', { fontFamily: 'Berlin Sans FB, "Goudy Bookletter 1911", Times, serif', fontSize: '25px', fill: '#fff' });
+        this.emotesp2Text = this.add.text(415, 190, 'Emotes P2', { fontFamily: 'Berlin Sans FB, "Goudy Bookletter 1911", Times, serif', fontSize: '25px', fill: '#fff' });
+        this.movementp1Text = this.add.text(50, 215, 'Movement P1\nOnline Movement', { fontFamily: 'Berlin Sans FB, "Goudy Bookletter 1911", Times, serif', fontSize: '25px', fill: '#fff' });
+        this.movementp2Text = this.add.text(570, 215, 'Movement P2', { fontFamily: 'Berlin Sans FB, "Goudy Bookletter 1911", Times, serif', fontSize: '25px', fill: '#fff' });
 
         this.pbText = this.add.text(60, 320, 'Static and moving platforms', { fontFamily: 'Berlin Sans FB, "Goudy Bookletter 1911", Times, serif', fontSize: '28px', fill: '#fff' });
         this.pmText = this.add.text(460, 320, 'Falling platforms', { fontFamily: 'Berlin Sans FB, "Goudy Bookletter 1911", Times, serif', fontSize: '28px', fill: '#fff' });

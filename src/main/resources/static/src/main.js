@@ -12,7 +12,7 @@ var config = {
         }
     },
     backgroundColor: 0x747474,
-    scene: [Boot, Preload, Menu, Controls, Credits, Options, Select, Notificaciones, SelectName, SelectApiRest, GameScene, GameSceneApi, PlayerVictory]
+    scene: [Boot, Preload, Menu, Controls, Credits, Options, Select, Notificaciones, SelectName, SelectApiRest, GameScene, GameSceneApi, PlayerVictory, PlayerVictoryOnline]
 };
 //En scene ir añadiendo las diferentes escenas que se necesitarán
 var game = new Phaser.Game(config);
