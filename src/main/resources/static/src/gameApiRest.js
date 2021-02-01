@@ -756,16 +756,19 @@ class GameSceneApi extends Phaser.Scene {
     }
 
     tirarPlatEnemy(plat, enemy){
-        if(this.playerEnemy.velocidadY>=2/*enemy.body.touching.down && enemy.body.velocity.y>=0*/){
+        if(this.playerEnemy.alpha==1){
+
+            plat.setVelocity(0, 0);
+            plat.destruido1 = true;
+            this.time.delayedCall(2000, this.auxiliar, [plat], this);
+        }
+        //if(this.playerEnemy.velocidadY>=2/*enemy.body.touching.down && enemy.body.velocity.y>=0*/){
             /*if (enemy.numberPlayer == 0) {
                 this.allowJump();
             } else {
                 this.allowJump();
             }*/
-                plat.setVelocity(0, 0);
-                plat.destruido1 = true;
-                this.time.delayedCall(2000, this.auxiliar, [plat], this);
-        }        
+        //}        
     }
     
     auxiliar(pla) {
