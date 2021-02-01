@@ -179,7 +179,7 @@ class GameSceneApi extends Phaser.Scene {
            
             this.platformCaida = this.physics.add.sprite(400, 3100, 'platformCaida').setScale(2).refreshBody().setVisible(false);//plataforma que irá debajo de la camara y matara a los jugadores        
             this.platformCaida.body.setAllowGravity(false);//quitamos la gravedad de la plataforma de caida
-            //this.PlayerCaida = this.physics.add.overlap(this.playerLocal, this.platformCaida, this.muerteCaidaOnline, null, this);//la muerte por caida
+            this.PlayerCaida = this.physics.add.overlap(this.playerLocal, this.platformCaida, this.muerteCaidaOnline, null, this);//la muerte por caida
             /*this.overlapPlatNormalCaida = this.physics.add.collider(this.platforms, this.platformCaida, function(plat1,plat2){          
                 plat2.destroy();
             });*/
